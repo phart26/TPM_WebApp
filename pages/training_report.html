@@ -1,0 +1,345 @@
+<div class="content-wrapper" style="min-height: 500px;">
+    <h3>Training Report 
+        <div style="float: right;">
+                <i onclick="viewtrainingreport()" title="View" class="fa fa-eye" style="font-size: 18px;padding: 0 15px;"></i>
+            <!-- <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-remove" style="font-size: 18px;padding: 0 15px;"></i> -->
+        </div>
+    </h3>
+
+    <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+
+    <div form="table.form" table-name="cust_tbl" style="margin: 20px 0;">
+        <div>
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Customer</span><select var="cust_id" class="align-right customer_id" table="cust_tbl" column="customer" value-field="cust_id"></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Part number</span>
+                    <select data-store="part" class="align-right selectpicker selectcutome secselect part_id storevalue" var="part" table="part_tbl" id="part_id" value-field="part" column="part" title="Choose one of the following..."></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder ">Training Report - Mill</span>
+                    <select class="selectpicker  employee offoncheckbox mill_operator"  title="Select employee ">
+                        <option value="">Employee</option>
+                    </select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder ">Training Report - Cutoff</span>
+                    <select class="selectpicker  employee  offoncheckbox cutoff_operator"  title="Select employee ">
+                        <option value="">Employee</option>
+                    </select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder ">Training Report - Welder</span>
+                    <select class="selectpicker  employee offoncheckbox repair_welder "  title="Select employee ">
+                        <option value="">Employee</option>
+                    </select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder ">Training Report - Inspector</span>
+                    <select class="selectpicker  employee offoncheckbox inspector"  title="Select employee ">
+                        <option value="">Employee</option>
+                    </select>
+                </div>
+            <div class="form-row btntopmargin">
+                <button class="btn btn-primary search_query"> Search Records</button>
+                <!-- <button class="btn btn-primary " id="getreport"> Get Report</button> -->
+            </div>
+        </div>
+        <!-- <div class="column checkboxcateory" >
+                Select Category Based
+            <div class="input">
+                <span class="left-placeholder">Training Report - Mill</span><input id="training_mill" type="checkbox" var="p_pack">
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Training Report - Cutoff</span><input id="training_cutoff" type="checkbox" var="p_pack">
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Training Report - Welder</span><input id="training_welder" type="checkbox" var="p_pack">
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Training Report - Inspector</span><input id="training_inspector" type="checkbox" var="p_pack">
+            </div>
+        </div> -->
+    </div>
+<!-- input form -->
+
+
+    
+ 
+  
+</div>
+<div class="searchquery_result" style="display:none">
+<h5 style="margin-left:10px;">Search Result</h5>
+<table class="table table-hover new_search" style="background: #fff;">
+       
+            <tbody></tbody>
+
+</table>
+</div>
+<div class="successdone" style="display:none">success</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<style>
+   
+    
+    .successdone {
+    position: absolute;
+    background: #27c24c;
+    top: 10px;
+    left: 50%;
+    display: inline-block;
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 13px;
+}
+
+
+.btntopmargin{
+    margin-top: 15px;
+}
+.btntopmargin button{
+    margin-right: 15px;
+}
+select[disabled] {
+      background-color:whitesmoke;
+   }
+   #overlay {
+    position: fixed; 
+    display: none;
+    width: 100%; 
+    height: 100%; 
+    top: 0; 
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5); 
+    z-index: 9999; 
+    cursor: pointer;
+}
+.loadersmall {
+    border: 5px solid #19a2cc;
+    -webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+    border-top: 5px solid #fff8f8;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    left: calc(50% - 25px);
+    top: calc(50% - 25px);
+    }
+@-webkit-keyframes spin {
+  0% { 
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% { 
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+div#text {
+    color: #fff;
+    position: absolute;
+    left: 47%;
+    top: 62%;
+}
+</style>
+
+<script>
+    function viewQuoteReport(){
+        var standard_prices = $('select[var="cust_id"]').val();
+        if (standard_prices == ""){
+            alert('Please Enter Customer id');
+        }
+        else{
+            var url = "/app/standard_prices_dev.php?standard_prices="+standard_prices+"&Part_number="+$('select[var="part"]').val();
+            var win = window.open(url, '_blank');
+            win.focus();
+        }
+    }
+
+    $(document).ready(function(){
+       
+        $('body').append('<div id="overlay" style="display:none"><div class="loadersmall"></div><div id="text">Process your request...</div></div>');
+
+        $('.customer_id').on('change',function(){
+            if($(this).val()!=null){
+                $.post(setting.server+"index.php?url=part_mat"+"&userid="+$(this).val(),
+                    function(res){
+                        var output =[];
+                        output.push('<option value="">Select Part</option>');
+                        $.each(res.list, function(key, value)
+                            {
+                            output.push('<option value="'+ value['part'] +'">'+ value['part'] +'</option>');
+                        });
+                            $('.part_id').html(output.join(''));
+                            console.log('second');
+                });
+            }
+        });
+
+        //employee 
+
+        function inserSelect( $arr,$field,$name){
+            var output =[];
+
+            output.push(`<option value="">Select ${$name}</option>`);
+                $.each($arr, function(key, value)
+                    {
+                    output.push('<option value="'+ value[$name] +'">'+ value[$name] +'</option>');
+                });
+                $field.html(output.join(''));
+
+        }
+           
+        $.post(setting.server+"index.php?url=employee",
+            function(res){
+
+                if (res['list'].length != 0 ){
+
+                    if ( res['list'].cutoff_operator.length !=0 ){
+                        inserSelect( res['list']['cutoff_operator'],$('.cutoff_operator'),'name');
+                    }
+                    if ( res['list'].inspector.length !=0 ){
+                        inserSelect( res['list']['inspector'],$('.inspector'),'name');
+                    }
+                    if ( res['list'].mill_operator.length !=0 ){
+                        inserSelect( res['list']['mill_operator'],$('.mill_operator'),'name');
+                    }
+                    if ( res['list'].repair_welder.length !=0 ){
+                        inserSelect( res['list']['repair_welder'],$('.repair_welder'),'name');
+                    }
+
+                } //res close hrer
+
+                
+        });
+    //search on value    
+        $('.search_query').on('click',function(e){
+           
+            let cus = $('.customer_id').val(),
+                part = $('.part_id').val(),
+                emp = $('.employee').val();
+                mill_operator =$('.mill_operator').val();
+                cutoff_operator =$('.cutoff_operator').val();
+                repair_welder =$('.repair_welder').val();
+                inspector =$('.inspector').val(); 
+          
+            if (cus.search('Select') != -1)cus = '';
+            if (part.search('Select') != -1)part = '';
+            if (mill_operator.search('Select') != -1)mill_operator = '';
+            if (cutoff_operator.search('Select') != -1)cutoff_operator = '';
+            if (repair_welder.search('Select') != -1)repair_welder = '';
+            if (inspector.search('Select') != -1)inspector = '';
+                
+         
+        $.post(setting.server+'index.php?url=training_report'+
+                '&userid='+cus+
+                '&part='+part+
+                '&mill_operator='+mill_operator+
+                '&cutoff_operator='+cutoff_operator+
+                '&repair_welder='+repair_welder+
+                '&inspector='+inspector,
+            
+            function(r){
+               
+                let height = $(document).height();
+                let data = $('.searchquery_result').show();
+               
+                if (r.length !=0){
+                   data.find('table tbody').html(r.list);
+                }else{
+                    data.find('table tbody').html('<tr><td colspan="5">No record found.</td></tr>');
+                }
+               
+               
+               
+            }
+        );
+
+            e.preventDefault();
+        });
+        //search on value close here
+        //on checkbox click
+        $('.checkboxcateory input[type="checkbox"]').on('change',function(){
+            
+            if( $(this).is(':checked')){
+                $('.offoncheckbox').each(function(){
+                    $(this).attr('disabled',true);
+                });
+            }
+            else{
+              if($('.checkboxcateory input[type="checkbox"]:checked').length ==0){
+                   $('.offoncheckbox').each(function(){
+                      $(this).attr('disabled',false);
+                  });
+                }
+                
+            }
+
+        });
+
+       
+
+
+    });//body end here
+    function viewtrainingreport(){
+
+           let cus = $('.customer_id').val(),
+                part = $('.part_id').val(),
+                emp = $('.employee').val();
+                mill_operator =$('.mill_operator').val();
+                cutoff_operator =$('.cutoff_operator').val();
+                repair_welder =$('.repair_welder').val();
+                inspector =$('.inspector').val(); 
+          
+            if (cus.search('Select') != -1)cus = '';
+            if (part.search('Select') != -1)part = '';
+            if (mill_operator.search('Select') != -1)mill_operator = '';
+            if (cutoff_operator.search('Select') != -1)cutoff_operator = '';
+            if (repair_welder.search('Select') != -1)repair_welder = '';
+            if (inspector.search('Select') != -1)inspector = '';
+
+            var url = "/app/training_reportpdf.php?standard_prices.php"+
+                '&userid='+cus+
+                '&part='+part+
+                '&mill_operator='+mill_operator+
+                '&cutoff_operator='+cutoff_operator+
+                '&repair_welder='+repair_welder+
+                '&inspector='+inspector;
+            var win = window.open(url, '_blank');
+            win.focus();
+        
+    }
+</script>

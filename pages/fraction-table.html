@@ -1,0 +1,298 @@
+<div class="content-wrapper" style="min-height: 500px;">
+    <h3>Fraction Table
+        <div style="float: right;">
+            <i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div>
+    </h3>
+
+    <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+
+    <div form="table.form" table-name="frac_tbl" style="margin: 20px 0;">
+        <div>
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Decimal</span><input var="decimal" class="align-right" type="text" field="Decimal seems invalid." mask="double" required>
+                </div>
+               
+                <h3>Fraction</h3>
+                <div class="fraction">
+                        <div class="firsthelf">
+                            <input type="text" id="y" var="fraction">
+                        </div>
+                        <div class="full">
+                            <input type="text" id="n" var="fractionN">
+                            <hr/ class="hr">
+                            <input type="text" id="d" style="margin-top:10px;" var="fractionD">
+                
+                            </div>  
+                        </div>
+                        <button id="convert">Fraction To Decimal</button>
+                
+
+                <!-- <div><input type="text" name="frac_str" id="frac_str"></div> -->
+                <div class="input">
+                    <span class="left-placeholder">Holes</span>
+                    <input var="holes" class="align-right holes" type="text" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Centers</span><input var="centers" class="align-right centers" type="text" required>
+                </div>
+               
+            </div> 
+                
+        </div>
+    </div>
+
+</div>
+<style>
+        
+        .firsthelf {
+        float: left;
+        width:110px;
+        margin-top:15px;
+        overflow: hidden;
+        margin-right: 8px;
+    }
+    .firsthelf input{
+        width:100%
+    }
+    
+    .full {
+        float: left;
+        width: 155px;
+    }
+    .hr{
+        margin: 0 !important;
+        padding:0px !important;
+    
+     
+        border-bottom:3px solid #000;
+    }
+    .full input{
+        margin-bottom:10px;
+       
+     }
+     .fraction:after{
+         content:'';
+         clear:both;
+         display: table;
+     }
+    </style>
+
+<script>
+        
+        $(document).ready(function(){
+
+            $("input").keyup(function(){
+                
+            });
+      
+            $('[var="decimal"]').on('keyup',function(){
+                fac();
+                var y = $('#y').val();
+                var n = $('#n').val()+"/";
+                var z = $('#d').val();
+                if (y==0) {
+                    y="";
+                }
+                if ($('#n').val()==0) {
+                    n="";
+                    z="";
+                }
+
+                $('#frac_str').val(y +" "+ n +z+'"');
+                $('.holes').val(y +" "+ n+ z+'"');
+                $('.centers').val(y +" "+ n+ z+'"');
+            });
+    
+            
+            $('#convert').on('click',function(){
+    
+                convert();
+                var y = $('#y').val();
+                var n = $('#n').val()+"/";
+                var z = $('#d').val();
+                if (y==0) {
+                    y="";
+                };
+                if ($('#n').val()==0) {
+                    n="";
+                    z="";
+                };
+                $('#frac_str').val(y +" "+ n+z+'"');
+                $('.holes').val(y +" "+ n+z+'"');
+                $('.centers').val(y +" "+ n+z+'"');
+    
+            });
+    
+          
+    
+    
+    
+        });
+        var gcd2 = function(a, b, f) {
+                if( f )
+                {
+                    if ( b<=1 )
+                        return a;
+                }
+                else
+                {
+                    if ( !b )
+                        return a;
+                }
+                return gcd2(b, a % b, f);
+            };
+            function roundresult(x) {
+                y = parseFloat(x);
+                y = roundnum(y,10);
+                return y;
+            }
+            function roundnum(x,p) {
+                var i;
+                var n=parseFloat(x);
+                var m=n.toPrecision(p+1);
+                var y=String(m);
+                i=y.indexOf('e');
+                if( i==-1 )	i=y.length;
+                j=y.indexOf('.');
+                if( i>j && j!=-1 ) 
+                {
+                    while(i>0)
+                    {
+                        if(y.charAt(--i)=='0')
+                            y = removeAt(y,i);
+                        else
+                            break;
+                    }
+                    if(y.charAt(i)=='.')
+                        y = removeAt(y,i);
+                }
+                return y;
+            }
+            function removeAt(s,i) {
+                s = s.substring(0,i)+s.substring(i+1,s.length);
+                return s;
+            }
+            function digits_after_period(x)
+            {
+                f = x.toString();
+                i = f.indexOf('.');
+                len = f.length-i-1;
+                return len;
+            }
+           
+    
+            function fac(){
+                var sign = '';
+                var sign2 = '+';
+                x = $('[var="decimal"]').val();
+                x2 = parseFloat(x);
+                var absx=Math.abs(x2);
+                var y=Math.floor(absx);
+                var frac=roundresult(absx-y);
+                if( x2<0 ) sign = sign2 = '-';
+                d = digits_after_period(absx);
+                den = Math.round(Math.pow(10,d));
+                num = Math.round(frac*den);
+                var len=num.toString().length;
+                var f=false;
+                if( len>8 ) f=true;
+                g = gcd2(num,den,f);
+                num2 = Math.round(num/g);
+                den2 = Math.round(den/g);
+            
+                var txt=x2+" ";
+                if( absx>=1 ) {
+                    $('#td11').show();
+                
+                
+                    txt+="= "+sign+y+sign2+frac+" ";
+                    txt+="= "+sign+y+sign2;
+                }
+                else {
+                    $('#td11').hide();
+                    txt+="= "+sign;
+                }
+                txt+=num+"/"+den+"\n";
+                if( g>1 ) {
+                    txt+="gcd("+num+","+den+") = "+g+"\n";
+                    txt+=x2+" ";
+                    
+                    txt+="= "+sign;
+                    if( absx>=1 )
+                        txt+=y+sign2;
+                    txt+="("+num+"/"+g+")/("+den+"/"+g+") ";
+                    
+                    txt+="= "+sign;
+                    if( absx>=1 )
+                        txt+=y+sign2;
+                    txt+=num2+"/"+den2+" ";
+                }
+                    
+                if( y>0 )
+                    txt+="= "+sign+(num2+den2*y)+"/"+den2;
+                $('#y').val(sign+y);
+                if( absx>=1 )
+                    $('#n').val(num2);
+                else
+                    $('#n').val(sign+num2);
+                $('#d').val(den2);
+                // if( frac==0 ) {
+                // 	$('#td12').hide();
+                // 	$('#td21').hide();
+                // 	txt="";
+                // }
+                // else {
+                // 	$('#td12').show();
+                // 	$('#td21').show();
+                // }
+                // $('#area').val(txt);
+            }
+            function convert(x) {
+                s = 1;
+                x = $('#y').val();
+                n = $('#n').val();
+                d = $('#d').val();
+                if( n=='' || d=='' )
+                {
+                    alert("Please enter fraction");
+                    return;
+                }
+                if( x=='-' ) { s=-1; x='0'; }
+                if( x=='' ) x='0';
+                x = parseInt(x);
+                n = parseInt(n);
+                d = parseInt(d);
+                if( x<0 ) { s=-1; x=-x; }
+                if( x==0 && (n/d)<0 ) { s=-1; }
+                n = Math.abs(n);
+                d = Math.abs(d);
+                if( x!=0 )
+                {
+                    $('#n').val(n);
+                    $('#d').val(d);
+                }
+                y = s*(x+n/d);
+                 y = roundresult(y);
+                $('[var="decimal"]').val(y);
+                var out='';
+                if( s==-1 ) out+='-';
+                if( x!=0 ) {
+                    out+=x;
+                    if( s==-1 ) 
+                        out+='-';
+                    else
+                        out+='+';
+                }
+                // out+=n+'/'+d;
+                // out+='\n= '+y;
+                // out+='\n= '+roundresult(y*100)+'%';
+                
+              
+            }
+    
+    </script>

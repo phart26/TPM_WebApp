@@ -1,0 +1,58 @@
+<div class="content-wrapper" style="min-height: 500px;">
+        <p>Try new version <a href="standard_prices_dev.html">here</a></p>
+        
+    <h3>Standard Prices
+        <div style="float: right;">
+                <i onclick="viewQuoteReport()" title="View" class="fa fa-eye" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div>
+    </h3>
+
+    <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+
+    <div form="table.form" table-name="cust_tbl" style="margin: 20px 0;">
+        <div>
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Customer</span><select var="cust_id" class="align-right customer_id" table="cust_tbl" column="customer" value-field="cust_id"></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Part number</span>
+                    <select data-store="part" class="align-right selectpicker selectcutome secselect part_id storevalue" var="part" table="part_tbl" id="part_id" value-field="part" column="part" title="Choose one of the following..."></select>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+<script>
+    function viewQuoteReport(){
+        var standard_prices = $('select[var="cust_id"]').val();
+        if (standard_prices == ""){
+            alert('Please Enter Customer id');
+        }
+        else{
+            var url = "/app/standard_prices_dev.php?standard_prices="+standard_prices+"&Part_number="+$('select[var="part"]').val();
+            var win = window.open(url, '_blank');
+            win.focus();
+        }
+    }
+    $(document).ready(function(){
+       
+        $('.customer_id').on('change',function(){
+            if($(this).val()!=null){
+            $.post(setting.server+"index.php?url=part_mat"+"&userid="+$(this).val(),
+                function(res){
+                    var output =[];
+                    output.push('<option value="">Select Part</option>');
+                    $.each(res.list, function(key, value)
+                        {
+                        output.push('<option value="'+ value['part'] +'">'+ value['part'] +'</option>');
+                    });
+                        $('.part_id').html(output.join(''));
+                        console.log('second');
+            });
+            }
+        });
+    });
+</script>

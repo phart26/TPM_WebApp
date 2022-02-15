@@ -1,0 +1,577 @@
+<div class="content-wrapper">
+    <h3>UniScreen<div style="float: right;"><i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i><i class="fa fa-print" style="font-size: 18px;padding: 0 15px;" onclick="window.print();"></i><i class="savevalue fa fa-save" style="font-size: 18px;padding: 0 15px;"></i><i class="fa fa-remove" style="font-size: 18px;padding: 0 15px;"></i><i class="fa fa-trash deleteroow" style="font-size: 18px;padding: 0 15px;"></i></div></h3>
+    
+    <script>
+        var meshList = [],temp_uni = [],
+            layer_count = 0;
+            lt = 0,
+
+            is_g = 0,   // gage
+            is_id = 0,
+            is_od = 0,
+
+            os_s = 0,   // strip
+            os_g = 0,
+            os_id = 0,
+            os_od = 0;
+
+        function deleteTable() {
+            $('#layer-table').find('tbody').html('');
+            layer_count=0;
+            lt = 0;
+            $('#lt-disp').html(lt);
+            calc_os_id();
+            temp_uni = [];
+        }
+
+        function calc_is_od() {
+            is_od = parseFloat(parseFloat(is_id) + 2 * is_g).toFixed(4);
+            $('#is-od-disp').html(is_od);
+            calc_os_id();
+        }
+
+        function set_is_id(val) {
+            is_id = parseFloat(val).toFixed(4);
+            $('#is-id-disp').html(is_id);
+            calc_is_od();
+        }
+
+        function set_is_g(val) {
+            is_g = parseFloat(val).toFixed(4);
+            calc_is_od();
+        }
+
+        function set_os_s(val) {
+            os_s = parseFloat(val).toFixed(4);
+        }
+
+        function set_os_g(val) {
+            os_g = parseFloat(val).toFixed(4);
+            calc_os_od();
+        }
+
+        function calc_os_od() {
+            os_od = parseFloat(os_g * 2 + parseFloat(os_id)).toFixed(4);
+            $('#os-od-disp').html(os_od);
+        }
+
+        function calc_os_id() {
+            os_id = parseFloat(lt * 2 + parseFloat(is_od)).toFixed(4);
+            $('#os-id-disp').html(os_id);
+            calc_os_od();
+        }
+
+        function calc_gaps() {
+            var side = Math.sqrt(Math.pow(4 * Math.atan(1) * os_od, 2) - Math.pow(os_s, 2));
+            var angle = 90 - (Math.atan(side / os_s) * 180 / (4 * Math.atan(1)));
+	    var tod = is_od;
+            for(var i = 1; i < temp_uni.length; i++) {
+                temp_uni[i]["width"] = $("#layer-" + i + "-width").val();
+                temp_uni[i]["od"] = (parseFloat(tod) + 2 * temp_uni[i]["thickness"]).toFixed(4);
+		tod=(parseFloat(tod) + 2 * temp_uni[i]["thickness"]);
+                var full_width = Math.sin(angle / 180 * 4 * Math.atan(1)) * 4 * Math.atan(1) * temp_uni[i]["od"];
+                temp_uni[i]["gap"] = (full_width - temp_uni[i]["width"]).toFixed(5);
+                $("#layer-" + i + "-gap").val(temp_uni[i]["gap"]);
+                temp_uni[i]["lft_ft"] = (4 * Math.atan(1) * temp_uni[i]["od"] / full_width).toFixed(4);
+                temp_uni[i]["wt_tube_ft"] = (temp_uni[i]["weight"] * temp_uni[i]["lft_ft"] * temp_uni[i]["width"] / 12).toFixed(4);
+            }
+
+        }
+
+        function calc_widths() {
+
+            var side = Math.sqrt(Math.pow(4 * Math.atan(1) * os_od, 2) - Math.pow(os_s, 2));
+            var angle = 90 - (Math.atan(side / os_s) * 180 / (4 * Math.atan(1)));
+
+            var tod = is_od;
+            for(var i = 1; i < temp_uni.length; i++) {
+                temp_uni[i]["gap"] = $("#layer-" + i + "-gap").val();
+                temp_uni[i]["od"] = (parseFloat(tod) + 2 * temp_uni[i]["thickness"]);
+                tod = (parseFloat(tod) + 2 * temp_uni[i]["thickness"]);
+
+                var full_width = Math.sin(angle / 180 * 4 * Math.atan(1)) * 4 * Math.atan(1) * temp_uni[i]["od"];
+                temp_uni[i]["width"] = (full_width - temp_uni[i]["gap"]).toFixed(4);
+                $("#layer-" + i + "-width").val(temp_uni[i]["width"]);
+                temp_uni[i]["lft_ft"] = (4 * Math.atan(1) * temp_uni[i]["od"] / full_width).toFixed(4);
+                temp_uni[i]["wt_tube_ft"] = (temp_uni[i]["weight"] * temp_uni[i]["lft_ft"] * temp_uni[i]["width"] / 12).toFixed(4);
+            }
+
+        }
+
+        $(document).ready(function() {
+
+            function addToTable(i) {
+                var tb = $('#layer-table').find('tbody');
+                tb.append(
+                    '<tr>' +
+                    '<td>' + (++layer_count) + '</td>' +
+                    '<td>' + meshList[i].mesh + '</td>' +
+                    '<td>' + meshList[i].wires + '</td>' +
+                    '<td>' + meshList[i].weave + '</td>' +
+                    '<td>' + parseFloat(meshList[i].thickness).toFixed(4) + '</td>' +
+                    '<td>' + parseFloat(meshList[i].weight).toFixed(5) + '</td>' +
+                    '<td><input width value="0" id="layer-' + layer_count + '-width" type="text"></td>' +
+                    '<td><input gap value="0" id="layer-' + layer_count + '-gap" type="text"></td>' +
+                    '</tr>' +
+                    '<tr class="danger"><td colspan="8" id="layer-' + layer_count + '-error" style="display:none;"></td></tr>'
+                );
+                temp_uni[layer_count] = JSON.parse(JSON.stringify(meshList[i]));
+                temp_uni[layer_count]["layer"] = layer_count;
+                lt += parseFloat(meshList[i].thickness);
+                $('#lt-disp').html(parseFloat(lt).toFixed(4));
+                calc_os_id();
+            }
+
+            request('table/mesh/fetch', {})
+                .done(function(res) {
+                    meshList = res.list;
+                    for(var i = 0; i < meshList.length; i++) {
+                        var elm = $('<div>' + meshList[i].mesh + '</div>');
+                        (function(i){
+                            elm.dblclick(function() {
+                                addToTable(i);
+                            })
+                        })(i);
+                        $('#list-view').append(elm);
+                    }
+                })
+        });
+        
+        function calc_matl_req() {
+            var lwt = 0;
+            var tb = $('#matl-tab').find('tbody');
+            var uni = $('#UniL').val();
+            var data = '';
+            for(var i = 1; i < temp_uni.length; i++) {
+                tb.append(
+                    '<tr>' +
+                    '<td>' + temp_uni[i].layer + '</td>' +
+                    '<td>' + temp_uni[i].mesh + '</td>' +
+                    '<td>' + (temp_uni[i].lft_ft * uni / 12).toFixed(4) + '</td>' +
+                    '<td>' + (temp_uni[i].wt_tube_ft * uni / 12).toFixed(4) + '</td>' +
+                    '</tr>'
+                );
+
+                lwt += parseFloat(temp_uni[i]["wt_tube_ft"]);
+            }
+
+            var i_oa = 0;
+            var o_oa = 0;
+
+            if($('#InnerShroudPattern').val() != 0)
+                i_oa = Math.pow($('#InnerShroudHoles').val(), 2) / Math.pow($('#InnerShroudCenter').val(), 2) * $('#InnerShroudPattern').val();
+            console.log(lwt);
+
+            if($('#OuterShroudPattern').val() != 0)
+                o_oa = Math.pow($('#OuterShroudHoles').val(), 2) / Math.pow($('#OuterShroudCenter').val(), 2) * $('#OuterShroudPattern').val();
+
+            var i_wt = 0.29 * is_g * 4 * Math.atan(1) * is_od * uni * (100 - i_oa) / 100;
+            var o_wt = 0.29 * os_g * 4 * Math.atan(1) * os_od * uni * (100 - o_oa) / 100;
+
+            lwt = lwt * uni / 12;
+
+            var twt = parseFloat(i_wt) + parseFloat(o_wt) + parseFloat(lwt);
+
+            $('#v1').html(i_wt.toFixed(4));
+            $('#v2').html(lwt.toFixed(4));
+            $('#v3').html(o_wt.toFixed(4));
+            $('#v4').html(twt.toFixed(4));
+
+        }
+    </script>
+
+    <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+    <input type="hidden" id="getcurrentid"/> 
+    <div class="row"  form="table.form" fields='{"is_od": {"type": "bool"}}' table-name="uniscreen">
+            <div class="col-lg-12">
+                    <select data-store="cust_id" class="selectpicker selectcutome customer_id  storevalue"  var="cust_id" table="cust_tbl" value-field="cust_id" column="customer" title="Select">
+                        <option value="" >Select Client</option>
+                    </select>
+                    <select data-store="part" class="selectpicker selectcutome secselect part_id storevalue" var="part" table="part_tbl" id="part_id" value-field="part" column="part"  title="Choose one of the following...">
+                            <option value="">Select Part</option>
+                        </select>
+                </div>
+        <div class="col-lg-12">
+
+            <div class="column">
+                <div id="list-view" class="overflow list" style="height: 200px;">
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Inner Shroud ID</span><input data-store="Inner_Shroud_ID" class="align-right storevalue" onkeyup="set_is_id($(this).val())" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Inner Shroud Gage</span><select data-store="Inner_Shroud_Gage" onchange="set_is_g($(this).val())" class="storevalue" table="gage_tbl" column="gage" value-field="thickness"><option disabled selected value> -- select an option -- </option></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Outer Shroud Gage</span><select data-store="Outer_Shroud_Gage" onchange="set_os_g($(this).val())" class="storevalue" table="gage_tbl" column="gage" value-field="thickness"><option disabled selected value> -- select an option -- </option></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Outer Shroud Strip</span><input data-store="Outer_Shroud_Strip" onkeyup="set_os_s($(this).val())" class="align-right storevalue" type="text" mask="double">
+                </div>
+
+                <div class="button" onclick="deleteTable()">Delete Layers</div>
+            </div>
+
+            <div class="inline">
+                <div class="section">
+                    <div class="section-title">Inner Shroud</div>
+
+                    <div class="input">
+                        <span class="left-placeholder">Pattern</span><select id="InnerShroudPattern" data-store="InnerShroudPattern"  class="storevalue" table="pat_tbl" column="pattern" value-field="oa_factor"><option disabled selected value> -- select an option -- </option></select>
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Holes</span><select id="InnerShroudHoles" data-store="Inner_Shroud_Holes" class="storevalue" table="frac_tbl" column="fraction" value-field="decimal"><option disabled selected value> -- select an option -- </option></select>
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Centers</span><select id="InnerShroudCenter" data-store="Inner_Shroud_Centers" class="storevalue" table="frac_tbl" column="fraction" value-field="decimal"><option disabled selected value> -- select an option -- </option></select>
+                    </div>
+                </div>
+
+                <br>
+
+                <div class="column" style="margin: 20px;">
+                        
+                    <div class="text">
+                        <span class="key">Inner Shroud ID</span><span class="value" id="is-id-disp">0</span>
+                    </div>
+                    <div class="text">
+                        <span class="key">Inner Shroud OD</span><span class="value" id="is-od-disp">0</span>
+                    </div>
+                    <div class="text">
+                        <span class="key">Layers Thickness</span><span class="value" id="lt-disp">0</span>
+                    </div>
+                </div>
+                    
+            </div>
+
+            <div class="inline">
+                <div class="section">
+                    <div class="section-title">Outer Shroud</div>
+
+                    <div class="input">
+                        <span class="left-placeholder">Pattern</span><select id="OuterShroudPattern" data-store="OuterShroudPattern" table="pat_tbl" class="storevalue" column="pattern" value-field="oa_factor"><option disabled selected value> -- select an option -- </option></select>
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Holes</span><select id="OuterShroudHoles" data-store="Outer_Shroud_Holes"  class="storevalue" table="frac_tbl" column="fraction" value-field="decimal"><option disabled selected value> -- select an option -- </option></select>
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Centers</span><select id="OuterShroudCenter" data-store="Outer_Shroud_Centers" class="storevalue" table="frac_tbl" column="fraction" value-field="decimal"><option disabled selected value> -- select an option -- </option></select>
+                    </div>
+                </div>
+
+                <br>
+
+                <div class="column" style="margin: 20px;">
+                    <div class="text">
+                        <span class="key">Outer Shroud ID</span><span class="value" id="os-id-disp">0</span>
+                    </div>
+                    <div class="text">
+                        <span class="key">Outer Shroud OD</span><span class="value" id="os-od-disp">0</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="inline overflow">
+                <div style="font-size: 80%; border: 1px solid #ccc; background: #fff;">
+                    <table id="layer-table" class="table row-border stripe display compact">
+                        <thead>
+                            <tr>
+                                <th>Layer</th>
+                                <th>Mesh</th>
+                                <th>Wires</th>
+                                <th>Weave</th>
+                                <th>Thickess</th>
+                                <th>Weight</th>
+                                <th>Width</th>
+                                <th>Gap</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="inline">
+                    <div class="button" onclick="calc_widths()">Calculate Widths</div>
+                    <div class="button" onclick="calc_gaps()">Calculate Gaps</div>
+                </div>
+                <div class="column" style="float: right;margin:10px 0 0 0;">
+                    <div class="input">
+                        <span class="left-placeholder">Gaps</span><select table="frac_tbl" data-store="Gaps" class="storevalue" onchange="$('#layer-table').find('input[gap]').val($(this).val())" column="fraction" value-field="decimal"><option disabled selected value> -- select an option -- </option></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+
+            <div class="column" style="margin-top: 20px;">
+                <div>
+                    <div class="input" style="width: 295px;display: inline-block; margin: 0;">
+                        <span class="left-placeholder">UniScreen Length</span><input id="UniL" data-store="UniScreen_Length" class="align-right storevalue" type="text">
+                    </div>
+
+
+                    <div class="button" onclick="calc_matl_req()" style="margin:0 0 0 10px;">Mat'l Requirments</div>
+                </div>
+
+
+                <div class="column" style="margin: 20px 0 0 0; display: block;">
+                    <div class="inline overflow" style="font-size: 80%; border: 1px solid #ccc; height: 150px; background: #fff; width: 435px;">
+                        <table id="matl-tab" class="table row-border stripe display compact">
+                            <thead>
+                                <tr>
+                                    <th>Layer</th>
+                                    <th>Mesh</th>
+                                    <th>Lft Req'd</th>
+                                    <th>Weight Req'd</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="column" style="margin: 20px;">
+                        <div class="text">
+                            <span class="key">Weight of Inner Shroud</span><span id="v1" class="value">14.8041</span>
+                        </div>
+                        <div class="text">
+                            <span class="key">Weight of Layers</span><span id="v2" class="value">14.8041</span>
+                        </div>
+                        <div class="text">
+                            <span class="key">Weight of Outer Shroud</span><span id="v3" class="value">14.8041</span>
+                        </div>
+                        <div class="text">
+                            <span class="key">Total weight of UniScreen</span><span id="v4" class="value">14.8041</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<div class="successdone" style="display:none">success</div>
+<style>
+    .selectcutome{
+    width: 256px;
+    height: 32px;
+    margin-bottom: 13px;
+    }
+    .secselect{
+        margin-left: 19px;
+    }
+    .successdone {
+    position: absolute;
+    background: #27c24c;
+    top: 10px;
+    left: 50%;
+    display: inline-block;
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 13px;
+}</style>
+<script>
+
+$(document).ready(function(){
+
+    $('.fa-remove').on('click',function(){
+        $('.storevalue').val('');
+    });
+    
+    let oldvalue1 = 0,oldvalue2 = 0,holdid=0;
+   
+    $('.deleteroow').on('click',function(){
+        let hold = $('#getcurrentid').val();
+        if(hold !=''){
+        $.post(setting.server+"index.php?url=deleterow"+"&id="+hold+"&table=uniscreen",function(){
+            $('.fa-remove').trigger('click');
+            $('.storevalue').val('');
+            $('.successdone').css('display','inline-block');
+            setTimeout(function(){$('.successdone').css('display','none');},3000);
+            
+            EVENTS["table.list"]();
+            $('#getcurrentid').val('');
+            oldvalue1 = 0; oldvalue2 = 0;
+        });
+        }
+        else{
+            alert('Records does not saved !');
+        }
+    });
+    
+    $('.savevalue').on('click',function(){
+        let counter = 0,value = [];
+       
+        $('.storevalue').each(function(){
+            if($(this).val() == '' ){
+                $(this).css('border','1px solid red');
+                counter++;
+            }
+            else{
+               
+                    value[$(this).attr('data-store')] = $(this).val();
+                               
+            }
+        });
+
+        if(counter ==0){
+          
+           if(oldvalue1 == $('.customer_id ').find(':selected').text() || oldvalue2 == value['part']){
+           
+                $.post(setting.server+"index.php?url=uniscreen_update"+
+                "&id="+holdid+
+                "&cust_id="+$('select.customer_id').find('option:selected').text()+
+                "&part="+value['part']+
+                "&Inner_Shroud_ID="+value['Inner_Shroud_ID']+
+                "&Inner_Shroud_Gage="+value['Inner_Shroud_Gage']+
+                "&Outer_Shroud_Gage="+value['Outer_Shroud_Gage']+
+                "&Outer_Shroud_Strip="+value['Outer_Shroud_Strip']+
+                "&InnerShroudPattern="+$('select[data-store="InnerShroudPattern"] option').find(':selected').text()+
+                "&Inner_Shroud_Holes="+value['Inner_Shroud_Holes']+
+                "&Inner_Shroud_Centers="+value['Inner_Shroud_Centers']+
+                "&OuterShroudPattern="+$('select[data-store="OuterShroudPattern"] option').find(':selected').text()+
+                "&Outer_Shroud_Holes="+value['Outer_Shroud_Holes']+
+                "&Outer_Shroud_Centers="+value['Outer_Shroud_Centers']+
+                "&Gaps="+value['Gaps']+
+                "&UniScreen_Length="+value['UniScreen_Length']
+                ,function(data){
+                    $('.fa-remove').trigger('click');
+                $('.storevalue').val('');
+                $('.successdone').css('display','inline-block');
+                setTimeout(function(){$('.successdone').css('display','none');},3000);
+                EVENTS["table.list"]();
+                });
+            }
+            else{
+                $.post(setting.server+"index.php?url=uniscreen_save"+
+                "&cust_id="+$('select.customer_id').find('option:selected').text()+
+                "&part="+value['part']+
+                "&Inner_Shroud_ID="+value['Inner_Shroud_ID']+
+                "&Inner_Shroud_Gage="+value['Inner_Shroud_Gage']+
+                "&Outer_Shroud_Gage="+value['Outer_Shroud_Gage']+
+                "&Outer_Shroud_Strip="+value['Outer_Shroud_Strip']+
+                "&InnerShroudPattern="+$('[data-store="InnerShroudPattern"] option:selected').text()+
+                "&Inner_Shroud_Holes="+value['Inner_Shroud_Holes']+
+                "&Inner_Shroud_Centers="+value['Inner_Shroud_Centers']+
+                "&OuterShroudPattern="+$('[data-store="OuterShroudPattern"] option:selected').text()+
+                "&Outer_Shroud_Holes="+value['Outer_Shroud_Holes']+
+                "&Outer_Shroud_Centers="+value['Outer_Shroud_Centers']+
+                "&Gaps="+value['Gaps']+
+                "&UniScreen_Length="+value['UniScreen_Length']
+                ,function(data){
+                    $('.fa-remove').trigger('click');
+                $('.storevalue').val('');
+                $('.successdone').css('display','inline-block');
+                setTimeout(function(){$('.successdone').css('display','none');},3000);
+                EVENTS["table.list"]();
+                });
+            }
+        }
+        else{
+            alert("Please Fill details!");
+        }
+    });
+    $(document).on('click','.dataTables_wrapper .dataTable tr',function(){
+        var $this = $(this);
+        let output =[];
+        let current = 0;
+        let current2= 0;
+        
+
+
+        var $this = $(this);
+            $('select[data-store="cust_id"]').val($this.find('td:eq(1)').text());
+            $('select[data-store="part"]').val($this.find('td:eq(2)').text());
+            
+            $('[data-store="Inner_Shroud_ID"]').val($this.find('td:eq(3)').text());
+            set_is_id(parseInt($this.find('td:eq(3)').text()));
+            $('[data-store="Inner_Shroud_Gage"]').val($this.find('td:eq(4)').text());
+            set_is_g($this.find('td:eq(4)').text());
+            $('[data-store="Outer_Shroud_Gage"]').val($this.find('td:eq(5)').text());
+            set_os_g($this.find('td:eq(5)').text());
+            $('[data-store="Outer_Shroud_Strip"]').val($this.find('td:eq(6)').text());
+            set_os_s($this.find('td:eq(6)').text());
+            $('#InnerShroudPattern option').each(function(){
+                if($(this).text() == $this.find('td:eq(7)').text()){
+                    $(this).attr('selected','selected');
+                }
+            });
+            $('[data-store="Inner_Shroud_Holes"]').val($this.find('td:eq(8)').text());
+            $('[data-store="Inner_Shroud_Centers"]').val($this.find('td:eq(9)').text());
+            $('#OuterShroudPattern option').each(function(){
+                if($(this).text() == $this.find('td:eq(10)').text()){
+                    $(this).attr('selected','selected');
+                }
+            });
+            $('[data-store="Outer_Shroud_Holes"]').val($this.find('td:eq(11)').text());
+            $('[data-store="Outer_Shroud_Centers"]').val($this.find('td:eq(12)').text());
+            $('[data-store="Gaps"]').val($this.find('td:eq(13)').text());
+            $('[data-store="UniScreen_Length"]').val($this.find('td:eq(14)').text());
+            $('select[data-store="cust_id"] option').each(function(){
+                if($(this).text() == $this.find('td:eq(1)').text() ){
+                    current = $(this).attr('value');
+                }
+            });
+            let selectionpar = $this.find('td:eq(2)').text();
+                oldvalue1 = current;
+            oldvalue2 = selectionpar;
+            holdid = $this.find('td:eq(0)').text()
+            $('#getcurrentid').val(holdid);
+            // update tooltip
+
+            //part selected on change
+            $.post(setting.server+"index.php?url=part_mat"+"&userid="+current,
+                function(res){
+                    var output =[];
+                    output.push('<option value="">Select Part</option>');
+                    $.each(res.list, function(key, value){
+                        if(value['part'] == selectionpar){
+                            output.push('<option selected value="'+ value['part'] +'">'+ value['part'] +'</option>');
+                        }
+                        else{
+                            output.push('<option value="'+ value['part'] +'">'+ value['part'] +'</option>');
+                        }
+                    });
+                        $('.part_id').html(output.join(''));
+                        console.log('counter');
+                });     
+
+            $('select[data-store="cust_id"]').val(current);
+         });
+//remove border
+    $('.storevalue').on('click',function(){
+        $(this).css('border',''); 
+    });
+
+
+//got material
+    $('.customer_id').on('change',function(){
+        $.post(setting.server+"index.php?url=part_mat"+"&userid="+$(this).val(),
+            function(res){
+                var output =[];
+                output.push('<option value="">Select Part</option>');
+                $.each(res.list, function(key, value)
+                    {
+                    output.push('<option value="'+ value['part'] +'">'+ value['part'] +'</option>');
+                });
+                    $('.part_id').html(output.join(''));
+                    console.log('second');
+        });
+    });
+
+    $('.fa-remove').on('click',function(){
+        $('.text .value').text('0');
+    });
+
+});
+                
+</script>

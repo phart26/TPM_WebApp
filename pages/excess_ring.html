@@ -1,0 +1,110 @@
+<div class="content-wrapper" style="min-height: 500px;">
+    <h3>Excess Ring Stock
+        <div style="float: right;">
+            <i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div>
+    </h3>
+
+    <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+
+    <div form="table.form" table-name="excess_ring" style="margin: 20px 0;">
+        <div>
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Job No.</span><input type="text" class="align-right" var="job" id="job">
+                </div>
+               <!-- <div class="input">
+                    <span class="left-placeholder">Customer</span><select data-store="cust_id" class="selectpicker selectcutome customer_id  storevalue"  var="cust_id" table="cust_tbl" value-field="cust_id" column="customer" title="Select" >
+                        <option value="">Select Client</option>
+                    </select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Part</span><select data-store="part" class="selectpicker selectcutome secselect part_id storevalue" var="part"  id="part_id" value-field="part" column="part" table="part_tbl" title="Choose one of the following...">
+                            <option value="">Select Part</option>
+                        </select>
+
+                </div> -->
+                <div class="input">
+                    <span class="left-placeholder">Ring Size</span><input type="text" class="quantity align-right" var="ring" >
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Excess Stock Quantity</span><input type="text" class="quantity align-right" var="excess_qty" >
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Date Produced</span><input type="datepicker" class="align-right" var="date_produced">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Location Of Storage</span><input type="text" class="align-right" var="los">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    // jQuery('.customer_id').on('change',function(e){
+    //     //alert("test");
+    
+    //     $("#part_id").prop("disabled", true);
+    //     jQuery.post(setting.server+"index.php?url=part_mat"+"&userid="+$(this).val(),
+    //         function(res){
+    //             var output =[];
+    //             output.push('<option value="">Select Part</option>');
+    //             jQuery.each(res.list, function(key, value)
+    //                 {
+    //                 output.push('<option value="'+ value['part'] +'">'+ value['part'] +'</option>');
+    //             });
+    //                 jQuery('.part_id').html(output.join(' '));
+    //                  $("#part_id").prop("disabled", false);
+    //                 //getgagetype();
+    //     });
+   
+        
+    // });
+
+
+
+    // $(document).on('click','.compact tbody tr',function(event){
+    //     event.preventDefault();
+    // var $this = $(this);
+    // //$('select[var="part"]').val($this.find('td:eq(9)').text());
+    // let current = 0;
+    //     $('select[data-store="cust_id"] option').each(function(){
+    //             if($(this).text() == $this.find('td:eq(6)').text() ){
+    //                 current = $(this).attr('value');
+    //             }
+    //     });
+    //         let selectionpar = $this.find('td:eq(2)').text();
+    //             oldvalue1 = current;
+    //         oldvalue2 = selectionpar;
+    //         // holdid = $this.find('td:eq(0)').text()
+    //         // $('#getcurrentid').val(holdid);
+    //         // update tooltip
+
+    //         //part selected on change
+    //        if(current!=null){
+    //         setTimeout(function(){ 
+    //         $.post(setting.server+"index.php?url=part_mat"+"&userid="+current,
+    //             function(res){
+    //                 var output =[];
+    //                 output.push('<option value="">Select Part</option>');
+    //                 $.each(res.list, function(key, value){
+    //                     if(value['part'] == selectionpar){
+    //                         output.push('<option selected value="'+ value['part'] +'">'+ value['part'] +'</option>');
+    //                         console.log(value['part']);
+    //                     }
+    //                     else{
+    //                         output.push('<option value="'+ value['part'] +'">'+ value['part'] +'</option>');
+    //                     }
+    //                 });
+    //                     $('.part_id').html(output.join(' '));
+    //            }); 
+    //             $('select[data-store="cust_id"]').val(current);
+    //         },1000);
+    //        }
+    // });
+</script>

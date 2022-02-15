@@ -1,0 +1,43 @@
+<div class="content-wrapper" style="min-height: 500px;">
+    <h3>Ring Adjustment
+        <div style="float: right;">
+            <i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div>
+    </h3>
+
+    <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+
+    <div form="table.form" table-name="ring_detail" style="margin: 20px 0;">
+        <div>
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Key</span><input var="Key" class="align-right" type="text" field="Key seems invalid." mask="number" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Date</span><input var="Date" type="datepicker" class="align-right">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Ring Size</span><input var="Ring_Size" class="align-right" type="text" field="Ring Size seems invalid." mask="double" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Excluder size</span>
+
+                    <select  var="Excluder_Size" table="excluder_rings" value-field="Excluder_size" column="Excluder_size" title="Select" class="form-control">
+                        <option value="">Select Size</option>
+                    </select>
+                   <!--  <input table="ring_detail" type="text" fields='["Ring_size", "Excluder_size"]' field-text="Excluder_size" field-value='["Ring_size", "Excluder_size"]' class="form-control" var="Excluder_Size" />  -->
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Job</span><input var="Job" class="align-right" type="text" field="Job seems invalid." mask="text" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Qty</span><input var="Qty" class="align-right" type="text" field="Qty seems invalid." mask="number" required>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

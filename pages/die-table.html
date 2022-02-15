@@ -1,0 +1,56 @@
+<div class="content-wrapper" style="min-height: 500px;">
+    <h3>Die Table
+        <div style="float: right;">
+            <i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div>
+    </h3>
+
+    <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+    <div form="table.form" table-name="die_tbl" style="margin: 20px 0;">
+            <div>
+                <div class="column">
+                    <div class="input">
+                        <span class="left-placeholder">Die Number</span><input var="die" data-colla="die" data-hold="die_tbl" class="align-right" type="text" field="Die seems invalid." mask="number" required>
+                    </div>
+                    <div class="input">
+                            <span class="left-placeholder">Die ID</span><input var="die_id" class="align-right" type="text" field="Die ID seems invalid." mask="double" required>
+                        <!-- <span class="left-placeholder">Die ID</span>
+                        <select class="align-right customer_id" var="die_id" table="die_tbl" value-field="die_id" column="die_id"></select> -->
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Notes</span><textarea var="notes" field="Invalid notes" mask="text" required></textarea>
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Clamp od</span><input var="clamp_od" class="align-right" type="text" field="Clamp od seems invalid." mask="double" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</div>
+
+<script>
+        $(document).ready(function(){
+    
+            function getid(){
+                $.ajax({
+                    method:"POST",
+                    url:window.setting.server+"getid?&getidnew="+$('input[var="die"]').attr('data-hold')+"&coll="+$('input[var="die"]').attr('data-colla'),
+                    success:function(res){
+                        if(res['list'].length !=0){
+                            let id = parseInt(res['list'][0][$('input[var="die"]').attr('data-colla')]);
+                            $('input[var="die"]').val(id+1);
+                        }
+                    }
+                });
+            }
+            getid();
+    
+            $(document).on('click','[ev="form.reset"]',function(){
+                getid();
+            });
+        });
+    </script>

@@ -1,0 +1,153 @@
+<div class="content-wrapper" style="min-height: 500px;">
+    <h3>Mesh
+        <div style="float: right;">
+            <i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div>
+    </h3>
+
+    <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+
+    <div form="table.form" table-name="mesh" style="margin: 20px 0;">
+        <div>
+            <div class="column">
+                    <div class="input">
+                            <span class="left-placeholder">Customer</span>
+                            <select class="customer_id" var="cust_id" table="cust_tbl" value-field="cust_id" column="customer" onchange="onCustomerChange(this)"></select>
+                        </div>
+                    <div class="input">
+                            <span class="left-placeholder">Part No.</span>
+                            <select class="part_id" var="part" table="part_tbl" id="part_id" value-field="part" column="part" filter_column="cust_id" filter_value="3" onchange="onPartNoChange(this.value)"></select>
+                    </div>
+                
+                
+                <div class="input">
+                    <span class="left-placeholder">Mesh ID</span>
+                    <input var="mesh_id" data-colla="mesh_id" data-hold="mesh" class="align-right" type="text" field="Mesh ID seems invalid." mask="number" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Mesh</span><input var="mesh" class="align-right" type="text" field="Mesh seems invalid." mask="text" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Wires</span><input var="wires" class="align-right" type="text" field="Wires seems invalid." mask="text" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Weave</span><input var="weave" class="align-right" type="text" field="Weave seems invalid." mask="text" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Thickness</span><input var="thickness" class="align-right" type="text" field="Thickness seems invalid." mask="double" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Weight</span><input var="weight" class="align-right" type="text" field="Weight seems invalid." mask="double" required>
+                </div>
+            </div>
+        </div>
+        <div class="inline resetRadio inputweight">
+                <span class="cehckbox_allocation">
+                <input type="checkbox" name="coildata" value="1" class="Allocated">Allocated
+                <input type="checkbox" name="coildata" value="2" class="AllAllocated">All material widths
+                <input type="checkbox" name="coildata" value="3" class="part">Part specific widths
+                </span>
+                <div class="inline">
+                   <div class="inline overflow" style="font-size: 80%; border: 1px solid #ccc; height: 150px; background: #fff; width: 390px;">
+                      <table class="table row-border stripe display compact">
+                         <thead>
+                            <tr>
+                               <th>&nbsp;</th>
+                               <th>Coil</th>
+                               <th>Weight</th>
+                               <th>Width</th>
+                               <th>Worker#</th>
+                               <th>Heat#</th>
+                               <th>Job</th>
+                               <th>Allocated</th>
+                            </tr>
+                         </thead>
+                         <tbody id="coil_data"></tbody>
+                      </table>
+                   </div>
+                   <div class="weight_show">
+                      <span class="weight_Allocated" id="allocated">Weight Allocated: <b>0</b></span>
+                      <span class="weight_Allocated" id="already">Weight already used: <b>0</b></span>
+                      <span class="weight_Allocated" id="dedicated">Total Weight dedicated to job:<b>0</b></span>
+                   </div>
+                   <div class="column refresh_weight">
+                      <div class="button" >Allocate</div>
+                      <div class="button" >Deallocate</div>
+                      <div class="button" id="Enter_as_Used">Enter as Used</div>
+                      <div class="inputWeightParent" style="display:none">
+                         <div class="input-group-addon">Enter used weight</div>
+                         <input type="text" class="form-control" placeholder="Update Weight" data-updateable="false">
+                      </div>
+                   </div>
+                   <!-- </form> -->
+                </div>
+          </div>
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function(){
+
+        function getid(){
+            $.ajax({
+                method:"POST",
+                url:"/api/getid?&getidnew="+$('input[var="mesh_id"]').attr('data-hold')+"&coll="+$('input[var="mesh_id"]').attr('data-colla'),
+                success:function(res){
+                    if(res['list'].length !=0){
+                        let id = parseInt(res['list'][0][$('input[var="mesh_id"]').attr('data-colla')]);
+                        $('input[var="mesh_id"]').val(id+1);
+                    }
+                }
+            });
+        }
+        getid();
+        $(document).on('click','[ev="form.reset"]',function(){
+            getid();
+        });
+        //Allocation box checkbox
+        $('.cehckbox_allocation checkbox').on('change',function(){
+            console.log
+        });
+
+
+    });
+//function from data
+
+    </script>
+    <style>
+            .weight_show{
+                display: inline-block;
+                width: 260px;
+                background:lightblue;
+                padding:10px
+            }
+            .weight_show span{
+                display: block;
+            }
+            .column.refresh_weight {
+                display: block;
+            }
+            .inputWeightParent {
+                margin-top: 7px;
+                width: 388px;
+            }
+            .inputWeightParent .input-group-addon {
+                width: 134px;
+                float: left;
+                border-radius: 0;
+                padding: 9.5px;
+            }
+            .inputWeightParent .form-control{
+                width:220px;
+                float:left;
+                border-radius: 0;
+            }
+            .cehckbox_allocation{
+                display: block;
+                margin-bottom: 10px;
+            }
+            </style>

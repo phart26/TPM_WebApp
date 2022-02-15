@@ -1,0 +1,149 @@
+ <link href="assets/css/jquery.searchableSelect.css" rel="stylesheet">
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="assets/js/jquery.searchableSelect.js"></script>
+<script type="text/javascript">
+  $(function(){
+    setTimeout(function(){ 
+
+  $('#combobox').searchableSelect();
+   }, 3000);
+});
+</script>
+<div class="content-wrapper">
+    <h3>Steel Inventory - New Form<div style="float: right;"><i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i><i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i><i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i><i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i></div></h3>
+
+    <div id="filter" class="row clicktoid" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+
+    <div class="row" form="table.form" table-name="coil_tbl" fields='{"allocated": {"type": "bool"}}' style="margin: 20px 0;">
+        <div class="col-lg-12">
+            <div class="column">
+              
+                <div class="input">
+                    <span class="left-placeholder">Coil</span><input var="coil_no" class="align-right" type="text" mask="number">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">TPM PO#</span><input var="tpm_po" class="align-right" type="text" mask="number">
+                </div>
+                <div class="input">
+                    
+                    <span class="left-placeholder">Work number</span><select var="work" table="steel_tbl" column="work" id="combobox"></select>
+                
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Weight</span><input var="weight" class="align-right" type="text" mask="number">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Material</span><select var="material" table="mat_tbl" column="material"></select>
+                </div>
+
+                <div class="input">
+                    <span class="left-placeholder">Thickness</span><select var="gage" table="gage_tbl" column="gage"></select>
+                </div>
+
+                <div class="input">
+                    <span class="left-placeholder">Width</span><input var="width" class="align-right" type="text" mask="double">                    
+                </div>
+
+                <div class="input">
+                    <span class="left-placeholder">Hole Pattern</span><select var="pattern" table="pat_tbl" column="pattern"></select>
+                </div>
+
+                
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Hole Size</span><select var="holes" table="frac_tbl" column="holes" value-field="decimal"><option value="">Select Holes</option></select>
+                </div>
+
+                 <div class="input">
+                    <span class="left-placeholder">Hole Centers</span><select var="centers" table="frac_tbl" column="centers" value-field="decimal"><option value="">Select Centers</option></select>
+                </div>
+
+                <div class="input">
+                    <span class="left-placeholder">Heat Number</span><input var="heat" class="align-right" type="text" >
+                </div>
+
+                <div class="input">
+                    <span class="left-placeholder">Date Received</span><input var="date_received" class="align-right" type="datepicker">
+                </div>
+
+                <div class="input">
+                    <span class="left-placeholder">Allocated</span><input var="allocated" type="checkbox">
+                </div>
+
+                <div class="input">
+                    <span class="left-placeholder">Job</span><input var="job" class="align-right" type="text" mask="number">
+                </div>
+
+                <div class="input">
+                    <span class="left-placeholder">Cycles</span><input var="cycles" class="align-right" type="text" mask="number">
+                </div>
+
+
+
+                <!-- <div class="input">
+                    <span class="left-placeholder">Operator</span><select var="operator" table="operators" column="operator"></select>
+                </div> -->
+                
+                
+                
+                
+                
+
+                
+               
+                
+                <!-- <div class="input">
+                    <span class="left-placeholder">TPM Job</span><input var="tpm_job" type="checkbox">
+                </div> -->
+            </div>
+        <!-- </div>
+    </div> -->
+
+
+    <!-- <div class="row" form="table.form" table-name="steel_tbl" fields='{"tpm_job": {"type": "bool"}}' style="margin: 20px 0;"> -->
+        <!-- <div class="col-lg-12"> -->
+          
+
+        <!-- </div>-->
+    </div> 
+
+</div>
+
+
+<script type="text/javascript">
+    
+    $(document).ready(function(){
+
+setTimeout(function(){ 
+            
+            $('[var="holes"]').html($('[var="holes"]').children('option').sort(function (x, y) {
+                return $(x).val().toUpperCase() < $(y).val().toUpperCase() ? -1 : 1;
+                
+            }));
+            //console.log('hellooo');
+            $('[var="holes"]').get(0).selectedIndex = 0;
+            
+            $('[var="holes"] option').each(function() {
+                if ( $(this).text() == '' ) {
+                    $(this).remove();
+                }
+            });
+            
+            $('[var="centers"]').html($('[var="centers"]').children('option').sort(function (x, y) {
+                return $(x).val().toUpperCase() < $(y).val().toUpperCase() ? -1 : 1;
+                
+            }));
+            //console.log('hellooo');
+            $('[var="centers"]').get(0).selectedIndex = 0;
+            $('[var="centers"] option').each(function() {
+                if ( $(this).text() == '' ) {
+                    $(this).remove();
+                }
+            });
+            //$('[var="centers"]').children('option').text().empty().remove();
+
+            }, 3000);
+});
+</script>

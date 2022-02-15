@@ -1,0 +1,37 @@
+<div class="content-wrapper" style="min-height: 500px;">
+    <p>Try new version <a href="weld-spec-repair_dev.html">here</a></p>
+    <h3>Weld Spec Repair
+        <div style="float: right;">
+            <i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div>
+    </h3>
+
+    <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+
+    <div form="table.form" table-name="weld_spec_repair" style="margin: 20px 0;">
+        <div>
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Weld Spec</span><input var="weld_spec" class="align-right" type="text" field="Weld Spec seems invalid." mask="text" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Repair Amps</span><input var="repair_amps" class="align-right" type="text" field="Repair Amps seems invalid." mask="text" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Repair Volts</span><input var="repair_volts" class="align-right" type="text" field="Repair Volts seems invalid." mask="text" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Repair Speed</span><input var="repair_speed" class="align-right" type="text" field="Repair Speed seems invalid." mask="text" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Filler Rod</span><input var="filler_rod" class="align-right" type="text" field="Filler Rod seems invalid." mask="text" required>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+</div>

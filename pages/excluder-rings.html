@@ -1,0 +1,27 @@
+<div class="content-wrapper" style="min-height: 500px;">
+    <h3>Excluder Rings
+        <div style="float: right;">
+            <i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div>
+    </h3>
+
+    <!-- <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div> -->
+    <div id="filter" class="row clicktoid" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+
+    <div form="table.form" table-name="excluder_rings" style="margin: 20px 0;">
+        <div>
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Ring Size</span><input var="Ring_size" class="align-right" type="text" field="Ring Size seems invalid." mask="double" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Excluder size</span> <input table="Excluder_rings" type="text" fields='["Excluder_size"]' field-text="Excluder_size" field-value="Excluder_size" class="form-control" var="Excluder_Size" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

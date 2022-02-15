@@ -1,0 +1,55 @@
+ <link href="assets/css/jquery.searchableSelect.css" rel="stylesheet">
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="assets/js/jquery.searchableSelect.js"></script>
+<script type="text/javascript">
+  $(function(){
+    setTimeout(function(){ 
+
+  $('#combobox').searchableSelect();
+   }, 3000);
+});
+</script>
+<div class="content-wrapper">
+    <h3>Steel Inventory - Receive Coil<div style="float: right;"><i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i><i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i><i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i><i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i></div></h3>
+
+    <div id="filter" class="row clicktoid" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+
+    <div class="row" form="table.form" table-name="coil_tbl" fields='{"allocated": {"type": "bool"}}' style="margin: 20px 0;">
+        <div class="col-lg-12">
+            <div class="column">
+              
+                <div class="input">
+                    <span class="left-placeholder">Coil</span><input var="coil_no" class="align-right" type="text" mask="number">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Weight</span><input var="weight" class="align-right" type="text" mask="number">
+                </div>
+                <div class="input">
+                    
+                    <span class="left-placeholder">Work number</span><select var="work" table="steel_tbl" column="work" id="combobox"></select>
+                
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Operator</span><select var="operator" table="operators" column="operator"></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Cycles</span><input var="cycles" class="align-right" type="text" mask="number">
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Allocated</span><input var="allocated" type="checkbox">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Job</span><input var="job" class="align-right" type="text" mask="number">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Received</span><input var="date_received" class="align-right" type="datepicker">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,33 @@
+<div class="content-wrapper" style="min-height: 500px;">
+    <h3>Micron
+        <div style="float: right;">
+            <i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div>
+    </h3>
+
+    <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+
+    <div form="table.form" table-name="micron" style="margin: 20px 0;">
+        <div>
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Mesh</span><input var="Mesh" class="align-right" type="text" field="Mesh ID seems invalid." required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Micron</span><input var="Micron" class="align-right" type="text" field="Mesh seems invalid." mask="text" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Thickness</span><input var="thickness" class="align-right" type="text" field="Wires seems invalid." mask="double" required>
+                </div>
+               <!--  <div class="input">
+                    <span class="left-placeholder">Categoty</span><input var="category" class="align-right" type="text" field="Weave seems invalid." mask="text" required>
+                </div> -->
+                
+            </div>
+        </div>
+    </div>
+
+</div>

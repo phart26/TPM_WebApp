@@ -1,0 +1,126 @@
+
+<html>
+<head>
+</head>
+<script>
+
+function main (Quantity, Material, Gage, Thickness, Pattern,
+                Holes, Centers, Diameter, OA, is_OD,
+                Strip, Length, Setup, Crating, TPC,
+                Shop, Electric, Men, CutSpd, TagCost,
+                Density, Scrap, Stamping, MatCost, Gas,
+                Labor, TPB, Blade, WS, Markup,
+                Overhead, Basis, Unit) {
+
+    // Unit indicator: 0 - inch, 1 - foot
+    const FoottoInch = 12;
+    if (Unit) {
+        Unit = 12;
+    } else {
+        Unit = 1;
+    }
+            
+    var OA2 = 0;
+    if (Centers > 0) {
+        OA2 = (Holes*Holes)/(Centers*Centers) * OA/100;
+    }
+    var ID = Diameter, OD = Diameter + 2*Thickness;
+    if (is_OD) {
+        ID = Diameter - 2*Thickness;
+        OD = Diameter;
+    }
+    var Crate = Math.ceil (Quantity/TPC);
+    var Crating2 = Crating * Crate;
+    var Angle = 90 - Math.acos (Strip/Math.PI/OD) * 180/Math.PI;
+    var HPSI = 0;
+    if (Holes > 0) {
+        HPSI = OA2 * (100/(78.54*Holes*Holes));
+    }
+
+    //Per tube inch column
+    var OrderInfo = [];
+    //Linear ft. material
+    OrderInfo[0] = Math.PI * OD / Strip / FoottoInch;
+    //Linear ft. material (w/ scrap)
+    console.log (Scrap);
+    OrderInfo[1] = OrderInfo[0] * (1 + Scrap);
+    //Weight (not perfed.)
+    OrderInfo[2] = Thickness * Strip * Density * OrderInfo[0] * FoottoInch;
+    //Weight (not perfed. w/scrap)
+    OrderInfo[3] = OrderInfo[2] * (1 + Scrap);
+    //Weight (perfed.)
+    OrderInfo[4] = OrderInfo[2] * (1 - OA2);
+    //Weight (perfed. w/scrap)
+    OrderInfo[5] = OrderInfo[4] * (1 + Scrap);
+    //Number of holes
+    OrderInfo[6] = HPSI * Strip * OrderInfo[0]/FoottoInch;
+    //Welding time (min)
+    OrderInfo[7] = OrderInfo[0]/ WS * 12 * 6/5;
+    //Cutoff Time (min)
+    OrderInfo[8] = OD/CutSpd*2*6/5/Length;
+    //Total Time (hours)
+    OrderInfo[9] = (OrderInfo[7] + OrderInfo[8])/60;
+
+    //Per tube inch column
+    var Costs = [];
+    //Crating
+    Costs[0] = Crating2/Quantity/Length;
+    //Tag
+    Costs[1] = TagCost/Length;
+    //Shop supplies
+    Costs[2] = Shop / FoottoInch;
+    //Electric cost
+    Costs[3] = OrderInfo[7] * Electric;
+    //Blade cost
+    Costs[4] = Blade/TPB/Length;
+    //Stamping cost
+    Costs[5] = Stamping*OrderInfo[1];
+    //Material Cost
+    Costs[6] = MatCost*OrderInfo[3];
+    //Gas Cost
+    Costs[7] = Gas*OrderInfo[7]/60;
+    
+    //Per tube inch column
+    var Costs2 = [];
+
+    //Steel Cost
+    Costs2[0] = Costs[5] + Costs[6];
+    //Cutoff Labor Cost
+    Costs2[1] = OrderInfo[8]*Labor/60;
+    //Welding Labor cost
+    Costs2[2] = Men*Labor*OrderInfo[7]/60;
+    //Supply Cost
+    Costs2[3] = Costs[0] + Costs[1] + Costs[2] + Costs[3] + Costs[4] + Costs[7];
+
+    var Costs3 = [];
+    //Marginal Cost
+    Costs3[0] = Costs2.reduce ((a, b) => a+b, 0) + Setup/(Length * Quantity);
+    //Overhead
+    Costs3[1] = Costs3[0]/Basis*Overhead
+    //Markup
+    Costs3[2] = Costs3[0]*Markup;
+
+    var TotalCost = Costs3.reduce ((a, b) => a+b, 0);
+
+    return [Costs3[0]*Unit,
+            Costs3[1]*Unit,
+            Costs3[2]*Unit,
+            TotalCost*Unit,
+            OrderInfo[9],
+            Angle,
+            OrderInfo[2]*Length*Quantity,
+            OrderInfo[9]*Length*Quantity];
+}
+
+
+
+document.write (main (78, "304L", 16, 0.06, "Vector",
+            0, 0, 5.02, 0.0000, -1,
+            6.0000, 196.0000, 200.0000, 0.0000, 25,
+            0.30, 0.0300, 3.5, 8.00, 0.1500,
+            0.2900, 0.10, 0.4700, 1.38, 3.10,
+            20.00, 30, 49.00, 35.00000, 0.50,
+            273600.00, 1250000, 0));
+
+</script>
+</html>

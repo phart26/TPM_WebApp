@@ -1,0 +1,133 @@
+<style type="text/css">
+    
+
+    .input input, .input select, .input textarea {
+    width: 70%!important;
+    border-top: 1px solid #ccc;
+}
+</style>
+
+<div class="content-wrapper" style="min-height: 500px;">
+    <h3>Footer for Pdf (specific for each page)
+        <div style="float: right;">
+            <i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div>
+    </h3>
+
+
+    <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+
+    <div form="table.form" table-name="footer_for_pdf" style="margin: 20px 0;">
+        <div>
+            <div class="">
+                <div class="input" style="display: none;">
+                    <span class="left-placeholder">id</span><input var="id" class="align-right" type="text" field="Drift od seems invalid." value="1" maxlength="90">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Tube Mill log Footer</span><input var="tubmil_log" class="align-right" type="text" maxlength="90"><span>Line-1</span><br>
+                    <input var="tubmil_log-2" class="align-right" type="text" maxlength="90"><span>Line-2</span><br>
+                    <input var="tubmil_log-3" class="align-right" type="text" maxlength="90"><span>Line-3</span><br>
+                    <input var="tubmil_log-4" class="align-right" type="text" maxlength="90"><span>Line-4</span>
+
+                </div>
+                
+                <div class="input">
+                    <span class="left-placeholder">Tube Mill Setup Footer </span><input var="tubmil_setup" class="align-right" type="text" maxlength="90"><span>Line-1</span><br>
+                    <input var="tubmil_setup-2" class="align-right" type="text" maxlength="90"><span>Line-2</span><br>
+                    <input var="tubmil_setup-3" class="align-right" type="text" maxlength="90"><span>Line-3</span><br>
+                    <input var="tubmil_setup-4" class="align-right" type="text" maxlength="90"><span>Line-4</span><br>
+                </div>
+                
+                <div class="input">
+                    <span class="left-placeholder">First Part Drift Footer </span><input var="first_part_drift" class="align-right" type="text" maxlength="90"><span>Line-1</span><br>
+                    <input var="first_part_drift-2" class="align-right" type="text" maxlength="90"><span>Line-2</span><br>
+                    <input var="first_part_drift-3" class="align-right" type="text" maxlength="90"><span>Line-3</span><br>
+                    <input var="first_part_drift-4" class="align-right" type="text" maxlength="90"><span>Line-4</span><br>
+                </div>
+                
+                <div class="input">
+                    <span class="left-placeholder">Welding Station Check list Footer </span><input var="welding_station_cklist" class="align-right" type="text" maxlength="90"><span>Line-1</span><br>
+                    <input var="welding_station_cklist-2" class="align-right" type="text" maxlength="90"><span>Line-2</span><br>
+                    <input var="welding_station_cklist-3" class="align-right" type="text" maxlength="90"><span>Line-3</span><br>
+                    <input var="welding_station_cklist-4" class="align-right" type="text" maxlength="90"><span>Line-4</span><br>
+                </div>
+                
+                <div class="input">
+                    <span class="left-placeholder">Worksheet Footer </span><input var="worksheet" class="align-right" type="text" maxlength="90"><span>Line-1</span><br>
+                    <input var="worksheet-2" class="align-right" type="text" maxlength="90"><span>Line-2</span><br>
+                    <input var="worksheet-3" class="align-right" type="text" maxlength="90"><span>Line-3</span><br>
+                    <input var="worksheet-4" class="align-right" type="text" maxlength="90"><span>Line-4</span><br>
+                </div>
+                
+                <div class="input">
+                    <span class="left-placeholder">Direct Pack Footer </span><input var="direct_pack" class="align-right" type="text" maxlength="90"><span>Line-1</span><br>
+                    <input var="direct_pack-2" class="align-right" type="text" maxlength="90"><span>Line-2</span><br>
+                    <input var="direct_pack-3" class="align-right" type="text" maxlength="90"><span>Line-3</span><br>
+                    <input var="direct_pack-4" class="align-right" type="text" maxlength="90"><span>Line-4</span><br>
+                </div>
+                
+                <div class="input">
+                    <span class="left-placeholder">Cutoff-Station Footer</span><input var="cutoff-station" class="align-right" type="text" maxlength="90"><span>Line-1</span><br>
+                    <input var="cutoff-station-2" class="align-right" type="text" maxlength="90"><span>Line-2</span><br>
+                    <input var="cutoff-station-3" class="align-right" type="text" maxlength="90"><span>Line-3</span><br>
+                    <input var="cutoff-station-4" class="align-right" type="text" maxlength="90"><span>Line-4</span><br>
+                </div>
+               
+                <div class="input">
+                    <span class="left-placeholder">Inspection-Station Footer </span><input var="inspection-station" class="align-right" type="text" maxlength="90"><span>Line-1</span><br>
+                    <input var="inspection-station-2" class="align-right" type="text" maxlength="90"><span>Line-2</span><br>
+                    <input var="inspection-station-3" class="align-right" type="text" maxlength="90"><span>Line-3</span><br>
+                    <input var="inspection-station-4" class="align-right" type="text" maxlength="90"><span>Line-4</span><br>
+                </div>
+                
+                <div class="input">
+                    <span class="left-placeholder">Ring Station Footer </span><input var="ring_station" class="align-right" type="text" maxlength="90"><span>Line-1</span><br>
+                    <input var="ring_station-2" class="align-right" type="text" maxlength="90"><span>Line-2</span><br>
+                    <input var="ring_station-3" class="align-right" type="text" maxlength="90"><span>Line-3</span><br>
+                    <input var="ring_station-4" class="align-right" type="text" maxlength="90"><span>Line-4</span><br>
+                </div>
+                
+                <div class="input">
+                    <span class="left-placeholder">Geoform Footer </span><input var="geoform" class="align-right" type="text" maxlength="90"><span>Line-1</span><br>
+                    <input var="geoform-2" class="align-right" type="text" maxlength="90"><span>Line-2</span><br>
+                    <input var="geoform-3" class="align-right" type="text" maxlength="90"><span>Line-3</span><br>
+                    <input var="geoform-4" class="align-right" type="text" maxlength="90"><span>Line-4</span><br>
+                </div>
+                
+                <div class="input">
+                    <span class="left-placeholder">Geoform Ring Concentric Footer</span><input var="geoform_ring_concentric" class="align-right" type="text" maxlength="90"><span>Line-1</span><br>
+                    <input var="geoform_ring_concentric-2" class="align-right" type="text" maxlength="90"><span>Line-2</span><br>
+                    <input var="geoform_ring_concentric-3" class="align-right" type="text" maxlength="90"><span>Line-3</span><br>
+                    <input var="geoform_ring_concentric-4" class="align-right" type="text" maxlength="90"><span>Line-4</span><br>
+                </div>
+                
+                <div class="input">
+                    <span class="left-placeholder">Coil Allcoation Footer </span><input var="coil_alloc" class="align-right" type="text" maxlength="90"><span>Line-1</span><br>
+                    <input var="coil_alloc-2" class="align-right" type="text" maxlength="90"><span>Line-2</span><br>
+                    <input var="coil_alloc-3" class="align-right" type="text" maxlength="90"><span>Line-3</span><br>
+                    <input var="coil_alloc-4" class="align-right" type="text" maxlength="90"><span>Line-4</span><br>
+                </div>
+                
+                <div class="input">
+                    <span class="left-placeholder">Mesh Allocation Footer </span><input var="mesh_alloc" class="align-right" type="text" maxlength="90"><span>Line-1</span><br>
+                    <input var="mesh_alloc-2" class="align-right" type="text" maxlength="90"><span>Line-2</span><br>
+                    <input var="mesh_alloc-3" class="align-right" type="text" maxlength="90"><span>Line-3</span><br>
+                    <input var="mesh_alloc-4" class="align-right" type="text" maxlength="90"><span>Line-4</span><br>
+                </div>
+
+                <div class="input">
+                    <span class="left-placeholder">Final Inspection-Geo Form Footer </span><input var="final_inspection" class="align-right" type="text" maxlength="90"><span>Line-1</span><br>
+                    <input var="final_inspection-2" class="align-right" type="text" maxlength="90"><span>Line-2</span><br>
+                    <input var="final_inspection-3" class="align-right" type="text" maxlength="90"><span>Line-3</span><br>
+                    <input var="final_inspection-4" class="align-right" type="text" maxlength="90"><span>Line-4</span><br>
+                </div>
+                
+                
+            </div>
+        </div>
+    </div>
+
+</div>

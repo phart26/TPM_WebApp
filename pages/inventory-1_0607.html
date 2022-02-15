@@ -1,0 +1,45 @@
+<div class="content-wrapper">
+    <h3>Inventory - New Materials<div style="float: right;"><i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i><i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i><i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i><i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i></div></h3>
+
+    <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+
+    <div class="row" form="table.form" table-name="steel_tbl" fields='{"tpm_job": {"type": "bool"}}' style="margin: 20px 0;">
+        <div class="col-lg-12">
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Work Number</span><input var="work" class="align-right" type="text" >
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Material</span><select var="material" table="mat_tbl" column="material"></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Gage</span><select var="gage" table="gage_tbl" column="gage"></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Width</span><input var="width" class="align-right" type="text" mask="double">
+
+                    
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Hole Pattern</span><select var="pattern" table="pat_tbl" column="pattern"></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Hole Size</span><select var="holes" table="frac_tbl" column="fraction" value-field="decimal"></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Hole Centers</span><select var="centers" table="frac_tbl" column="fraction" value-field="decimal"></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">TPM PO#</span><input var="tpm_po" class="align-right" type="text" mask="number">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">TPM Job</span><input var="tpm_job" type="checkbox">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

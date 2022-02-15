@@ -1,0 +1,81 @@
+<?php if(current_has_permission('customers_html', 'view')) { ?>
+<div class="content-wrapper" style="min-height: 500px;">
+    <h3>Customers
+        <div style="float: right;">
+            <i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div>
+    </h3>
+
+    <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+
+    <div form="table.form" table-name="cust_tbl" style="margin: 20px 0;">
+        <div>
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Cust ID</span><input var="cust_id" data-colla="cust_id" class="align-right" data-hold="cust_tbl" type="text" field="Customer ID seems invalid." mask="number" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Customer</span><input var="customer" class="align-right" type="text" field="Customer seems invalid." mask="text" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Billing Address</span><textarea var="bill_to" field="Billing Address seems invalid." mask="text" required></textarea>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Shipping Address</span><textarea var="ship_to" field="Shipping Address seems invalid." mask="text" required></textarea>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Contact</span><input var="contact" type="text" field="Contact name seems invalid." mask="text" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Phone</span><input var="phone" type="text" field="Phone number has to be in the format 9876-543-210." mask="mobile" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Fax</span><input var="fax" type="text" field="Fax number has to be in the format 9876-543-210." mask="mobile" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Email</span><input var="email" type="email" field="Email address seems invalid." mask="email" required>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<?php } else { ?>
+<div class="content-wrapper" style="min-height: 500px;">
+    <h3>You cannot see Customers page
+        <div style="float: right;">
+            <i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div>
+    </h3>
+<?php } ?>
+<script>
+    $(document).ready(function(){
+
+        function getid(){
+            $.ajax({
+                method:"POST",
+                url:"/api/getid?&getidnew="+$('input[var="cust_id"]').attr('data-hold')+"&coll="+$('input[var="cust_id"]').attr('data-colla'),
+                success:function(res){
+                    if(res['list'].length !=0){
+                        let id = parseInt(res['list'][0][$('input[var="cust_id"]').attr('data-colla')]);
+                        $('input[var="cust_id"]').val(id+1);
+                    }
+                }
+            });
+        }
+        getid();
+
+        $(document).on('click','[ev="form.reset"]',function(){
+            getid();
+        });
+    });
+</script>

@@ -1,0 +1,43 @@
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+<div class="content-wrapper">
+    <h3>paused Orders</h3>
+   <div id="filter" fetch-url="order_paused" class="row clicktoid" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div> 
+ <!--  <div class="inline overflow" style="font-size: 80%; border: 1px solid #ccc; height: 250px; background: #fff; width: 390px;"> -->
+   <table id="paused_job_list" class="table row-border stripe display compact">
+        <thead>
+            <tr>
+                <th>Job#</th>
+                <th>Mill</th>
+            </tr>
+        </thead>
+        <tbody id="paused_joblist" >
+
+        </tbody>
+   </table>
+</div>
+<!-- </div> -->
+<script>
+    $( document ).ready(function() {
+        //mill dropdown change event to update paused jobss
+        $(document).on('change','.mill_change', function() {
+            var job = $(this).attr('id');
+            var mill = $(this).val();
+            console.log("Job:"+job+" "+"mill:"+mill);
+            $.ajax({
+                method: "POST",
+                url: "../get_device_status.php",
+                data: { update_paused_jobs : job, mill : mill},
+                success: function(res) {
+                    if(res == 1){
+                        alert("Paused Job Updated Succefully!");
+                        location.reload();
+                    }else{
+                        alert("Problem in update data!");
+                    }
+                }
+            });
+        });
+    });
+</script>

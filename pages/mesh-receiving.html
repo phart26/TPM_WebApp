@@ -1,0 +1,58 @@
+<div class="content-wrapper">
+    <h3>Mesh Receiving<div style="float: right;"><i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i><i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i><i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i><i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i></div></h3>
+
+    <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+
+    <div class="row" form="table.form" table-name="mesh_tbl" fields='{"allocated": {"type": "bool"}}' style="margin: 20px 0;">
+        <div class="col-lg-12">
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Mesh#</span><input var="mesh_no" class="align-right" type="text" mask="number">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Supplier</span><input var="supplier" />
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Allocated</span><input var="allocated" type="checkbox">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Job</span><input var="job" class="align-right" type="text" mask="number">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">TPM PO#</span><input var="tpm_po" class="align-right" type="text" mask="number">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Received</span><input var="date_received" class="align-right" type="datepicker">
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Width</span><input var="width" class="align-right" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Length</span><input var="length" class="align-right" type="text" mask="number">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Heat#</span>
+                    <input var="heat" class="align-right" type="text">
+
+                    <!-- <select var="heat" table="pat_tbl" column="pattern"></select> -->
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Mesh Type</span><select var="mesh" table="mesh" column="mesh"></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Material Type</span><select var="type"  table="mat_tbl" column="material"></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Enter number of mesh</span><input var="no_of_mesh" class="align-right" type="text" mask="number">
+                </div>
+             <!--   <div class="button" id="recieve_multiple_coils">Recieve Multiple Mesh</div> -->
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="assets/js/page.mesh-recieving.js"></script>

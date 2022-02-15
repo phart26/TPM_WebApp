@@ -1,0 +1,1251 @@
+<style type="text/css">
+    #overlay {
+    position: fixed; 
+    display: none;
+    width: 100%; 
+    height: 100%; 
+    top: 0; 
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5); 
+    z-index: 9999; 
+    cursor: pointer;
+}
+.loadersmall {
+    border: 5px solid #19a2cc;
+    -webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+    border-top: 5px solid #fff8f8;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    left: calc(50% - 25px);
+    top: calc(50% - 25px);
+    }
+    div#text {
+    color: #fff;
+    position: absolute;
+    left: 47%;
+    top: 62%;
+}
+.msgs{
+    display: none;
+    padding: 15px;
+    background: #4e8292;
+    color: #fff;
+}
+.msgs span {
+    vertical-align: super;
+}
+.msgpad{
+    margin-right: 20px; 
+}
+</style>
+<div class="content-wrapper">
+    <h3>Quotes
+        <div style="float: right;">
+        <i onclick="calcRateInfo()" title="Calculate" class="fa fa-calculator" style="font-size: 18px;padding: 0 15px;"></i>
+        <i onclick="viewQuoteReport()" title="View" class="fa fa-eye" style="font-size: 18px;padding: 0 15px;"></i>
+        <i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+        <i title="Save Record" onclick="saveMaster()" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i>
+        <i title="Delete Record" onclick="deleteEverything()"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i>
+        <i title="Reset Form" onclick="resetEverything()" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div>
+    </h3>
+  
+    <div id="filter"  fetch-url="quote" class="row clicktoid" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+    <script>
+
+
+
+
+
+
+
+
+
+
+
+        var data, cur = 0;
+        
+        function saveNewDetail()
+        {
+                $("[var=id]").val("");
+                saveDetail("save_new");
+                setTimeout(function(){ show(data.length-1); }, 2000);
+        }
+        
+        function listMaster() {
+
+            var select = $('#filter'),
+                fields = $('[form="table.form"]').attr('fields');
+
+            if(fields)
+                fields = JSON.parse(fields);
+
+            select.html('Loading...');
+
+            request('quote', {})
+            .done(function(res) {
+console.log(res);
+                if(!res.list) {
+                    select.html('<tbody>No data Found !</tbody>');
+                    return;
+                }
+
+                select.html(
+                    json2table(res.list, {
+                        'click': function() {
+                            var data = $(this).data();
+
+                            $(this).closest('tbody').children('tr.active').removeClass('active')
+                            $(this).closest('tr').addClass('active')
+
+                            fillForm('table.form', data, 'var');
+                            fillForm('table.form', data, 'val');
+                            $('#filter').slideUp();
+                        }
+                    }, fields)
+                )
+                .find('table').DataTable({
+                    pageLength : 5,
+                    lengthMenu : [ 5, 10, 25, 50, 75, 100 ]
+                });
+
+            })
+        }
+        
+        function quoteChanged(tmpVar) {
+            var quote = $('[var=quote]').val();
+            request('table/quote_detail_tbl/fetch', {'quote': quote})
+            .done(function(res) {
+                if(!quote)
+                    return;
+                //resetForm('detail.form');
+                //$("[var=quantity]").val(1);     
+                // $("[var=units]").val(0);
+                // $("[var=angle]").val(0.00);
+                // $("[var=weight]").val(0.00);
+                // $("[var=time]").val(0.00);
+                // $("[var=stamping]").val(0.47);
+                // $("[var=setup]").val(200.00);
+                // $("[var=men]").val(3.5);
+                // $("[var=crating]").val(247.00);
+                // $("[var=tpc]").val(30);
+                // $("[var=shop]").val(0.30);
+                // $("[var=electric]").val(0.03);
+                // $("[var=cut_spd]").val(8);
+                // $("[var=tag]").val(0.15);
+                // $("[var=scrap]").val(10.00);
+                // $("[var=gas]").val(3.10);
+                // $("[var=tpb]").val(30);
+                // $("[var=blade]").val(49.00);
+                // $("[var=overhead]").val(273600.00);
+                // $("[var=basis]").val(1250000.00);
+                // $("[var=labor]").val(20.00);
+                // $("[var=ws]").val(40);
+                // $("[var=markup]").val(50.00);
+                // $("[var=density]").val(0.29);
+                $('.detail').slideDown();
+                $('#detail-quote').val(quote);
+                data = res.list;
+                if(!data.length) {
+                    $('#page-btn').hide();
+                    return;
+                }
+                if(tmpVar == "saveDetail")
+                {
+                    fillForm('detail.form', data[0], 'var');
+                    fillForm('detail.form', data[0], 'val');
+                }
+                else
+                {
+                    fillForm('detail.form', data[data.length-1], 'var');
+                    fillForm('detail.form', data[data.length-1], 'val');
+                }
+                cur = 0;
+
+                $('#page-btn').show();
+                $('#prev-page').show();
+                $('#first-page').show();
+                $('#next-page').show();
+                $('#last-page').show();
+
+                $('#page-no').html(cur +1);
+
+                $('#first-page').hide();
+                $('#prev-page').hide();
+
+                if(cur == data.length - 1) {
+                    $('#next-page').hide();
+                    $('#last-page').hide();
+                }
+
+                //calcRateInfo();
+            });
+        }
+
+        function show(page) {
+            cur = page;
+            //resetForm('detail.form');
+            // $("[var=quantity]").val(1);     
+            // $("[var=units]").val(0);
+            // $("[var=angle]").val(0.00);
+            // $("[var=weight]").val(0.00);
+            // $("[var=time]").val(0.00);
+            // $("[var=stamping]").val(0.47);
+            // $("[var=setup]").val(200.00);
+            // $("[var=men]").val(3.5);
+            // $("[var=crating]").val(247.00);
+            // $("[var=tpc]").val(30);
+            // $("[var=shop]").val(0.30);
+            // $("[var=electric]").val(0.03);
+            // $("[var=cut_spd]").val(8);
+            // $("[var=tag]").val(0.15);
+            // $("[var=scrap]").val(10.00);
+            // $("[var=gas]").val(3.10);
+            // $("[var=tpb]").val(30);
+            // $("[var=blade]").val(49.00);
+            // $("[var=overhead]").val(273600.00);
+            // $("[var=basis]").val(1250000.00);
+            // $("[var=labor]").val(20.00);
+            // $("[var=ws]").val(40);
+            // $("[var=markup]").val(50.00);
+            // $("[var=density]").val(0.29);
+            fillForm('detail.form', data[cur], 'var');
+            fillForm('detail.form', data[cur], 'val');
+            
+            $('#first-page').show();
+            $('#prev-page').show();
+            $('#next-page').show();
+            $('#last-page').show();
+
+            $('#page-no').html(cur +1);
+
+            if(cur == 0) {
+                $('#first-page').hide();
+                $('#prev-page').hide();
+            }
+            if(cur == data.length - 1) {
+                $('#next-page').hide();
+                $('#last-page').hide();
+            }
+            calcRateInfo();
+        }
+
+        function deleteDetail() {
+
+            var form_data = parseForm('detail.form'),
+                msg  = message('Deleting...');
+
+            request('table/quote_detail_tbl/delete', {id: form_data.id})
+            .always(function() {
+                msg.remove()
+            })
+            .done(function(res) {
+                message('Deleted', 2000);
+                quoteChanged("");
+            })
+        }
+
+        function resetDetail() {
+            resetForm('detail.form');   
+            $("[var=quantity]").val(1);         
+            $("[var=units]").val(0);
+            $("[var=angle]").val(0.00);
+            $("[var=weight]").val(0.00);
+            $("[var=time]").val(0.00);
+            $("[var=stamping]").val(0.47);
+            $("[var=setup]").val(200.00);
+            $("[var=men]").val(3.5);
+            $("[var=crating]").val(247.00);
+            $("[var=tpc]").val(30);
+            $("[var=shop]").val(0.30);
+            $("[var=electric]").val(0.03);
+            $("[var=cut_spd]").val(8);
+            $("[var=tag]").val(0.15);
+            $("[var=scrap]").val(10.00);
+            $("[var=gas]").val(3.10);
+            $("[var=tpb]").val(30);
+            $("[var=blade]").val(49.00);
+            $("[var=overhead]").val(273600.00);
+            $("[var=basis]").val(1250000.00);
+            $("[var=labor]").val(20.00);
+            $("[var=ws]").val(40);
+            $("[var=markup]").val(50.00);
+            $("[var=density]").val(0.29);
+            var quote = $('[var=quote]').val();
+            $('#detail-quote').val(quote);
+        }
+
+        function saveDetail(tmpVal) {
+
+            // validate input
+            var invalid = $('[form="detail.form"] [mask].invalid').filter(':first')
+
+            if ( invalid.length )
+                return message(invalid.attr('field'), 2000)
+
+            var form_data = parseForm('detail.form'),
+                msg  = message('Saving...');
+
+                    //console.log(form_data);
+
+            request('table/quote_detail_tbl/save', form_data)
+                .always(function(){
+                    msg.remove()
+                })
+                .done(function(res){
+                    message('Saved', 2000);
+                    if(tmpVal=="saveDetail")
+                    {
+                     quoteChanged("");
+                    }
+                    else
+                    {
+                     quoteChanged("save_new");
+                    }
+                })
+
+
+        }
+
+        function saveMaster() {
+
+            // validate input
+            var invalid = $('[form="table.form"] [mask].invalid').filter(':first')
+
+            if ( invalid.length )
+                return message(invalid.attr('field'), 2000)
+
+            var data = parseForm('table.form'),
+                msg  = message('Saving...'),
+                tbl  = $('[form="table.form"]').attr('table-name')
+                console.log(data);
+
+                var curret = $('#filter tbody tr.active');
+                
+                curret.find('td:eq(0)').text(data.quote).attr('title',data.quote);
+                curret.find('td:eq(1)').text(data.cust_id).attr('title',data.cust_id);
+                // curret.find('td:eq(2)').text(data.po);
+                curret.find('td:eq(2)').text(data.address).attr('title',data.address);
+                curret.find('td:eq(3)').text(data.terms).attr('title',data.terms);
+                curret.find('td:eq(4)').text(data.notes).attr('title',data.notes);
+                curret.find('td:eq(5)').text(data.fax_back).attr('title',data.fax_back);
+                curret.find('td:eq(6)').text(data.date).attr('title',data.date);
+                curret.find('td:eq(7)').text(data.fob).attr('title',data.fob);
+                curret.find('td:eq(8)').text(data.special).attr('title',data.special);
+                curret.find('td:eq(9)').text(data.part).attr('title',data.part);
+                //curret.find('td:eq(10)').text(data.customer).attr('title',data.customer);
+
+
+
+
+
+
+
+
+
+
+
+            request('table/quote_tbl/save', data)
+                .always(function(){
+                    msg.remove()
+                })
+                .done(function(res){
+                    console.log(res);
+                    message('Saved', 2000);
+//EVENTS['table.list']();
+                    //listMaster();
+
+                    var quote = $('[var=quote]').val();
+
+saveDetail('saveDetail');
+ 
+                    setTimeout(function() {
+                        //quoteChanged("");
+
+//calculateMatValue();
+//calcRateInfo();
+
+$('.detail').slideDown();
+$('#detail-quote').val(quote);
+
+
+                    }, 1000);
+ 
+
+
+
+                })
+
+
+        }
+
+        function resetEverything() {
+            resetForm('table.form');    
+            calculateQuoteId();
+            $("[var=quantity]").val(1); 
+            $("[var=units]").val(0);
+            $("[var=angle]").val(0.00);
+            $("[var=weight]").val(0.00);
+            $("[var=time]").val(0.00);
+            $("[var=stamping]").val(0.47);
+            $("[var=setup]").val(200.00);
+            $("[var=men]").val(3.5);
+            $("[var=crating]").val(247.00);
+            $("[var=tpc]").val(30);
+            $("[var=shop]").val(0.30);
+            $("[var=electric]").val(0.03);
+            $("[var=cut_spd]").val(8);
+            $("[var=tag]").val(0.15);
+            $("[var=scrap]").val(10.00);
+            $("[var=gas]").val(3.10);
+            $("[var=tpb]").val(30);
+            $("[var=blade]").val(49.00);
+            $("[var=overhead]").val(273600.00);
+            $("[var=basis]").val(1250000.00);
+            $("[var=labor]").val(20.00);
+            $("[var=ws]").val(40);
+            $("[var=markup]").val(50.00);
+            $("[var=density]").val(0.29);
+            setTimeout(function() {
+                resetDetail();
+                $('.detail').hide();
+            }, 1000);
+        }
+
+        function deleteEverything() {
+            var quote = $('[var=quote]').val(),
+                msg  = message('Deleting...');
+            deleteQuoteDetail();
+            request('table/quote_tbl/delete', {'quote': quote})
+            .always(function() {
+                msg.remove()
+            })
+            .done(function(res) {
+                message('Deleted', 2000);
+                var data = parseForm('table.form'),
+                    msg  = message('Deleting...');
+
+                request('table/quote_tbl/delete', data)
+                    .always(function(){
+                        msg.remove()
+                    })
+                    .done(function(response){
+
+                        message('Deleted', 2000)
+
+                        resetForm('table.form');        
+                        calculateQuoteId();
+                        $("[var=quantity]").val(1); 
+                        $("[var=units]").val(0);
+                        $("[var=angle]").val(0.00);
+                        $("[var=weight]").val(0.00);
+                        $("[var=time]").val(0.00);
+                        $("[var=stamping]").val(0.47);
+                        $("[var=setup]").val(200.00);
+                        $("[var=men]").val(3.5);
+                        $("[var=crating]").val(247.00);
+                        $("[var=tpc]").val(30);
+                        $("[var=shop]").val(0.30);
+                        $("[var=electric]").val(0.03);
+                        $("[var=cut_spd]").val(8);
+                        $("[var=tag]").val(0.15);
+                        $("[var=scrap]").val(10.00);
+                        $("[var=gas]").val(3.10);
+                        $("[var=tpb]").val(30);
+                        $("[var=blade]").val(49.00);
+                        $("[var=overhead]").val(273600.00);
+                        $("[var=basis]").val(1250000.00);
+                        $("[var=labor]").val(20.00);
+                        $("[var=ws]").val(40);
+                        $("[var=markup]").val(50.00);
+                        $("[var=density]").val(0.29);
+                        listMaster();
+                        setTimeout(function() {
+                            $('.detail').hide();
+                        }, 1000);
+
+                    })
+            })
+        }
+
+        var patt = [];
+        $(document).ready(function() {  
+            calculateQuoteId();
+            $("[var=quantity]").val(1); 
+            $("[var=units]").val(0);
+            $("[var=angle]").val(0.00);
+            $("[var=weight]").val(0.00);
+            $("[var=time]").val(0.00);
+            $("[var=stamping]").val(0.47);
+            $("[var=setup]").val(200.00);
+            $("[var=men]").val(3.5);
+            $("[var=crating]").val(247.00);
+            $("[var=tpc]").val(30);
+            $("[var=shop]").val(0.30);
+            $("[var=electric]").val(0.03);
+            $("[var=cut_spd]").val(8);
+            $("[var=tag]").val(0.15);
+            $("[var=scrap]").val(10.00);
+            $("[var=gas]").val(3.10);
+            $("[var=tpb]").val(30);
+            $("[var=blade]").val(49.00);
+            $("[var=overhead]").val(273600.00);
+            $("[var=basis]").val(1250000.00);
+            $("[var=labor]").val(20.00);
+            $("[var=ws]").val(40);
+            $("[var=markup]").val(50.00);
+            $("[var=density]").val(0.29);
+            request('table/pat_tbl/fetch', data)
+            .done(function(res) {
+                $(res.list).each(function(i, d) {
+                    patt[d.pattern] = parseFloat(d.oa_factor);
+                })
+            });
+        })
+
+        function calcRateInfo() {
+
+            var ptn = patt[$('[var="pattern"]').val()];
+            var res = mainCalc(
+                parseFloat($('[var="quantity"]').val()), $('[var="material"]').val(), parseFloat($('[var="gage"]').val()), parseFloat($('[var="gage"]').val()), $('[var="pattern"]').val(),
+                parseFloat($('[var="holes"]').val()), parseFloat($('[var="centers"]').val()), parseFloat($('[var="diameter"]').val()), ptn, $('[var="is_od"]').is(':checked'),
+                parseFloat($('[var="strip"]').val()), parseFloat($('[var="length"]').val()), parseFloat($('[var="setup"]').val()), parseFloat($('[var="crating"]').val()), parseFloat($('[var="tpc"]').val()),
+                parseFloat($('[var="shop"]').val()), parseFloat($('[var="electric"]').val()), parseFloat($('[var="men"]').val()), parseFloat($('[var="cut_spd"]').val()), parseFloat($('[var="tag"]').val()),
+                parseFloat($('[var="density"]').val()), (parseFloat($('[var="scrap"]').val()/100)), parseFloat($('[var="stamping"]').val()), parseFloat($('[var="mat_cost"]').val()), parseFloat($('[var="gas"]').val()),
+                parseFloat($('[var="labor"]').val()), parseFloat($('[var="tpb"]').val()), parseFloat($('[var="blade"]').val()), parseFloat($('[var="ws"]').val()), (parseFloat($('[var="markup"]').val()/100)),
+                parseFloat($('[var="overhead"]').val()), parseFloat($('[var="basis"]').val()), parseInt($('[var="units"]').val())
+                )
+console.log("this" + res);
+            $('[var="mc"]').attr('real-val', res[0].toFixed(3)).attr('show-val', res[0].toFixed(3)).val(res[0].toFixed(3));
+            $('[id="shop-overhead"]').attr('real-val', res[1].toFixed(3)).attr('show-val', res[1].toFixed(3)).val(res[1].toFixed(3));
+            $('[var="profit"]').attr('real-val', res[2].toFixed(3)).attr('show-val', res[2].toFixed(3)).val(res[2].toFixed(3));
+            $('[var="rate"]').val(res[3].toFixed(3));
+
+            $('[var="angle"]').val(res[5].toFixed(3));
+            $('[var="weight"]').val(res[6].toFixed(3));
+            $('[var="time"]').val(res[7].toFixed(3));
+            //custom 2 field showing vules per order (weight and time)
+            $("#ttfo").val(res[20].toFixed(3));
+            //$("#tmscrap").val(res[21].toFixed(3));
+            $("#tmscrap").val((res[21] + (res[21].toFixed(3)*$('[var="scrap"]').val()/100)).toFixed(3));
+
+            $('[show-val][real-val]').each(function () {
+                var cur = $(this);
+
+                cur.focus(function() {
+                    cur.val(cur.attr('real-val'));
+                })
+
+                cur.blur(function() {
+                    cur.val(cur.attr('show-val'));
+                })
+            })
+
+            //console.log(res + 'and patt' + ptn );
+            //console.log(parseFloat($('[var="quantity"]').val()) + 'quantity');
+
+        }
+
+        function mainCalc (Quantity, Material, Gage, Thickness, Pattern,
+                Holes, Centers, Diameter, OA, is_OD,
+                Strip, Length, Setup, Crating, TPC,
+                Shop, Electric, Men, CutSpd, TagCost,
+                Density, Scrap, Stamping, MatCost, Gas,
+                Labor, TPB, Blade, WS, Markup,
+                Overhead, Basis, Unit) {
+
+                // Unit indicator: 0 - inch, 1 - foot
+                const FoottoInch = 12;
+                        
+                var OA2 = 0;
+                if (Centers > 0) {
+                    OA2 = (Holes*Holes)/(Centers*Centers) * OA/100;
+                }
+
+                var ID = Diameter, OD = Diameter + 2*Thickness;
+                if (is_OD) {
+                    ID = Diameter - 2*Thickness;
+                    OD = Diameter;
+                }
+                
+                var Crate = Math.ceil (Quantity/TPC);
+                var Crating2 = Crating * Crate;
+                var Angle = 90 - Math.acos (Strip/Math.PI/OD) * 180/Math.PI;
+                var HPSI = 0;
+                if (Holes > 0) {
+                    HPSI = OA2 * (100/(78.54*Holes*Holes));
+                }
+                
+                //Per tube inch column
+                var OrderInfo = [];
+                //Linear ft. material
+                OrderInfo[0] = Math.PI * OD / Strip / FoottoInch;
+                //Linear ft. material (w/ scrap)
+                OrderInfo[1] = OrderInfo[0] * (1 + Scrap);
+                //Weight (not perfed.)
+                OrderInfo[2] = Thickness * Strip * Density * OrderInfo[0] * FoottoInch;
+                //Weight (not perfed. w/scrap)
+                OrderInfo[3] = OrderInfo[2] * (1 + Scrap);
+                //Weight (perfed.)
+                OrderInfo[4] = OrderInfo[2] * (1 - OA2);
+                //Weight (perfed. w/scrap)
+                OrderInfo[5] = OrderInfo[4] * (1 + Scrap);
+                //Number of holes
+                OrderInfo[6] = HPSI * Strip * OrderInfo[0]/FoottoInch;
+                //Welding time (min)
+                OrderInfo[7] = OrderInfo[0]/ WS * 12 * 6/5;
+                //Cutoff Time (min)
+                OrderInfo[8] = OD/CutSpd*2*6/5/Length;
+                //Total Time (hours)
+                OrderInfo[9] = (OrderInfo[7] + OrderInfo[8])/60;
+                //per order time custom
+                OrderInfo[10] = OrderInfo[9]* Length * Quantity;
+                //custom weight
+                OrderInfo[11] = OrderInfo[2]* Length * Quantity;
+
+
+                //Per tube inch column
+                var Costs = [];
+                //Crating
+                Costs[0] = Crating2/Quantity/Length;
+                //Tag
+                Costs[1] = TagCost/Length;
+                //Shop supplies
+                Costs[2] = Shop / FoottoInch;
+                //Electric cost
+                Costs[3] = OrderInfo[7] * Electric;
+                //Blade cost
+                Costs[4] = Blade/TPB/Length;
+                //Stamping cost
+                Costs[5] = Stamping*OrderInfo[1];
+                //Material Cost
+                Costs[6] = MatCost*OrderInfo[3];
+                //Gas Cost
+                Costs[7] = Gas*OrderInfo[7]/60;
+                
+                //Per tube inch column
+                var Costs2 = [];
+
+                //Steel Cost
+                Costs2[0] = Costs[5] + Costs[6];
+                //console.log(Costs[5] + ' steelc ' + Costs[6]);
+                //Cutoff Labor Cost
+                Costs2[1] = OrderInfo[8]*Labor/60;
+                //Welding Labor cost
+                Costs2[2] = Men*Labor*OrderInfo[7]/60;
+                //Supply Cost
+                Costs2[3] = Costs[0] + Costs[1] + Costs[2] + Costs[3] + Costs[4] + Costs[7];
+
+                var Costs3 = [];
+                //Marginal Cost
+                Costs3[0] = Costs2.reduce ((a, b) => a+b, 0) + Setup/(Length * Quantity);
+                //console.log('setup:' + Costs2.reduce ((a, b) => a+b, 0));
+                //Overhead
+                Costs3[1] = Costs3[0]/Basis*Overhead
+                //Markup
+                Costs3[2] = Costs3[0]*Markup;
+
+                if(Unit == 1) {
+                    Costs3[0] *= 12;
+                    Costs3[1] *= 12;
+                    Costs3[2] *= 12;
+                    OrderInfo[2] *= 12;
+                    OrderInfo[9] *= 12;
+                }
+
+                if(Unit == 2) {
+                    Costs3[0] *= Length;
+                    Costs3[1] *= Length;
+                    Costs3[2] *= Length;
+                    OrderInfo[2] *= Length;
+                    OrderInfo[9] *= Length;
+                }
+
+                if(Unit == 3) {
+                    Costs3[0] *= Length * Quantity;
+                    Costs3[1] *= Length * Quantity;
+                    Costs3[2] *= Length * Quantity;
+                    OrderInfo[2] *= Length * Quantity;
+                    OrderInfo[9] *= Length * Quantity;
+                }
+
+                var TotalCost = Costs3.reduce ((a, b) => a+b, 0);
+
+                return [Costs3[0],
+                        Costs3[1],
+                        Costs3[2],
+                        TotalCost,
+                        OrderInfo[9],
+                        Angle,
+                        OrderInfo[2],
+                        OrderInfo[9],
+                        Costs2[0],
+                        Costs2[1],
+                        Costs2[2],
+                        Costs2[3],
+                        Costs[0],
+                        Costs[1],
+                        Costs[2],
+                        Costs[3],
+                        Costs[4],
+                        Costs[5],
+                        Costs[6],
+                        Costs[7],
+                        OrderInfo[10],
+                        OrderInfo[11]];
+            }
+            
+            function viewQuoteReport()
+            {
+                var quote_value = $("#quote_value").val();
+                if(quote_value == "")
+                {
+                    return false;
+                }
+                else
+                {
+                    var url = "/quotes_dev.php?quote="+quote_value;
+                    var win = window.open(url, '_blank');
+                    win.focus();
+                }
+            }
+            
+            function calculateMatValue()
+            {
+                var mat_value = $("#mat_value").val();
+                var mat_cost = $("#mat_cost").val();
+                $.get("../api/?url=mat_value&material="+mat_value, {}, function(data, status){
+                    var jsonResult;
+                    if(status == "success")
+                    {
+                        jsonResult = data['done'];
+                        var result = jsonResult[0]['result'];
+                        //console.log('matvalue: ' + data['done']);
+                        $("#mat_cost").val(result);
+                    }
+                });
+                
+            }
+            
+            function deleteQuoteDetail()
+            {
+                var quote = $("#quote_value").val();
+                $.get("../api/?url=delete_quote_detail&quote="+quote, {}, function(data, status){
+                    if(status == "success")
+                    {
+                        return true;
+                    }
+                });
+                
+            }
+            
+            function calculateQuoteId()
+            {
+                $.get("../api/?url=quote_id", {}, function(data, status){
+                    var jsonResult;
+                    if(status == "success")
+                    {
+                        jsonResult = data['done'];
+                        //console.log(jsonResult);
+                        var result = jsonResult[0]['max(quote)'];
+                        result = parseInt(result)+1;
+                        $("#quote_value").val(result);
+                    }
+                });
+                
+            }
+
+    </script>
+
+    <div class="row" style="margin: 20px 0;">
+        <div class="msgs"><i class="fa fa-envelope fa-2x msgpad"></i>
+            <span>Changing the selected part will result in fresh values being retrieved from the Part Information table. All customized values related to the quote will be lost</span></div>
+
+        <div class="col-lg-12" form="table.form" fields='{"fax_back": {"type": "bool"}}' table-name="quote_tbl">
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Quote</span><input id="quote_value" onchange="quoteChanged('')" var="quote" mask="number">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Company</span><select data-store="cust_id" class="selectpicker selectcutome customer_id  storevalue"  var="cust_id" table="cust_tbl" value-field="cust_id" column="customer" title="Select" >
+                        <option value="">Select Client</option>
+                    </select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Part</span><select data-store="part" class="selectpicker selectcutome secselect part_id storevalue" var="part" id="part_id" title="Choose one of the following...">
+                            <option value="">Select Part</option>
+                        </select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Address</span><textarea var="address"></textarea>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Date</span><input var="date" type="datepicker">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Fax Back</span><input var="fax_back" type="checkbox">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Terms</span><select var="terms">
+                        <option value="Net 20">Net 20</option>
+                        <option value="Net 30">Net 30</option>
+                        <option value="Net 45">Net 45</option>
+                        <option value="Net 60">Net 60</option>
+                    </select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">FOB</span><input var="fob">
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Notes</span><textarea var="notes"></textarea>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Special Notes</span><textarea var="special"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12 detail" form="detail.form" style="display:none;" fields='{"is_od": {"type": "bool"}}'>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Id</span><input var="id" type="text" mask="number" disabled>
+                    <input id="detail-quote" var="quote" type="hidden" mask="number">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Quantity</span><input var="quantity" type="text" mask="number">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Quotes units</span>
+                    <select var="units" mask="double" onchange="calcRateInfo()">
+                        <option value="0">per inch</option>
+                        <option value="1">per foot</option>
+                        <option value="2">each</option>
+                        <option value="3">per order</option>
+                    </select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Material</span><select id="mat_value" var="material" table="mat_tbl" column="material"></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Gage</span><select var="gage" table="gage_tbl" column="gage" value-field="thickness"></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Pattern</span><select var="pattern" table="pat_tbl" column="pattern" ></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Holes</span><select var="holes" mask="double" table="frac_tbl" column="holes" value-field="decimal">
+                        <option value="">Select Holes</option>
+                    </select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Centers</span>
+                    <select var="centers" mask="double" table="frac_tbl" column="centers" value-field="decimal"><option value="">Select Centers</option></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Diameter</span><input var="diameter" type="text" mask="double">
+                </div>
+                <div class="input">
+                <span class="left-placeholder">ID</span><input class="id_not_od"  type="checkbox" >
+
+            </div>
+             <div class="input"  style="display: none;">
+                <span class="left-placeholder">OD</span><input class="od_not_id"  var="is_od" type="checkbox">
+                
+            </div>
+                <div class="input">
+                    <span class="left-placeholder">Length</span><input var="length" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Mat. ($/lb)</span><input id="mat_cost" var="mat_cost" type="text" mask="double" >
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Stamping ($/lf)</span><input var="stamping" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Strip Width</span><input var="strip" type="text" >
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Angle</span><input var="angle" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Weight</span><input var="weight" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Total Time</span><input var="time" type="text"  mask="double">
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Setup cost</span><input var="setup" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Men working</span><input var="men" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Crating cost</span><input var="crating" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Tubes per crate</span><input var="tpc" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Shop supplies</span><input var="shop" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Electric cost ($/ft)</span><input var="electric" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Cutoff spd (in/min)</span><input var="cut_spd" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Tag cost ($/tag)</span><input var="tag" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Scrap rate</span><input var="scrap" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Gas cost ($/hr)</span><input var="gas" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Tubes per blade</span><input var="tpb" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Blade cost ($/bl)</span><input var="blade" type="text" mask="double">
+                </div>
+                <br>
+                <div class="input">
+                    <span class="left-placeholder">Description</span><textarea var="description"></textarea>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Total Material + scrap</span><input id="tmscrap" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Total Time For Order</span><input id="ttfo" type="text" mask="double">
+                </div>
+            </div>
+
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Overhead</span><input var="overhead" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Cost basis</span><input var="basis" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Labour ($/hr)</span><input var="labor" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Weld spd (in/min)</span><input var="ws" type="text" mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Markup</span><input var="markup" type="text"  mask="double">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Density (lbs/ci)</span><input var="density" type="text" mask="double">
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Rate Info.</div>
+                    <div class="input">
+                        <span class="left-placeholder">Marginal Cost</span><input var="mc" type="text" mask="double">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Shop Overhead</span><input id="shop-overhead" type="text" mask="double">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Net Profit</span><input var="profit" type="text" mask="double">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Rate</span><input var="rate" type="text" mask="double">
+                    </div>
+                </div>
+
+                <div id="page-btn">
+                    <i id="first-page" onclick="show(0)" class="button fa fa-angle-double-left"></i>
+                    <i id="prev-page" onclick="show(cur - 1)" class="button fa fa-angle-left"></i>
+                    <span id="page-no" class="button"></span>
+                    <i id="next-page" onclick="show(cur + 1)" class="button fa fa-angle-right"></i>
+                    <i id="last-page" onclick="show(data.length - 1)" class="button fa fa-angle-double-right"></i>
+                </div>
+                <div>
+                    <i onclick="saveDetail('saveDetail')" class="button fa fa-save"></i>
+                    <i onclick="resetDetail()" class="button fa fa-undo"></i>
+                    <i onclick="deleteDetail()" class="button fa fa-trash"></i>
+                    <i onclick="saveNewDetail()" class="button fa fa-plus"></i>
+                    <i onclick="calcRateInfo()" title="Calculate" class="button fa fa-calculator"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <script src="assets/js/page.part-information.js"></script> -->
+ <script type="text/javascript">
+
+$(document).ready(function(){
+
+
+
+	$(document).on('click','.clicktoid tr:not(.head)',function(){
+
+	if($('[var="is_od"]').is(':checked')){
+	//	alert('checked');
+     //jQuery('.finished_length_rings p').text('Finished length includes rings');
+     jQuery('input[type="checkbox"].id_not_od').prop('checked', false);
+    }else{
+    	//alert('not checked');
+    //jQuery('.finished_length_rings p').text('');
+    jQuery('input[type="checkbox"].id_not_od').prop('checked', true);
+   }
+
+
+});
+
+setTimeout(function(){ 
+            $('.customer_id').html($('.customer_id').children('option').sort(function (x, y) {
+                return $(x).text().toUpperCase() < $(y).text().toUpperCase() ? -1 : 1;
+                
+            }));
+            console.log('hellooo');
+            $('.customer_id').get(0).selectedIndex = 0;
+
+
+            $('[var="holes"]').html($('[var="holes"]').children('option').sort(function (x, y) {
+                return $(x).val().toUpperCase() < $(y).val().toUpperCase() ? -1 : 1;
+                
+            }));
+            //console.log('hellooo');
+            $('[var="holes"]').get(0).selectedIndex = 0;
+            
+            $('[var="holes"] option').each(function() {
+                if ( $(this).text() == '' ) {
+                    $(this).remove();
+                }
+            });
+            
+            $('[var="centers"]').html($('[var="centers"]').children('option').sort(function (x, y) {
+                return $(x).val().toUpperCase() < $(y).val().toUpperCase() ? -1 : 1;
+                
+            }));
+            //console.log('hellooo');
+            $('[var="centers"]').get(0).selectedIndex = 0;
+            $('[var="centers"] option').each(function() {
+                if ( $(this).text() == '' ) {
+                    $(this).remove();
+                }
+            });
+            //$('[var="centers"]').children('option').text().empty().remove();
+
+            }, 3000);
+
+
+
+
+
+
+    $('body').append('<div id="overlay" style="display:none"><div class="loadersmall"></div><div id="text">Loading...</div></div>');
+    $('[var="is_od"]').prop( 'checked', true );
+    //jQuery('input[type="checkbox"].od_not_id').prop('checked', true);
+    $('input, select').on('change' ,function(){
+        //calculateMatValue();
+calcRateInfo();
+    });
+});
+                
+jQuery('input.id_not_od').click(function(){
+
+//console.log('cliked');
+if (jQuery(this).is(':checked')) {
+    jQuery('input[type="checkbox"].od_not_id').prop('checked', false);
+}else{
+    jQuery('input[type="checkbox"].od_not_id').prop('checked', true);
+}
+});
+$(function(){
+
+ jQuery('.customer_id').on('click',function(){
+        //alert("test");
+        $("#part_id").prop("disabled", true);
+        jQuery.post(setting.server+"index.php?url=part_mat"+"&userid="+$(this).val(),
+            function(res){
+                var output =[];
+                output.push('<option value="">Select Part</option>');
+                jQuery.each(res.list, function(key, value)
+                    {
+                    output.push('<option value="'+ value['part'] +'">'+ value['part'] +'</option>');
+                });
+                    jQuery('.part_id').html(output.join(''));
+                    //getgagetype();
+                    $("#part_id").prop("disabled", false);
+
+        });
+//         calculateMatValue();
+// calcRateInfo();
+
+    });
+
+
+
+
+    $(document).on('click','.compact tbody tr',function(){
+    var $this = $(this);
+
+            $('input[var="quote"]').val($this.find('td:eq(0)').text());
+            $('select[data-store="cust_id"]').val($this.find('td:eq(1)').text());
+            $('textarea[var="address"]').val($this.find('td:eq(2)').text());
+            $('select[var="terms"]').val($this.find('td:eq(3)').text());
+            $('input[var="notes"]').val($this.find('td:eq(4)').text());
+            $('input[var="fax_back"]').val($this.find('td:eq(5)').text());
+            $('input[var="date"]').val($this.find('td:eq(6)').text());
+            $('input[var="fob"]').val($this.find('td:eq(7)').text());
+            $('input[var="special"]').val($this.find('td:eq(8)').text());
+            $('select[var="part"]').val($this.find('td:eq(9)').text());
+
+
+    let current = 0;
+    $('#overlay').css('display','block');
+        $('select[data-store="cust_id"] option').each(function(){
+                if($(this).text() == $this.find('td:eq(10)').text() ){
+                    current = $(this).attr('value');
+                }
+        });
+            let selectionpar = $this.find('td:eq(9)').text();
+                oldvalue1 = current;
+            oldvalue2 = selectionpar;
+            // holdid = $this.find('td:eq(0)').text()
+            // $('#getcurrentid').val(holdid);
+            // update tooltip
+
+            //part selected on change
+           if(current!=null){
+            $.post(setting.server+"index.php?url=part_mat"+"&userid="+current,
+                function(res){
+                    var output =[];
+                    output.push('<option value="">Select Part</option>');
+
+                    $.each(res.list, function(key, value){
+                        if(value['part'] == selectionpar){
+                            output.push('<option selected value="'+ value['part'] +'">'+ value['part'] +'</option>');
+                        }
+                        else{
+                            output.push('<option value="'+ value['part'] +'">'+ value['part'] +'</option>');
+                        }
+                    });
+
+                        $('.part_id').html(output.join(' '));
+                        //console.log('counter1');
+                }); 
+                $('select[data-store="cust_id"]').val(current);
+           }
+
+//            setTimeout(function() {
+//              $.post(setting.server+"index.php?url=get_part_table"+"&userid="+$(".customer_id").val()+"&part="+"'"+$("#part_id").val()+ "'",
+//             function(res2){
+//                 var output2 =[];
+//                     jQuery.each(res2.list, function(key, value)
+//                     {
+//                      $('select[var="material"]').val(value['type']);
+//                      //$('select[var="gage"]').text(value['gage']);
+//                      $("select[var='gage'] option").filter(function() {
+//     return this.text == value['gage']; 
+// }).prop('selected',true);
+//                      $('select[var="pattern"]').val(value['pattern']);
+//                      $('select[var="holes"]').val(value['holes']);
+//                      $('select[var="centers"]').val(value['centers']);
+//                      $('input[var="strip"]').val(value['strip']);
+//                      $('input[var="length"]').val(value['cutoff_length']);
+//                      $('input[var="diameter"]').val(value['dim']);
+//                      // $('select[var="pattern"]').val(value['pattern']);
+//                     console.log(key + ' :- ' + value['gage'] + "<br/>Gage value" );
+//                 });
+//             });
+
+//              calculateMatValue();
+// calcRateInfo();
+
+
+ $('#overlay').css('display','none');
+ $(".msgs").show();
+//          },3000);
+
+
+       });
+   $('#mat_value').on('click',function(){
+        calculateMatValue();
+
+   });
+
+    $('.part_id').on('click',function(){
+         if($(this).val()!=null){
+    $.post(setting.server+"index.php?url=get_part_table"+"&userid="+$(".customer_id").val()+"&part="+"'"+$(this).val()+ "'",
+            function(res2){
+                var output2 =[];
+                    jQuery.each(res2.list, function(key, value)
+                    {
+                     $('select[var="material"]').val(value['type']);
+                     // $('select[var="gage"] option[text="' + value['gage'] +'"]').attr("selected","selected") ;
+                    // $("select[var='gage'] option:contains("+ value['gage'] +")").prop('selected',true);
+
+                    $("select[var='gage'] option").filter(function() {
+                        return this.text == value['gage']; 
+                        }).prop('selected',true);
+                     $('select[var="pattern"]').val(value['pattern']);
+                     $('select[var="holes"]').val(value['holes']);
+                     $('select[var="centers"]').val(value['centers']);
+                     $('input[var="strip"]').val(value['strip']);
+                    $('input[var="length"]').val(value['cutoff_length']);
+                    $('input[var="diameter"]').val(value['dim']);
+                     // $('select[var="pattern"]').val(value['pattern']);
+                    //console.log(key + ' :- ' + value['gage'] + "<br/>gage value" );
+                   
+                    calculateMatValue();
+                    calcRateInfo();
+                });
+                    
+                    
+        });
+    calculateMatValue();
+calcRateInfo();
+
+}
+
+// calculateMatValue();
+// calcRateInfo();
+    });
+
+});
+ //$( document ).ready(function() {
+    
+
+//  setTimeout(function(){ 
+
+//   // choose target dropdown
+//   var select1 = $('.customer_id');
+//   select1.html(select1.find('option').sort(function(x, y) {
+//     // to change to descending order switch "<" for ">"
+//     return $(x).text() > $(y).text() ? 1 : -1;
+//   }));
+
+//   // select default item after sorting (first item)
+  
+ //$( ".customer_id" ).prepend( '<option value="" >Select Client</option>' );
+// $('.customer_id').get(0).selectedIndex = 0;
+ 
+//  }, 5000);
+
+
+ //});
+            </script>

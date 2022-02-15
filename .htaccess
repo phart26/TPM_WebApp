@@ -1,0 +1,19 @@
+ErrorDocument 404 "pages/404.html"
+ErrorDocument 500 "pages/500.html"
+
+
+IndexIgnore *
+
+RewriteEngine on
+RewriteOptions MaxRedirects=1
+
+
+RewriteBase /newdev/
+
+# Store the current location in an environment variable CWD
+RewriteCond $0#%{REQUEST_URI} ([^#]*)#(.*)\1$
+RewriteRule ^.*$ - [E=CWD:%2]
+
+# response
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.+)$ "%{ENV:CWD}index.php?page=$1" [QSA,L]

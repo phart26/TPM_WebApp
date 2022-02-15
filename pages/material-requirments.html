@@ -1,0 +1,134 @@
+<div class="content-wrapper">
+<p>Want to save customer and part information? Try this version <a href="material-requirments_dev.html">here</a></p>
+    <h3>Material Requirments<div style="float: right;"><i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i><i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i><i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i><i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i></div></h3>
+
+    <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+  
+    <div class="row" form="table.form" fields='{"is_od": {"type": "bool"}}' table-name="mat_req" style="margin: 20px 0;">
+        <div class="col-lg-12">
+
+        <div class="column">
+            <div class="input">
+                <span class="left-placeholder">Quantity</span><input var="quantity" class="align-right" type="text" mask="number">
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Dimension</span><input var="dim" class="align-right" type="text" mask="double">
+            </div>
+           
+            <div class="input">
+                <span class="left-placeholder">ID</span><input class="id_not_od" var="is_od" type="checkbox">
+
+            </div>
+             <div class="input" style="display: none;">
+                <span class="left-placeholder">OD</span><input class="od_not_id" checked="checked" var="is_od" type="checkbox">
+                
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Length</span><input var="length" class="align-right" type="text" mask="number">
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Gage</span><select var="gage" table="gage_tbl" column="gage"></select>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Pattern</span><select var="pattern" table="pat_tbl" column="pattern"></select>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Holes</span><select var="holes" table="frac_tbl" column="holes" value-field="decimal">
+                    <option value="">Select Holes</option>
+                </select>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Centers</span><select var="centers" table="frac_tbl" column="centers" value-field="decimal"><option value="">Select Centers</option></select>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Strip</span><input var="strip" class="align-right" type="text" mask="double">
+            </div>
+            <div class="input" style="display: none;">
+                <span class="left-placeholder">Total Time</span><input class="align-right" type="text">
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="input">
+                <span class="left-placeholder">OD</span><input  precision="3" val="od" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">OA</span><input precision="3" val="oa" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Tube Weight</span><input precision="3" val="tube_weight" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">weight/foot</span><input precision="3" val="weight_per_foot" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">hspi</span><input precision="3" val="hspi" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Angle</span><input precision="3" val="angle" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Strip/lf</span><input precision="3" val="lf_ft" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">wt (pre)</span><input precision="2" val="wbs" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Total if mat</span><input precision="3" val="lf_total" class="align-right" type="number" disabled>
+            </div>
+            <span class="text">(includes 10% scrap)</span>
+        </div>
+
+
+        </div>
+    </div>
+</div>
+ <script type="text/javascript">
+
+$(document).ready(function(){
+
+setTimeout(function(){
+            $('[var="holes"]').html($('[var="holes"]').children('option').sort(function (x, y) {
+                return $(x).val().toUpperCase() < $(y).val().toUpperCase() ? -1 : 1;
+                
+            }));
+            
+            $('[var="holes"]').get(0).selectedIndex = 0;
+            
+            $('[var="holes"] option').each(function() {
+                if ( $(this).text() == '' ) {
+                    $(this).remove();
+                }
+            });
+            
+            $('[var="centers"]').html($('[var="centers"]').children('option').sort(function (x, y) {
+                return $(x).val().toUpperCase() < $(y).val().toUpperCase() ? -1 : 1;
+                
+            }));
+            //console.log('hellooo');
+            $('[var="centers"]').get(0).selectedIndex = 0;
+            $('[var="centers"] option').each(function() {
+                if ( $(this).text() == '' ) {
+                    $(this).remove();
+                }
+            });
+            //$('[var="centers"]').children('option').text().empty().remove();
+
+            }, 3000);
+
+});
+
+
+                
+jQuery('input.id_not_od').click(function(){
+
+console.log('cliked');
+if (jQuery(this).is(':checked')) {
+    jQuery('input[type="checkbox"].od_not_id').prop('checked', false);
+}else{
+    jQuery('input[type="checkbox"].od_not_id').prop('checked', true);
+}
+});
+
+            </script>
+<script src="assets/js/page.material-requirments.js"></script>

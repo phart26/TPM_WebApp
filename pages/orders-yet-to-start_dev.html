@@ -1,0 +1,854 @@
+
+<script>
+    function request1(type) {
+        //alert(setting.server+ api);
+        $('#coildata_get').val(type);
+        var part_id = $('#part_id').val();
+        var job = $('#job').val();
+        $.post(setting.server+"index.php?url=order_list_coil&type="+type+"&part_id="+part_id+"&job="+job, function(data){
+             $('#coil_data').html(data['done']);
+        })
+    }
+    //weight label
+    function get_weight(job){
+            let jobid = job ;
+            jobid = parseInt(jobid);
+            $.post(setting.server+"index.php?url=weight_show&job="+jobid, function(data){
+                $('#allocated b').text(data.done.tw);
+                $('#already b').text(data.done.used);
+                $('#dedicated b').text((parseInt(data.done.tw) + parseInt(data.done.used)));
+            });
+          }
+          function part_update(partno){
+            let partn = partno;
+            if(partn != ''){
+                $.post(setting.server+"index.php?url=part_show&partn="+partn, function(data){
+                    $(".resetRadio input[type='radio']").prop('checked',false);
+                    $('#coil_data').empty();
+                    $('#coil_data').html(data.done);
+                });
+            }
+          }
+          //partupdate end
+
+    $(document).ready(function() {
+
+       request1(4);
+         //weight
+    $('.inputweight input[type="radio"]').on('change',function(){
+       
+        
+        $(document).off('change','#coil_data input[type="radio"]');
+        
+        if($(this).hasClass('Allocated')){
+            $(document).on('change','#coil_data input[type="radio"]',function(){
+                let $this = $(this),valuehold = $this.parents('tr').find('td').eq(2).text(),coilno = $this.parents('tr').find('td').eq(1).text();
+
+                $('.inputWeightParent input[type="text"]').css('border-color','');
+                $('.inputWeightParent').css('display','inline-block');
+
+                $('.inputWeightParent input[type="text"]').val('0').attr('data-vall',valuehold).attr('data-coilno', coilno).attr('data-updateable','false');
+            });
+           
+       }
+       else{
+            $('.inputWeightParent').hide();
+            
+       }
+    });//change close here
+   
+    $('.inputWeightParent input[type="text"]').on('keyup',function(){
+        $(this).css('border-color','');
+        let $this = $(this);
+        this.value = this.value.replace(/[^0-9\.]/g,''); 
+        if(parseInt($this.val()) > parseInt($this.attr('data-vall'))){
+            $(this).css('border-color','red');
+            $(this).attr('data-updateable','false');
+        }
+        else{
+            $(this).attr('data-updateable','true');
+        }
+        
+    });//input update
+    $('#Enter_as_Used').on('click',function(){
+        let textf = $('.inputWeightParent input[type="text"]');
+        if(textf.attr('data-updateable') == 'true'){
+            $.post(setting.server+"index.php?url=Enter_as_Used&newval="+textf.val()+"&coil="+textf.attr('data-coilno')+"&oldone="+textf.attr('data-vall'), 
+            function(data){
+                if(data.done.query ==1){
+                    let old = textf.attr('data-vall'),newone = textf.val();
+                    let radio = $('#coil_data input[type="radio"]:checked');
+                    radio.parents('tr').find('td').eq(2).text(old-newone);
+                    let valuehold =radio.parents('tr').find('td').eq(2).text(),coilno = radio.parents('tr').find('td').eq(1).text();
+                     $('.inputWeightParent input[type="text"]').val('0').attr('data-vall',valuehold).attr('data-coilno', coilno).attr('data-updateable','false');;
+                     get_weight($('#job').val());
+                }else if(data.done.query ==2){
+                    $('#coil_data input[type="radio"]:checked').parents('tr').remove();
+                    get_weight($('#job').val());
+                }
+                else {
+                    alert("smothing wrong!");
+                }
+            })
+        }
+        else{
+            alert('Please Fill Value it does not same or not greater than last vlaue!');
+        }
+    });
+    function getid(){
+            $.ajax({
+                method:"POST",
+                url:"/api/getid?&getidnew="+$('#job').attr('data-hold')+"&coll="+$('#job').attr('data-colla'),
+                success:function(res){
+                    if(res['list'].length !=0){
+                        let id = parseInt(res['list'][0][$('#job').attr('data-colla')]);
+                        $('#job').val(id+1);
+                    }
+                }
+            });
+        }
+        getid();
+
+        $(document).on('click','[ev="form.reset"]',function(){
+            getid();
+        });
+
+    });
+
+     function request2(type)
+    {
+
+    
+        $('#layer_get').val(type);
+        var part_id = $('#part_id').val();
+      
+        $.post(setting.server+"index.php?url=order_list_mesh&type="+type+"&part_id="+part_id, 
+            function(data){
+             $('#mesh_data'+type).html(data['done']);
+            })
+    }
+    $(document).ready(function() {
+       
+       request2(1);
+
+    })
+
+       function request3(type)
+    {
+
+    if (type==1) {
+         if($('.startedcls').is(":checked")){
+             $("#databegan").show();
+         }else{
+             $("#databegan").hide();
+         }                    
+       
+    }else if (type==2) {
+         if($('.finishedcls').is(":checked")){
+             $("#datefinish").show();
+         }else{
+             $("#datefinish").hide();
+         }
+    } else if (type==3) {
+         if($('.shippedcls').is(":checked")){
+             $("#dateship").show();
+         }else{
+             $("#dateship").hide();
+         }
+    }      
+       
+    }
+
+
+    function update_allocation(type)
+    {
+        if (type == 1 || type == 2 || type == 3) {
+          
+            var id = $('#radio_id').val();
+            var job = $('#job').val();
+            $.post(setting.server+"index.php?url=update_data&type="+type+"&id="+id+"&job="+job, function(data){
+                var id_data = $('#coildata_get').val();
+                request1(id_data);
+                get_weight($('#job').val());
+
+            });
+        }
+
+        if (type == 4 || type == 5) {
+            var id = $('#mesh_radio_id').val();
+             var job = $('#job').val();
+             $.post(setting.server+"index.php?url=update_data&type="+type+"&id="+id+"&job="+job, function(data){
+                var id_data1 = $('#layer_get').val();
+                request2(id_data1);
+            });
+        }
+
+    }
+    function getRadio(id){
+        $('#radio_id').val(id);
+    }
+
+    function getMeshRadio(id){
+        $('#mesh_radio_id').val(id);
+    }
+
+
+
+
+
+
+function ReverseProg()
+{
+    var Alloc=document.getElementById("AllocRadio");
+    Alloc.checked=false;
+}
+function ReverseEver()
+{
+    var Alloc=document.getElementById("AllocRadio");
+    Alloc.checked=false;
+    Alloc.disabled=true;
+}
+
+</script>
+<script>
+        var data, cur = 0;
+        function quoteChanged() {
+            var quote = $('[var=quote]').val();
+            request('table/orders_tbl/fetch', {'quote': quote})
+            .done(function(res) {
+                if(!quote)
+                    return;
+                resetForm('detail.form');
+                $('.detail').slideDown();
+                $('#detail-quote').val(quote);
+                data = res.list;
+                if(!data.length) {
+                    $('#page-btn').hide();
+                    return;
+                }
+                fillForm('detail.form', data[0], 'var');
+                fillForm('detail.form', data[0], 'val');
+                cur = 0;
+
+                $('#page-btn').show();
+                $('#first-page').show();
+                $('#prev-page').show();
+                $('#next-page').show();
+                $('#last-page').show();
+
+                $('#page-no').html(cur +1);
+
+                $('#first-page').hide();
+                $('#prev-page').hide();
+
+                if(cur == data.length - 1) {
+                    $('#next-page').hide();
+                    $('#last-page').hide();
+                }
+            });
+        }
+
+        function show(page) {
+            cur = page;
+            resetForm('detail.form');
+            fillForm('detail.form', data[cur], 'var');
+            fillForm('detail.form', data[cur], 'val');
+            
+            $('#first-page').show();
+            $('#prev-page').show();
+            $('#next-page').show();
+            $('#last-page').show();
+
+            $('#page-no').html(cur +1);
+
+            if(cur == 0) {
+                $('#first-page').hide();
+                $('#prev-page').hide();
+            }
+            if(cur == data.length - 1) {
+                $('#next-page').hide();
+                $('#last-page').hide();
+            }
+        }
+
+        function deleteDetail() {
+
+            var form_data = parseForm('detail.form'),
+                msg  = message('Deleting...');
+
+            request('table/orders_tbl/delete', {id: form_data.id})
+            .always(function() {
+                msg.remove()
+            })
+            .done(function(res) {
+                message('Deleted', 2000);
+                quoteChanged();
+            })
+        }
+
+        function resetDetail() {
+            resetForm('detail.form');
+            var quote = $('[var=quote]').val();
+            $('#detail-quote').val(quote);
+        }
+
+        function saveDetail() {
+
+            // validate input
+            var invalid = $('[form="detail.form"] [mask].invalid').filter(':first')
+
+            if ( invalid.length )
+                return message(invalid.attr('field'), 2000)
+
+            var form_data = parseForm('detail.form'),
+                msg  = message('Saving...');
+
+            request('table/orders_tbl/save', form_data)
+                .always(function(){
+                    msg.remove()
+                })
+                .done(function(res){
+                    message('Saved', 2000);
+                    quoteChanged();
+                })
+        }
+
+        function saveMaster() {
+
+            // validate input
+            var invalid = $('[form="table.form"] [mask].invalid').filter(':first')
+
+            if ( invalid.length )
+                return message(invalid.attr('field'), 2000)
+
+            var data = parseForm('table.form'),
+                msg  = message('Saving...'),
+                tbl  = $('[form="table.form"]').attr('table-name')
+alert(JSON.stringify(data));
+alert('table/'+ tbl +'/save');
+
+            request('table/'+ tbl +'/save', data)
+                .always(function(){
+                    msg.remove()
+                })
+                .done(function(res){
+                    alert(JSON.stringify(res));
+
+                    console.log(res);
+                    message('Saved', 2000)
+
+                    EVENTS['table.list']();
+                })
+        }
+
+        function resetEverything() {
+            resetForm('table.form');
+            setTimeout(function() {
+                resetDetail();
+                $('.detail').hide();
+            }, 1000);
+        }
+
+        function deleteEverything() {
+            var quote = $('[var=quote]').val(),
+                msg  = message('Deleting...');
+            request('table/orders_tbl/delete', {'quote': quote})
+            .always(function() {
+                msg.remove()
+            })
+            .done(function(res) {
+                message('Deleted', 2000);
+                var data = parseForm('table.form'),
+                    msg  = message('Deleting...'),
+                    tbl  = $('[form="table.form"]').attr('table-name')
+
+                request('table/'+ tbl +'/delete', data)
+                    .always(function(){
+                        msg.remove()
+                    })
+                    .done(function(response){
+
+                        message('Deleted', 2000)
+
+                        resetForm('table.form');
+                        EVENTS['table.list']();
+                        setTimeout(function() {
+                            $('.detail').hide();
+                        }, 1000);
+
+                    })
+            })
+        }
+
+        $(document).ready(function() {
+            $('.detail').hide();
+            $('#part_id').on('click',function(){
+                part_update($(this).val());
+            });
+        })
+    </script>
+
+<script>
+    function onCustomerChange(select) {
+        var part = $('.part_id');
+        // change value of filter for part_id
+        part.attr('filter_value', select.value);
+
+        // remove all options from part_id
+        part.find('option').remove();
+        
+        // append new options for part_id
+        var column = part.attr('column'),
+            source = part.attr('table'),
+            value = part.attr('value-field') || column,
+            filter_column = part.attr('filter_column'),
+            filter_value = part.attr('filter_value');
+
+        request('table/'+ source +'/fetch', {})
+            .done(function(response){
+                if (!response.list) return;
+
+                for(var i=0; i<response.list.length; i++)
+                {
+                    var option = response.list[i];
+
+                    if (filter_column && filter_value) {
+                        if (option [ filter_column ] != filter_value) continue;
+                    }
+
+                    if (!saved_i) var saved_i = i;
+
+                    part.append(
+                        $('<option>'+ option[ column ] +'</option>').prop('value', option[ value ])
+                    )
+                }
+                $('.inputWeightParent').hide();
+                get_weight($('#job').val());
+                part_update($('#part_id').val());
+                onPartNoChange(response.list[saved_i].part);
+            })
+        ;
+    }
+    
+    function onPartNoChange(part_no) {
+
+        request('part-specs?part_name='+part_no, {})
+            .done(function(response){
+                if (!response) return;
+
+                for (var k in response.done) {
+                    if (response.done.hasOwnProperty(k)) {
+                        var input = $('.' + k);
+                        input.attr('value', response.done[k]);
+                    }
+                }
+            })
+        ;
+    }
+
+    function onPriceChange(price) {
+        var revenue = $('.quantity').val() * price;
+        $('.PO_total').prop('value', revenue);
+    }
+
+    function onQuantityChange(quantity) {
+        var revenue = $('.price').val() * quantity;
+        $('.PO_total').prop('value', revenue);
+    }
+</script>
+
+<div class="content-wrapper">
+
+<input type="hidden" id="coildata_get">
+<input type="hidden" id="layer_get">
+
+
+    <h3>Yet To Start Orders<div style="float: right;">
+            <i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Save Record" onclick="saveMaster()" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div></h3>
+
+<div id="filter"  fetch-url="order_yet_to_start" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+    
+    <div class="row">
+        <div class="col-lg-12">
+
+        <div form="table.form" fields='{"has_started": {"type": "bool"}, "has_finished": {"type": "bool"}, "has_shipped": {"type": "bool"}}'>
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Job No.</span><input type="text" class="align-right" var="job" id="job" data-hold="orders_tbl" data-colla="job">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Customer</span>
+                    <select class="customer_id" var="cust_id" table="cust_tbl"   value-field="cust_id" column="customer" onchange="onCustomerChange(this)">
+                 
+                    </select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">PO Number</span><input type="text" class="align-right">
+                </div>
+                <div class="input">
+               
+                    <span class="left-placeholder">Part No.</span>
+                 
+                     <select class="part_id" var="part" table="part_tbl" id="part_id"  value-field="part" column="part" filter_column="cust_id" filter_value="2" onchange="onPartNoChange(this.value)" >
+                     </select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Quantity</span><input type="text" class="quantity align-right" var="quantity" onchange="onQuantityChange(this.value)">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Date Ordered</span><input type="datepicker" class="align-right" var="ordered">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Date Due</span><input type="datepicker" class="align-right" var="due">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Shipping Date</span><input type="datepicker" class="align-right" var="ship_date">
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">LF mat</span><input class="lf_req align-right" type="number" placeholder="0.000" step="0.001">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Weight (pre)</span><input class="was align-right" type="number" placeholder="0.000" step="0.001">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Weight (post)</span><input class="wbs align-right" type="number" placeholder="0.000" step="0.001">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Total tube (ft)</span><input class="tf align-right" type="number" placeholder="0.000" step="0.001">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Price</span><input class="price align-right" type="number" placeholder="0.00" step="0.01" onchange="onPriceChange(this.value)">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Revenue total</span><input class="PO_total align-right" type="number" placeholder="0.00" step="0.01">
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Mill Operator</span>
+                    <select var="mill_operator" table="employee"   value-field="ID" column="name" filter_column="mill_operator" filter_value="1">
+                    </select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Cut Off Operator</span>
+                    <select var="cutoff_operator" table="employee"   value-field="ID" column="name" filter_column="cutoff_operator" filter_value="1">
+                    </select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Repair Welder</span>
+                    <select var="repair_welder" table="employee"   value-field="ID" column="name" filter_column="repair_welder" filter_value="1">
+                    </select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Inspector</span>
+                    <select var="inspector" table="employee"   value-field="ID" column="name" filter_column="inspector" filter_value="1">
+                    </select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Container Type</span>
+                    <select var="cont_type" table="cont"   value-field="ID" column="cont_type">
+                    </select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Shipping Method</span>
+                    <select var="ship_method" table="ship_method"   value-field="ID" column="ship_method">
+                    </select>
+                </div>
+            </div>
+
+            
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Mill Weld Spec</span>
+                     <select var="weld_spec_mill" table="weld_spec_mill"   value-field="weld_spec" column="weld_spec">
+                    </select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Repair Weld Spec</span>
+                    <select var="weld_spec_repair" table="weld_spec_repair"   value-field="weld_spec" column="weld_spec">
+                    </select>
+                </div>
+            </div>
+<?php $current_date= date('Y/m/d'); ?>
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Line item</span>
+                    <input type="text" class="align-right" var="item">
+                 
+                </div>
+                <div class="input" id="databegan" style="display:none;">
+                    <span class="left-placeholder">Date Began</span>
+                  
+                    <input type="datepicker" class="align-right" var="began" value="<?php echo  $current_date; ?>">
+                </div>
+                <div class="input" id="datefinish" style="display:none;">
+                    <span class="left-placeholder">Date Finished</span>
+                    
+                    <input type="datepicker" class="align-right" value="<?php echo  $current_date; ?>" var="finished">
+                </div>
+                <div class="input" id="dateship" style="display:none;">
+                    <span class="left-placeholder">Date Shipped</span>
+                  
+                    <input type="datepicker" class="align-right"  value="<?php echo  $current_date; ?>" var="shipped">
+                </div>
+
+                <div class="button" style="display:none;">Advance Job</div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Started ?</span>
+                    <input type="checkbox" class="startedcls" value="1" var="has_started"  onchange="request3(1)">             
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Finished ?</span><input type="checkbox" class="finishedcls" value="1" var="has_finished" onchange="request3(2)">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Shipped ?</span><input type="checkbox" class="shippedcls" value="1" var="has_shipped" onchange="request3(3)">
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="inline resetRadio inputweight">
+
+            
+
+            <br>
+             <input type="radio" name="coildata" value="1" onclick="request1(1)" class="Allocated">Allocated
+            <input type="radio" name="coildata" value="2" onclick="request1(2)">All material widths
+            <input type="radio" name="coildata" value="3" onclick="request1(3)">Part specific widths
+             <input type="hidden" id="radio_id">
+            <br>
+            <div class="inline disblock" >
+                <div class="inline overflow" style="font-size: 80%; border: 1px solid #ccc; height: 150px; background: #fff; width: 390px;">
+                    <table class="table row-border stripe display compact">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Coil</th>
+                                <th>Weight</th>
+                                <th>Width</th>
+                                <th>Worker#</th>
+                                <th>Heat#</th>
+                                <th>Job</th>
+                                <th>Allocated</th>
+                            </tr>
+                           
+                        </thead>
+                         <tbody id="coil_data">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="weight_show" style="margin-left:6px">
+                    <span class="weight_Allocated"  id="allocated">Weight Allocated: <b>..</b></span>
+                    <span class="weight_Allocated" id="already">Weight already used: <b>..</b></span>
+                    <span class="weight_Allocated"  id="dedicated">Total Weight dedicated to job:<b>..</b></span>
+                </div>
+
+                <div class="column disblock refresh_weight">
+                    <div class="button" onclick="update_allocation(1)">Allocate</div>
+                    <div class="button" onclick="update_allocation(2)">Deallocate</div>
+                    <div class="button"  id ="Enter_as_Used">Enter as Used</div>
+                    <div class="inputWeightParent" style="display:none">
+                        <div class="input-group-addon" >Enter used weight</div>
+                        <input type="text" class="form-control" placeholder="Update Weight" data-updateable="false">
+                    </div>
+                </div>
+            </div>
+                <!-- </form> -->
+
+                
+                <!-- </form> -->
+                            
+            
+
+            <br>
+
+            <div class="section">
+                <div class="section-title">Order Status</div>
+            
+                <div class="column">
+                    <div class="input">
+                        <span class="left-placeholder">Instruction</span>
+                    <select var="instr" table="instr_type"   value-field="ID" column="Instruction">
+                    </select>
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Balance</span>
+                        <input type="text" class="align-right" var="balance">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Status</span>
+                        <select var="status" table="status_type"   value-field="ID" column="status">
+                        </select>
+                    </div>
+
+                    <div class="input">
+                        <span class="left-placeholder">Call</span>
+                        <input type="text" class="align-right" var="call">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">TPM Status</span>
+                        <select var="u886168621_tpm" table="u886168621_tpm_type"   value-field="ID" column="TPM_Type">
+                        </select>
+                    </div>
+
+                    <div class="button">Preview Report</div>
+                </div>
+            </div>
+
+        </div>
+        
+         <br>
+         <!-- <div>
+        <input type="radio" name="meshdata" value="1" onclick="request2(1)">Allocate
+        <input type="radio" name="meshdata" value="2" onclick="request2(2)">Deallocate
+        <input type="radio" name="meshdata" value="3" onclick="request2(3)">Use 
+         
+         </div> -->
+        <br>
+<input type="hidden" id="mesh_radio_id">
+        <div class="inline tab" style="margin-left: 23px; width: 500px; font-size: 80%;">
+
+            <div class="tab-list">
+                <div class="tab-list-item active" onclick="request2(1)">Layer 1 Mesh</div>
+                <div class="tab-list-item" onclick="request2(2)">Layer 2 Mesh</div>
+                <div class="tab-list-item" onclick="request2(3)">Drainage 1 Mesh</div>
+                <div class="tab-list-item" onclick="request2(4)">Drainage 2 Mesh</div>
+            </div>
+            <div class="tab-content active" style="padding: 0px;">
+                <div class="overflow" style="height: 300px;">
+                    <table class="table row-border stripe display compact">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Mesh Type</th>
+                                <th>Type</th>
+                                <th>Recieved</th>
+                                <th>Width</th>
+                                <th>Length</th>
+                                <th>Allocated</th>
+                                <th>TPM JOB</th>
+                                <th>Heat#</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mesh_data1">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="button" onclick="update_allocation(4)">Allocate</div>
+                <div class="button" onclick="update_allocation(5)">Deallocate</div>
+            </div>
+            <div class="tab-content">
+               <div class="overflow" style="height: 300px;">
+                    <table class="table row-border stripe display compact">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Mesh Type</th>
+                                <th>Type</th>
+                                <th>Recieved</th>
+                                <th>Width</th>
+                                <th>Length</th>
+                                <th>Allocated</th>
+                                <th>TPM JOB</th>
+                                <th>Heat#</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mesh_data2">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="button" onclick="update_allocation(4)">Allocate</div>
+                <div class="button" onclick="update_allocation(5)">Deallocate</div>
+            </div>
+            <div class="tab-content">
+                <div class="overflow" style="height: 300px;">
+                    <table class="table row-border stripe display compact">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Mesh Type</th>
+                                <th>Type</th>
+                                <th>Recieved</th>
+                                <th>Width</th>
+                                <th>Length</th>
+                                <th>Allocated</th>
+                                <th>TPM JOB</th>
+                                <th>Heat#</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mesh_data3">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="button" onclick="update_allocation(4)">Allocate</div>
+                <div class="button" onclick="update_allocation(5)">Deallocate</div>
+            </div>
+            <div class="tab-content">
+                <div class="overflow" style="height: 300px;">
+                    <table class="table row-border stripe display compact">
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Mesh Type</th>
+                                <th>Type</th>
+                                <th>Recieved</th>
+                                <th>Width</th>
+                                <th>Length</th>
+                                <th>Allocated</th>
+                                <th>TPM JOB</th>
+                                <th>Heat#</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mesh_data4">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="button" onclick="update_allocation(4)">Allocate</div>
+                <div class="button" onclick="update_allocation(5)">Deallocate</div>
+            </div>
+        </div>
+
+
+        </div>
+    </div>
+</div>
+<style>
+    .weight_show{
+        display: inline-block;
+        width: 260px;
+        background:lightblue;
+        padding:10px
+    }
+    .weight_show span{
+        display: block;
+    }
+    .disblock{
+        display: block
+    }
+    .inputWeightParent {
+    margin-top: 7px;
+    width: 388px;
+}
+.inputWeightParent .input-group-addon {
+    width: 134px;
+    float: left;
+    border-radius: 0;
+    padding: 9.5px;
+}
+.inputWeightParent .form-control{
+    width:220px;
+    float:left;
+    border-radius: 0;
+}
+    </style> 

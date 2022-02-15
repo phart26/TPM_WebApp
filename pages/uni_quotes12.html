@@ -1,0 +1,620 @@
+<div class="content-wrapper">
+    <h3>Quotes<div style="float: right;"><i onclick="viewQuoteReport()" title="View" class="fa fa-eye" style="font-size: 18px;padding: 0 15px;"></i><i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i><i title="Save Record" onclick="saveMaster()" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i><i title="Delete Record" onclick="deleteEverything()"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i><i title="Reset Form" onclick="resetEverything()" form-name="table.form" class="fa fa-remove" style="font-size: 18px;padding: 0 15px;"></i></div></h3>
+
+        <div id="filter" fetch-url="uni_quote" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee; overflow: auto;">
+            
+        </div>
+
+    <script>
+        var data, cur = 0;
+		
+		function saveNewDetail()
+		{
+				$("[var=id]").val("");
+                saveDetail("save_new");
+				setTimeout(function(){ show(data.length-1); }, 2000);
+		}
+		
+        function listMaster() {
+
+            var select = $('#filter'),
+                fields = $('[form="table.form"]').attr('fields');
+
+            if(fields)
+                fields = JSON.parse(fields);
+
+            select.html('Loading...');
+
+            request('uni_quote', {})
+            .done(function(res) {
+                if(!res.list) {
+                    select.html('<tbody>No data Found !</tbody>');
+                    return;
+                }
+
+                select.html(
+                    json2table(res.list, {
+                        'click': function() {
+							//alert("sachin is a good boy");
+                            var data = $(this).data();
+                            $(this).closest('tbody').children('tr.active').removeClass('active')
+                            $(this).closest('tr').addClass('active')
+
+                            fillForm('table.form', data, 'var');
+                            fillForm('table.form', data, 'val');
+                            $('#filter').slideUp();
+                        }
+                    }, fields)
+                )
+                .find('table').DataTable({
+                    pageLength : 5,
+                    lengthMenu : [ 5, 10, 25, 50, 75, 100 ]
+                });
+            })
+        }
+		
+        function quoteChanged(tmpVar) {
+            var quote = $('[var=quote]').val();
+            request('table/uni_quote_detail_tbl/fetch', {'quote': quote})
+            .done(function(res) {
+                if(!quote)
+                    return;
+                resetForm('detail.form');		
+				
+                $('.detail').slideDown();
+                $('#detail-quote').val(quote);
+                data = res.list;
+                if(!data.length) {
+                    $('#page-btn').hide();
+                    return;
+                }
+				if(tmpVar == "")
+				{
+					fillForm('detail.form', data[0], 'var');
+					fillForm('detail.form', data[0], 'val');
+				}
+				else
+				{
+					fillForm('detail.form', data[data.length-1], 'var');
+					fillForm('detail.form', data[data.length-1], 'val');
+				}
+                cur = 0;
+
+                $('#page-btn').show();
+                $('#prev-page').show();
+                $('#first-page').show();
+                $('#next-page').show();
+                $('#last-page').show();
+
+                $('#page-no').html(cur +1);
+
+                $('#first-page').hide();
+                $('#prev-page').hide();
+
+                if(cur == data.length - 1) {
+                    $('#next-page').hide();
+                    $('#last-page').hide();
+                }
+
+                //calcRateInfo();
+            });
+        }
+
+        function show(page) {
+            cur = page;
+            resetForm('detail.form');		
+			
+            fillForm('detail.form', data[cur], 'var');
+            fillForm('detail.form', data[cur], 'val');
+            
+            $('#first-page').show();
+            $('#prev-page').show();
+            $('#next-page').show();
+            $('#last-page').show();
+
+            $('#page-no').html(cur +1);
+
+            if(cur == 0) {
+                $('#first-page').hide();
+                $('#prev-page').hide();
+            }
+            if(cur == data.length - 1) {
+                $('#next-page').hide();
+                $('#last-page').hide();
+            }
+            //calcRateInfo();
+        }
+
+        function deleteDetail() {
+
+            var form_data = parseForm('detail.form'),
+                msg  = message('Deleting...');
+
+            request('table/uni_quote_detail_tbl/delete', {id: form_data.id})
+            .always(function() {
+                msg.remove()
+            })
+            .done(function(res) {
+                message('Deleted', 2000);
+                quoteChanged("");
+            })
+        }
+
+        function resetDetail() {
+            resetForm('detail.form');			
+	
+            var quote = $('[var=quote]').val();
+            $('#detail-quote').val(quote);
+        }
+
+        function saveDetail(tmpVal) {
+
+            // validate input
+            var invalid = $('[form="detail.form"] [mask].invalid').filter(':first')
+
+            if ( invalid.length )
+                return message(invalid.attr('field'), 2000)
+
+            var form_data = parseForm('detail.form'),
+                msg  = message('Saving...');
+
+                    console.log(form_data);
+
+            request('table/uni_quote_detail_tbl/save', form_data)
+                .always(function(){
+                    msg.remove()
+                })
+                .done(function(res){
+                    console.log(res);
+                    message('Saved', 2000);
+					if(tmpVal=="")
+					{
+						quoteChanged("");
+					}
+					else
+					{
+						quoteChanged("save_new");
+					}
+                })
+        }
+
+        function saveMaster() {
+
+            // validate input
+            var invalid = $('[form="table.form"] [mask].invalid').filter(':first')
+
+            if ( invalid.length )
+                return message(invalid.attr('field'), 2000)
+
+            var data = parseForm('table.form'),
+                msg  = message('Saving...')
+
+            request('table/uni_quote_tbl/save', data)
+                .always(function(){
+                    msg.remove()
+                })
+                .done(function(res){
+                    console.log(res);
+                    message('Saved', 2000);
+
+                    listMaster();
+					setTimeout(function() {
+						quoteChanged("");
+					}, 1000);
+                })
+        }
+
+        function resetEverything() {
+            resetForm('table.form');	
+			// calculateUniQuoteId();
+		
+            setTimeout(function() {
+                resetDetail();
+                $('.detail').hide();
+            }, 1000);
+        }
+
+        function deleteEverything() {
+            var quote = $('[var=quote]').val(),
+                msg  = message('Deleting...');
+			deleteQuoteDetail();
+            request('table/uni_quote_tbl/delete', {'quote': quote})
+            .always(function() {
+                msg.remove()
+            })
+            .done(function(res) {
+                message('Deleted', 2000);
+                var data = parseForm('table.form'),
+                    msg  = message('Deleting...');
+
+                request('table/uni_quote_tbl/delete', data)
+                    .always(function(){
+                        msg.remove()
+                    })
+                    .done(function(response){
+
+                        message('Deleted', 2000)
+
+                        resetForm('table.form');		
+						// calculateUniQuoteId();
+						
+                        listMaster();
+                        setTimeout(function() {
+                            $('.detail').hide();
+                        }, 1000);
+
+                    })
+            })
+        }
+
+			function viewQuoteReport()
+			{
+				var quote_value = $("#quote_value").val();
+				if(quote_value == "")
+				{
+					return false;
+				}
+				else
+				{
+					var url = "/quotes_dev.php?quote="+quote_value;
+					var win = window.open(url, '_blank');
+					win.focus();
+				}
+			}
+			
+			
+			
+			function deleteQuoteDetail()
+			{
+				var quote = $("#quote_value").val();
+				$.get("/api/?url=delete_quote_detail&quote="+quote, {}, function(data, status){
+					if(status == "success")
+					{
+						return true;
+					}
+				});
+				
+			}
+			
+		
+
+    </script>
+
+    <div class="row" style="margin: 20px 0;">
+		<div class="col-lg-12" form="table.form" fields='{"fax_back": {"type": "bool"}}'>
+			<div class="column">
+				<div class="input">
+					<span class="left-placeholder">Quote</span><input id="quote_value" onchange="quoteChanged('')" var="quote" mask="number">
+				</div>
+				<div class="input">
+					<span class="left-placeholder">Company</span><select var="cust_id" table="cust_tbl" column="customer" value-field="cust_id"></select>
+				</div>
+				<div class="input">
+					<span class="left-placeholder">Address</span><textarea var="address"></textarea>
+				</div>
+			</div>
+
+			<div class="column">
+				<div class="input">
+					<span class="left-placeholder">Date</span><input var="date" type="datepicker">
+				</div>
+				<div class="input">
+					<span class="left-placeholder">Fax Back</span><input var="fax_back" type="checkbox">
+				</div>
+				<div class="input">
+					<span class="left-placeholder">Terms</span><select var="terms">
+						<option value="Net 20">Net 20</option>
+						<option value="Net 30">Net 30</option>
+						<option value="Net 45">Net 45</option>
+						<option value="Net 60">Net 60</option>
+					</select>
+				</div>
+				<div class="input">
+					<span class="left-placeholder">FOB</span><input var="fob">
+				</div>
+			</div>
+
+			<div class="column">
+				<div class="input">
+					<span class="left-placeholder">Notes</span><textarea var="notes"></textarea>
+				</div>
+				<div class="input">
+					<span class="left-placeholder">Special Notes</span><textarea var="special"></textarea>
+				</div>
+			</div>
+		</div>
+					
+		<div class="inline tab" style="margin-left: 23px; width: 1000px; font-size: 80%;">
+				<div class="tab-list">
+					<div class="tab-list-item active" onclick="request2(1)">Data</div>
+					<div class="tab-list-item" onclick="request2(2)">Master</div>
+					<div class="tab-list-item" onclick="request2(3)">Inner</div>
+					<div class="tab-list-item" onclick="request2(4)">Outer</div>
+					<div class="tab-list-item" onclick="request2(5)">Filter Outer</div>
+					<div class="tab-list-item" onclick="request2(6)">Filter Inner</div>
+					<div class="tab-list-item" onclick="request2(6)">Drainage Outer</div>
+					<div class="tab-list-item" onclick="request2(6)">Drainage Inner</div>
+					<div class="tab-list-item" onclick="request2(6)">Filter Seam</div>
+				</div>
+				<div class="tab-content active" style="padding: 0px;">
+					
+
+					<div class="col-lg-12 detail" form="detail.form">
+
+						<div class="column">
+							<div class="input">
+								<span class="left-placeholder">Id</span><input var="id" type="text" mask="number" disabled>
+								<input id="detail-quote" var="quote" type="hidden" >
+							</div>
+							<div class="input">
+								<span class="left-placeholder">Commission</span><input var="commission" type="text" >
+							</div>
+							<div class="input">
+								<span class="left-placeholder">Amount order</span><input var="amount_order" type="text" >
+							</div>
+							<div class="input">
+								<span class="left-placeholder">Set Up Fee</span><input var="set_up_fee" type="text" >
+							</div>
+							<div class="input">
+								<span class="left-placeholder">Length</span><input var="length" type="text" >
+							</div>
+							<div class="input">
+								<span class="left-placeholder">Mircon</span><input var="mircon" type="text" >
+							</div>
+							<div class="input">
+								<span class="left-placeholder">Val per order</span><input var="val_per_ord" type="text" >
+							</div>
+							<div class="input">
+								<span class="left-placeholder">Shipping charge</span><input var="ship_charge" type="text" >
+							</div>
+							<div class="input">
+								<span class="left-placeholder">Width Of Filter Seam</span><input var="wdth_fltr_seam" type="text" >
+							</div>
+							<div class="input">
+								<span class="left-placeholder">Drainage Outer Mesh</span><input var="drng_otr_msh" type="text" >
+							</div>
+							<div class="input">
+								<span class="left-placeholder">Drainage Outer Cost</span><input var="drng_otr_cost" type="text" >
+							</div>
+							<div class="input">
+								<span class="left-placeholder">Drainage Inner mesh</span><input var="drng_in_msh" type="text" >
+							</div>
+							<div class="input">
+								<span class="left-placeholder">Drainger Inner cost</span><input var="drng_in_cst" type="text" >
+							</div>
+							<div class="input">
+								<span class="left-placeholder">Inner ID</span><input var="inner_id" type="text" >
+							</div>
+							<div class="input">
+								<span class="left-placeholder">Gage</span><input var="in_gage" type="text" >
+							</div>
+							<div class="input">
+								<span class="left-placeholder">Material Thickness</span><input var="in_mtrl_thckns" type="text" >
+							</div>
+							<div class="input">
+								<span class="left-placeholder">Strip Width</span><input var="in_strp_wdth" type="text" >
+							</div>
+							
+						</div>
+						
+						<div class="column">
+							<div class="section">
+								<div class="section-title">RAW MATERIAL COST</div>
+								<div class="input">
+									<span class="left-placeholder">-</span><input value="Both" type="text" disabled><input value="Outer" type="text" disabled><input value="Inner" type="text" disabled>
+								</div>
+								<div class="input">
+									<span class="left-placeholder">Shroud Type</span><input var="sh_type_bth" type="text" ><input var="sh_type_otr" type="text" ><input var="sh_type_in" type="text" >
+								</div>
+								<div class="input">
+									<span class="left-placeholder">Shroud material cost</span><input var="sh_mt_ct_bth" type="text" ><input var="sh_mt_otr" type="text" ><input var="sh_mt_in" type="text" >
+								</div>
+								<div class="input">
+									<span class="left-placeholder"> Filter Mesh Material</span><input var="fltr_mt_bth" type="text" ><input var="fltr_mt_otr" type="text" ><input var="fltr_mt_in" type="text" >
+								</div>
+								<div class="input">
+									<span class="left-placeholder">Filter mesh cost</span><input var="fltr_ct_bth" type="text" ><input var="fltr_ct_otr" type="text" ><input var="fltr_ct_in" type="text" >
+								</div>
+							</div>
+							
+							<div class="section">
+								<div class="section-title">Outer Shroud</div>
+								<div class="input">
+									<span class="left-placeholder">Gage</span><input var="otr_gage" type="text" >
+								</div>
+								<div class="input">
+									<span class="left-placeholder">Material Thickness</span><input var="otr_mtrl_thckns" type="text" >
+								</div>
+								<div class="input">
+									<span class="left-placeholder">Strip Width</span><input var="otr_strp_wdth" type="text" >
+								</div>
+							</div>
+                        </div>
+							
+						<div class="column">
+							<div class="section">
+								<div class="section-title">Standard Single Drainage Layer</div>
+								<div class="input">
+									<span class="left-placeholder">-</span><input value="Sell Price" type="text" disabled><input value="Discount Price" type="text" disabled><input value="Marginal Cost" type="text" disabled>
+								</div>
+								<div class="input">
+									<span class="left-placeholder">Price Per Foot</span><input var="ppf_sp" type="text"  disabled><input var="ppf_dp" type="text"  disabled><input var="ppf_mc" type="text"  disabled>
+								</div>
+								<div class="input">
+									<span class="left-placeholder">W/Vad per ft.</span><input var="wpf_sp" type="text"  disabled><input var="wpf_dp" type="text"  disabled><input var="dpf_mc" type="text"  disabled>
+								</div>
+								<div class="input">
+									<span class="left-placeholder">Price W/Shipping</span><input var="pws_sp" type="text"  disabled><input var="pws_dp" type="text"  disabled><input var="pws_mc" type="text"  disabled>
+								</div>
+								<div class="input">
+									<span class="left-placeholder">Tube</span><input var="tube_sp" type="text" disabled><input var="tube_dp" type="text"  disabled><input var="tube_mc" type="text" disabled>
+								</div>
+								<div class="input">
+									<span class="left-placeholder">Order</span><input var="odr_sp" type="text" disabled><input var="odr_dp" type="text"  disabled><input var="odr_mc" type="text"  disabled>
+								</div>
+							</div>
+						</div>
+							
+						<div class="column">
+							<div class="section">
+								<div class="section-title"> Mesh Raw Material Required for the Order</div>
+								<div class="input">
+									<span class="left-placeholder">-</span><input style="width:150px;" value="Type" type="text" disabled><input style="width:150px;" value="Width" type="text" disabled><input style="width:150px;" value=" LN/FT " type="text" disabled><input style="width:150px;" style="width:150px;" value="Roll x 100 FT" type="text" disabled><input style="width:150px;" value="Grade" type="text" disabled>
+								</div>
+								<div class="input">
+									<span class="left-placeholder">Filter Mesh</span><input style="width:150px;" var="fm_t" type="text"  disabled><input style="width:150px;" var="fm_w" type="text"  disabled><input style="width:150px;" var="fm_ln" type="text" disabled><input style="width:150px;" style="width:150px;" style="width:150px;" var="fm_roll" type="text" disabled><input style="width:150px;" var="fm_grade" type="text" disabled>
+								</div>
+								<div class="input">
+									<span class="left-placeholder">Outer Drainage</span><input style="width:150px;" var="otr_drng_t" type="text"  disabled><input style="width:150px;" var="otr_drng_w" type="text"  disabled><input style="width:150px;" var="otr_drng_ln" type="text" disabled><input style="width:150px;" style="width:150px;" var="otr_drng_roll" type="text"  disabled><input style="width:150px;" var="otr_drng_grade" type="text" disabled>
+								</div>
+								<div class="input">
+									<span class="left-placeholder">Inner Drainage</span><input style="width:150px;" var="in_drng_t" type="text"  disabled><input style="width:150px;" var="in_drng_w" type="text"  disabled><input style="width:150px;" var="in_drng_ln" type="text"  disabled><input style="width:150px;" style="width:150px;" var="in_drng_roll" type="text"  disabled><input style="width:150px;" var="in_drng_grade" type="text" disabled>
+								</div>
+								<div class="input">
+									<span class="left-placeholder">Filter seam</span><input style="width:150px;" var="fltr_seam_t" type="text"  disabled><input style="width:150px;" var="fltr_seam_w" type="text"  disabled><input style="width:150px;" var="fltr_seam_ln" type="text" disabled><input style="width:150px;" style="width:150px;" var="fltr_seam_roll" type="text"  disabled disabled><input style="width:150px;" var="fltr_seam_grade" type="text"  disabled>
+								</div>
+							</div>
+						</div>
+							
+						<div class="column">
+							<div class="section">
+								<div class="section-title">Shroud Raw material</div>
+								<div class="input">
+									<span class="left-placeholder">-</span><input value="Type" type="text" disabled><input value="Width" type="text" disabled><input value="LBS" type="text" disabled><input value="Tube OD" type="text" disabled>
+								</div>
+								<div class="input">
+									<span class="left-placeholder">Shroud outer</span><input var="sh_otr_t" type="text"  disabled><input var="sh_otr_w" type="text" disabled><input var="sh_otr_lbs" type="text"  disabled><input var="sh_otr_tube" type="text" disabled>
+								</div>
+								<div class="input">
+									<span class="left-placeholder">Shroud inner</span><input var="sh_in_t" type="text"  disabled><input var="sh_in_w" type="text"  disabled><input var="sh_in_lbs" type="text"  disabled><input var="sh_in_tube" type="text"  disabled>
+								</div>
+							</div>
+					   </div>
+					</div>
+				</div>
+		</div>
+					
+		<div class="column">
+
+			<div id="page-btn">
+				<i id="first-page" onclick="show(0)" class="button fa fa-angle-double-left"></i>
+				<i id="prev-page" onclick="show(cur - 1)" class="button fa fa-angle-left"></i>
+				<span id="page-no" class="button"></span>
+				<i id="next-page" onclick="show(cur + 1)" class="button fa fa-angle-right"></i>
+				<i id="last-page" onclick="show(data.length - 1)" class="button fa fa-angle-double-right"></i>
+			</div>
+			<div>
+				<i onclick="saveDetail('')" class="button fa fa-save"></i>
+				<i onclick="resetDetail()" class="button fa fa-remove"></i>
+				<i onclick="deleteDetail()" class="button fa fa-trash"></i>
+				<i onclick="saveNewDetail()" class="button fa fa-plus"></i>
+			</div>
+		</div>
+    </div>
+</div>
+<script src="assets/js/Workbook.js"></script> 
+<script type="text/javascript">
+$(function(){
+   $('.tab-content.active input').on('keyup change', function(){
+   	    var TypeAssembly = "ssl";
+   	    var Commission = parseFloat(jQuery('input[var="commission"]').val());
+   	    var AmountOrder = parseFloat(jQuery('input[var="amount_order"]').val());
+   	    var SetUpFee = parseFloat(jQuery('input[var="set_up_fee"]').val());
+   	    var Length = parseFloat(jQuery('input[var="length"]').val());
+   	    var Micron = parseFloat(jQuery('input[var="mircon"]').val());
+   	    var ValPerOrder = parseFloat(jQuery('input[var="val_per_ord"]').val());
+   	    var ShippingCharge = parseFloat(jQuery('input[var="ship_charge"]').val());
+   	    var ShroudTypeBoth = jQuery('input[var="sh_type_bth"]').val() ;
+   	    var ShroudTypeOut = jQuery('input[var="sh_type_otr"]').val() ;
+   	    var ShroudTypeIn = jQuery('input[var="sh_type_in"]').val();
+   	    var ShroudMatCostBoth = parseFloat(jQuery('input[var="sh_mt_ct_bth"]').val());
+   	    var ShroudMatCostOut = parseFloat(jQuery('input[var="sh_mt_otr"]').val());
+   	    var ShroudMatCostIn = parseFloat(jQuery('input[var="sh_mt_in"]').val());
+   	    var FilterMeshMat = parseFloat(jQuery('input[var="fltr_mt_bth"]').val());
+   	    var FilterMeshCost = parseFloat(jQuery('input[var="fltr_ct_bth"]').val());
+   	    var WidthFilterSeam = parseFloat(jQuery('input[var="wdth_fltr_seam"]').val());
+   	    var DrainageOuterMesh = parseFloat(jQuery('input[var="drng_otr_msh"]').val());
+   	    var OuterMeshWidth = 3;
+   	    var DrainageOuterCost = parseFloat(jQuery('input[var="drng_otr_cost"]').val());
+   	    var DrainageInnerMesh = parseFloat(jQuery('input[var="drng_in_msh"]').val());
+   	    var DrainageInnerCost = parseFloat(jQuery('input[var="drng_in_cst"]').val());
+   	    var InnerID = parseFloat(jQuery('input[var="inner_id"]').val());
+   	    var Gage = parseFloat(jQuery('input[var="in_gage"]').val());
+   	    var MatThickness = parseFloat(jQuery('input[var="in_mtrl_thckns"]').val());
+   	    var StripWidth = parseFloat(jQuery('input[var="in_strp_wdth"]').val());
+   	    var OSGage = parseFloat(jQuery('input[var="otr_gage"]').val());
+   	    var OSMatThickness = parseFloat(jQuery('input[var="otr_mtrl_thckns"]').val());
+   	    var OSStripWidth = parseFloat(jQuery('input[var="otr_strp_wdth"]').val());
+   
+  // console.log(TypeAssembly, Commission, AmountOrder, SetUpFee, Length, Micron, ValPerOrder, ShippingCharge, ShroudTypeBoth, ShroudTypeOut, ShroudTypeIn, ShroudMatCostBoth, ShroudMatCostOut, ShroudMatCostIn, FilterMeshMat, FilterMeshCost, WidthFilterSeam, DrainageOuterMesh, OuterMeshWidth, DrainageOuterCost, DrainageInnerMesh, DrainageInnerCost, InnerID, Gage, MatThickness, StripWidth, OSGage, OSMatThickness, OSStripWidth);
+  // console.log("ssl", 0.4, 500, 40, 366,
+  //               258, 0, 0, "304L", "304L",
+  //               "316L", 1.3, 0, 0, "316L", 1.7, 2,
+  //               20, 3, 1.5, 20, 1.7,
+  //               4.6, 0.048, 0.1, 5.525, 0.06,
+  //               0.06, 6);
+
+  var data1 =  Data(TypeAssembly, Commission, AmountOrder, SetUpFee, Length, Micron, ValPerOrder, ShippingCharge, ShroudTypeBoth, ShroudTypeOut, ShroudTypeIn, ShroudMatCostBoth, ShroudMatCostOut, ShroudMatCostIn, FilterMeshMat, FilterMeshCost, WidthFilterSeam, DrainageOuterMesh, OuterMeshWidth, DrainageOuterCost, DrainageInnerMesh, DrainageInnerCost, InnerID, Gage, MatThickness, StripWidth, OSGage, OSMatThickness, OSStripWidth);
+	// var data1 = Data("ssl", 0.4, 500, 40, 366,
+ //                258, 0, 0, "304L", "304L",
+ //                "316L", 1.3, 0, 0, "316L", 1.7, 2,
+ //                20, 3, 1.5, 20, 1.7,
+ //                4.6, 0.048, 0.1, 5.525, 0.06,
+ //                0.06, 6);
+
+    jQuery('input[var="sh_otr_t"]').val(data1.ShroudOuterSRM.Type);
+    jQuery('input[var="sh_otr_w"]').val(data1.ShroudOuterSRM.Width);
+    jQuery('input[var="sh_otr_lbs"]').val(data1.ShroudOuterSRM.LBS.toFixed(3));
+    jQuery('input[var="sh_otr_tube"]').val(data1.ShroudOuterSRM.TubeOD);
+
+    jQuery('input[var="sh_in_t"]').val(data1.ShroudInnerSRM.Type);
+    jQuery('input[var="sh_in_w"]').val(data1.ShroudInnerSRM.Width);
+    jQuery('input[var="sh_in_lbs"]').val(data1.ShroudInnerSRM.LBS.toFixed(3));
+    jQuery('input[var="sh_in_tube"]').val(data1.ShroudInnerSRM.TubeOD);
+
+    jQuery('input[var="fm_t"]').val(data1.FilterMeshMR.Type);
+    jQuery('input[var="fm_w"]').val(data1.FilterMeshMR.Width);
+    jQuery('input[var="fm_ln"]').val(data1.FilterMeshMR.LNFT.toFixed(3));
+    jQuery('input[var="fm_roll"]').val(data1.FilterMeshMR.R100FT);
+    jQuery('input[var="fm_grade"]').val(data1.FilterMeshMR.Grade);
+
+    jQuery('input[var="otr_drng_t"]').val(data1.OuterDrainageMR.Type);
+    jQuery('input[var="otr_drng_w"]').val(data1.OuterDrainageMR.Width);
+    jQuery('input[var="otr_drng_ln"]').val(data1.OuterDrainageMR.LNFT.toFixed(3));
+    jQuery('input[var="otr_drng_roll"]').val(data1.OuterDrainageMR.R100FT);
+    jQuery('input[var="otr_drng_grade"]').val(data1.OuterDrainageMR.Grade);
+
+    jQuery('input[var="in_drng_t"]').val(data1.InnerDrainageMR.Type);
+    jQuery('input[var="in_drng_w"]').val(data1.InnerDrainageMR.Width);
+    jQuery('input[var="in_drng_ln"]').val(data1.InnerDrainageMR.LNFT.toFixed(3));
+    jQuery('input[var="in_drng_roll"]').val(data1.InnerDrainageMR.R100FT);
+    jQuery('input[var="in_drng_grade"]').val(data1.InnerDrainageMR.Grade);
+
+    jQuery('input[var="fltr_seam_t"]').val(data1.FilterSeamMR.Type);
+    jQuery('input[var="fltr_seam_w"]').val(data1.FilterSeamMR.Width);
+    jQuery('input[var="fltr_seam_ln"]').val(data1.FilterSeamMR.LNFT.toFixed(3));
+    jQuery('input[var="fltr_seam_roll"]').val(data1.FilterSeamMR.R100FT);
+    jQuery('input[var="fltr_seam_grade"]').val(data1.FilterSeamMR.Grade);
+
+    jQuery('input[var="ppf_sp"]').val(data1.SP.TotalPrice.toFixed(3));
+    jQuery('input[var="wpf_sp"]').val(data1.SP.WVad.toFixed(3));
+    jQuery('input[var="pws_sp"]').val(data1.SP.WVadShipping.toFixed(3));
+    jQuery('input[var="tube_sp"]').val(data1.SP.Tube.toFixed(3));
+    jQuery('input[var="odr_sp"]').val(data1.SP.Order.toFixed(3));
+
+    jQuery('input[var="ppf_dp"]').val(data1.DP.TotalPrice.toFixed(3));
+    jQuery('input[var="wpf_dp"]').val(data1.DP.WVad.toFixed(3));
+    jQuery('input[var="pws_dp"]').val(data1.DP.WVadShipping.toFixed(3));
+    jQuery('input[var="tube_dp"]').val(data1.DP.Tube.toFixed(3));
+    jQuery('input[var="odr_dp"]').val(data1.DP.Order.toFixed(3));
+
+    jQuery('input[var="ppf_mc"]').val(data1.MC.TotalPrice.toFixed(3));
+    jQuery('input[var="dpf_mc"]').val(data1.MC.WVad.toFixed(3));
+    jQuery('input[var="pws_mc"]').val(data1.MC.WVadShipping.toFixed(3));
+    jQuery('input[var="tube_mc"]').val(data1.MC.Tube.toFixed(3));
+    jQuery('input[var="odr_mc"]').val(data1.MC.Order.toFixed(3));
+
+	// console.log( Commission );
+ });
+});
+</script>

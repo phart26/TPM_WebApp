@@ -1,0 +1,1153 @@
+<div class="content-wrapper">
+    <h3>Material Requirments
+        <div style="float: right;">      
+                <i title="Search" id="search"  class="fa fa-search" aria-hidden="true" style="font-size: 18px;padding: 0 15px;"></i>
+                <i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Save Record"  class="fa fa-save" id="record_save" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Delete Record"  class="fa fa-trash deleteroow" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa remove fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div></h3>
+
+    <div id="filter_material" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;">
+        <div class="row directrow" >
+            <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="email">Search customer:</label>
+                        <input type="email" class="form-control" data-control="#customer">
+                    </div>
+            </div>
+            <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="email">Search Part:</label>
+                        <input type="email" class="form-control" data-control="#Part">
+                    </div>
+            </div>
+            <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="email">Search OD:</label>
+                        <input type="email" class="form-control" data-control="#is_od">
+                    </div>
+            </div>
+                    <div class="col-sm-2">
+                            
+                    <div class="form-group">
+                        <label for="email">Search ID:</label>
+                        <input type="email" class="form-control" data-control="#Id">
+                    </div>
+                    </div>
+                    <div class="col-sm-2">
+                    <div class="form-group">
+                        <label for="email">Search Length:</label>
+                        <input type="email" class="form-control" data-control="#length">
+                    </div>
+                    </div>
+            </div>
+       
+        <table class="table hover row-border stripe display compact no-footer filterselect">
+        </table>
+    </div>
+
+    <div class="row" form="table.form" fields='{"is_od": {"type": "bool"}}' table-name="mat_req" style="margin: 20px 0;">
+        <div class="col-lg-12">
+            <select data-store="cust_id" class="selectpicker selectcutome customer_id  storevalue"  var="cust_id" table="cust_tbl" value-field="cust_id" column="customer" title="Select">
+                <option value="" >Select Client</option>
+            </select>
+            <select data-store="part" class="selectpicker selectcutome secselect part_id storevalue" id="part_id" value-field="part" column="part"  title="Choose one of the following..." var="Part">
+                    <option value="">Select Part</option>
+                </select>
+        </div>
+        <div class="col-lg-12">
+            <h5 class="Customer_Name" style="display:none"> </h5>
+            <h5 class="part_name" style="display:none"> </h5>
+        </div>
+        <div class="col-lg-12">
+
+        <div class="column">
+                <div class="input">
+                        <span class="left-placeholder">PO#</span><input data-store="PO" var="po" class="align-right storevalue" type="text" >
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Type material</span>
+                        <select data-store="Type-material" class="align-right storevalue material" var="material" table="mat_tbl" column="material"></select>
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Weight (before scrap)</span><input data-store="Weight-b-f" var="Weight_bs" class="align-right storevalue" type="text" >
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Scrap rate</span><input data-store="scrap_rate" var="scrap_rate" class="align-right storevalue" type="text" >
+                    </div>
+            <div class="input">
+            <input type="hidden" id="getcurrentid"/> 
+            <span class="left-placeholder">Quantity</span><input data-store="quantity" var="quantity" class="align-right storevalue" type="text" mask="number">
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Dimension</span><input data-store="Dimension" var="dim" class="align-right storevalue" type="text" mask="double">
+            </div>
+            <div class="input">
+                <span class="left-placeholder">ID</span><input class="id_not_od" var="is_od" type="checkbox">
+
+            </div>
+            <div class="input" style="display: none;">
+                <span class="left-placeholder">OD</span><input var="is_od" class="odcheckboc od_not_id" type="checkbox">
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Length</span><input data-store="lengtht" var="length" class="align-right storevalue" type="text" mask="number">
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Gage</span><select data-store="gage" class="storevalue gage-value" var="gage" table="gage_tbl" column="gage"></select>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Pattern</span><select data-store="patter" class="storevalue pattern" var="pattern" table="pat_tbl" column="pattern"></select>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Holes</span><select data-store="holes" class="storevalue holes" var="holes" table="frac_tbl" column="holes" value-field="decimal"></select>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Centers</span><select data-store="center" class="storevalue center" var="centers" table="frac_tbl" column="centers" value-field="decimal"></select>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Strip</span><input data-store="strip" var="strip" class="align-right storevalue" type="text" mask="double">
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Density</span><input data-store="density" var="density" class="align-right storevalue" value="0.29" type="text" mask="double">
+                <input data-store="thickness" val="thickness" class="align-right storevalue" type="hidden" mask="double">
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Total Time</span><input data-store="total" class="align-right storevalue" type="text">
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="input">
+                <span class="left-placeholder">OD</span><input  precision="3" val="od" class="align-right" type="number" disabled>
+            </div>
+            <div class="input" style="display: none;">
+                <span class="left-placeholder">OA</span><input  precision="3" val="oa" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Tube Weight</span><input  precision="3" val="tube_weight" class="align-right" type="number" disabled>
+            </div>
+            
+            <div class="input">
+                <span class="left-placeholder">Linear ft. material (w/ scrap)</span><input  precision="3" val="linear_ft_material_ws" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Weight (not perfed. w/scrap)</span><input  precision="3" val="weight_ws" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">weight/foot</span><input  precision="3" val="weight_per_foot" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">hspi</span><input  precision="3" val="hspi" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Angle</span><input  precision="3" val="angle" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Strip/lf</span><input  precision="3" val="lf_ft" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">wt (pre)</span><input  precision="2" val="wbs" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Total if mat</span><input  precision="3" val="lf_total" class="align-right" type="number" disabled>
+            </div>
+            <span class="text scrap_r">(includes 10% scrap)</span>
+        </div>
+
+
+        </div>
+    </div>
+    <!-- <form>
+        <div class="form-row">
+          <div class="col">
+            <select class="selectpicker neformselect newcustomer_id" title="Select">
+                
+            </select>
+           </div>
+          <div class="col">
+                <select class="selectpicker Part_on_search neformselect" title="Select Part">
+                   <option>Select Part </option>     
+                </select>
+          </div>
+          <div class="col" style="padding-right:10px;">
+                <label class="form-check-label">
+                    <input class="form-check-input is_odnew" type="checkbox"> OD
+                </label>
+          </div>
+          <div class="col">
+            <select class="selectpicker  neformselect selectod"  title="Select Id" disabled>
+                <option value="">Select OD </option>
+            </select>
+        </div>
+        <div class="col">
+            <select class="selectpicker length neformselect"  title="Select Length">
+                <option value="">Select Length</option>
+            </select>
+        </div>
+        </div>
+        <div class="form-row btntopmargin">
+            <button class="btn btn-primary search_query"> Search Records</button><button class="btn btn-primary " id="getreport"> Get Report</button>
+        </div>
+      </form> -->
+
+</div>
+<!-- <div class="searchquery_result" style="display:none">
+    <h5 style="margin-left:10px;">Search Result</h5>
+    <table class="table table-hover new_search" style="background: #fff;">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>customer</th>
+                    <th>Part</th>
+                    <th>quantity</th>
+                    <th>dim</th>
+                    <th>length</th>
+                    <th>pattern</th>
+                    <th>holes</th>
+                    <th>centers</th>
+                    <th>gage</th>
+                    <th>strip</th>
+                    <th>is_od</th>
+                    <th>po</th>
+                    <th>material</th>
+                    <th>Weight_bs</th>
+                   
+                </tr>
+                </thead>
+                <tbody></tbody>
+
+    </table>
+</div> -->
+<div class="search_section">
+    <div class="container">
+         <div class="row">
+         <div class="col-sm-9">
+             <h2>Search</h2>
+         </div>
+         <div class="col-sm-3">
+             <button type="button" class="close closeincon" aria-label="Close" id="search_close">
+                 Close
+                     <span aria-hidden="true">&times;</span>
+             </button>
+         </div>
+         <div class="col-sm-12 overflow-auto">
+         <form>
+             <div class="form-group">
+                 <label >Select Client</label>
+                 <select class="selectpicker newcustomer_id autocomplete" title="Select">
+                 
+                     </select>
+             </div>
+             <div class="form-group">
+                 <label >Select Part</label>
+                 <select class="form-control selectpicker Part_on_search neformselect" title="Select Part">
+                     <option>Select Part </option>     
+                 </select>
+             </div>
+             <div class="form-group baseline">
+                 <label > OD</label>
+                 <input class="form-check-input is_odnew" type="checkbox">
+             </div>
+             <div class="form-group">
+                 <label for="exampleFormControlTextarea1">Select ID</label>
+                 <select class="form-control selectpicker  neformselect selectod"  title="Select Id">
+                     <option value="">Select OD </option>
+                 </select>
+             </div>
+             <div class="form-group">
+                 <label >Select Length</label>
+                 <select class="form-control selectpicker length neformselect"  title="Select Length">
+                     <option value="">Select Length</option>
+                     </select>
+             </div>
+             <div class="form-row btntopmargin">
+                 <button class="btn btn-primary search_query"> Search Records</button><button class="btn btn-primary " id="getreport"> Get Report</button>
+             </div>
+             </form>
+         </div>
+         </div>
+         <div class="col-sm-12">
+             <div class="searchquery_result" style="display:none">
+                 <h5 style="margin-left:10px;">Search Result</h5>
+                 <table class="table table-hover new_search" style="background: #fff;">
+                         <thead>
+                             <tr>
+                                 <th>Id</th>
+                                 <th>customer</th>
+                                 <th>Part</th>
+                                 <th>quantity</th>
+                                 <th>dim</th>
+                                 <th>length</th>
+                                 <th>pattern</th>
+                                 <th>holes</th>
+                                 <th>centers</th>
+                                 <th>gage</th>
+                                 <th>strip</th>
+                                 <th>is_od</th>
+                                 <th>po</th>
+                                 <th>material</th>
+                                 <th>Weight_bs</th>
+                             
+                             </tr>
+                             </thead>
+                             <tbody></tbody>
+ 
+                 </table>
+             </div>
+         </div>
+    </div>
+ </div>
+
+ <div class="successdone" style="display:none">success</div>
+ 
+
+
+<style>
+   
+    .search_section  .form-group{
+        vertical-align: top;
+    }
+    .selectize-input{
+        padding: 4px 8px;
+    }
+    .autocomplete{
+        margin-right: 15px;
+        height: 29px !important;
+    }
+    .autocomplete{
+    width:230px;
+    background:#fff!important;
+    height:20px !important;
+    border:1px solid dde6e9;
+}
+.autocomplete> div{
+    background:#fff!important;
+}
+    .overflow-auto{
+        overflow: initial;
+    }
+     .search_section{
+        position: absolute;
+        box-sizing: border-box;
+        left: 0;
+        top: 0;
+        background: #fff;
+        right: 0;
+        bottom: 0;
+        display:none;
+        z-index: 1234;
+        margin-top: 57px;
+}
+.search_section  .form-group{
+ 
+    margin-bottom: 15px;
+    display: inline-block;
+
+}
+.closeincon{
+    margin-top:29px;
+}
+    .selectcutome{
+    width: 256px;
+    height: 32px;
+    margin-bottom: 13px;
+    }
+    .secselect{
+    margin-left: 19px;
+    }
+    .successdone {
+    position: absolute;
+    background: #27c24c;
+    top: 10px;
+    left: 50%;
+    display: inline-block;
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 13px;
+}
+.Customer_Name,
+.part_name {
+    width: 281px;
+    float: left;
+    margin-top: 0;
+    font-size: 14px;
+}
+.neformselect{
+    width: 230px;
+    height: 29px;
+    margin-right: 14px;
+}
+.btntopmargin{
+    margin-top: 15px;
+}
+.btntopmargin button{
+    margin-right: 15px;
+}
+select[disabled] {
+      background-color:whitesmoke;
+   }
+   #overlay {
+    position: fixed; 
+    display: none;
+    width: 100%; 
+    height: 100%; 
+    top: 0; 
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5); 
+    z-index: 9999; 
+    cursor: pointer;
+}
+.loadersmall {
+    border: 5px solid #19a2cc;
+    -webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+    border-top: 5px solid #fff8f8;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    left: calc(50% - 25px);
+    top: calc(50% - 25px);
+    
+    }
+@-webkit-keyframes spin {
+  0% { 
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% { 
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+div#text {
+    color: #fff;
+    position: absolute;
+    left: 47%;
+    top: 62%;
+}
+</style>
+
+<script>
+    $(function() {
+	var $wrapper = $('#wrapper');
+
+	// theme switcher
+	var theme_match = String(window.location).match(/[?&]theme=([a-z0-9]+)/);
+	var theme = (theme_match && theme_match[1]) || 'default';
+	var themes = ['default','legacy','bootstrap2','bootstrap3'];
+	$('head').append('<link rel="stylesheet" href="../vendor/selectize/selectize.' + theme + '.css">');
+
+	var $themes = $('<div>').addClass('theme-selector').insertAfter('h1');
+	for (var i = 0; i < themes.length; i++) {
+		$themes.append('<a href="?theme=' + themes[i] + '"' + (themes[i] === theme ? ' class="active"' : '') + '>' + themes[i] + '</a>');
+	}
+
+	// display scripts on the page
+	$('script', $wrapper).each(function() {
+		var code = this.text;
+		if (code && code.length) {
+			var lines = code.split('\n');
+			var indent = null;
+
+			for (var i = 0; i < lines.length; i++) {
+				if (/^[	 ]*$/.test(lines[i])) continue;
+				if (!indent) {
+					var lineindent = lines[i].match(/^([ 	]+)/);
+					if (!lineindent) break;
+					indent = lineindent[1];
+				}
+				lines[i] = lines[i].replace(new RegExp('^' + indent), '');
+			}
+
+			var code = $.trim(lines.join('\n')).replace(/	/g, '    ');
+			var $pre = $('<pre>').addClass('js').text(code);
+			$pre.insertAfter(this);
+		}
+	});
+
+	// show current input values
+	$('select.selectized,input.selectized', $wrapper).each(function() {
+		var $container = $('<div>').addClass('value').html('Current Value: ');
+		var $value = $('<span>').appendTo($container);
+		var $input = $(this);
+		var update = function(e) { $value.text(JSON.stringify($input.val())); }
+
+		$(this).on('change', update);
+		update();
+
+		$container.insertAfter($input);
+	});
+});
+</script>
+<script>
+    let oldvalue1 = 0,oldvalue2 = 0,table;
+$(document).ready(function(){
+
+    
+
+
+
+
+
+    $('.is_odnew').on('change',function(){
+        if($(this).is(':checked')){
+            $('[for="exampleFormControlTextarea1"]').text('Select OD');
+        }else{
+            $('[for="exampleFormControlTextarea1"]').text('Select ID');
+        }
+    });
+    $('.search_section').appendTo('body');
+
+    $('#search').on('click',function(){
+        $('.search_section').fadeIn(400);
+    });
+    $('#search_close').on('click',function(){
+        $('.search_section').fadeOut(400);
+    });
+
+
+
+    $('.remove').on('click',function(){
+        $('.storevalue').val('');
+    });
+    
+
+    let holdid=0;
+    //delete row
+    $('.deleteroow').on('click',function(){
+        let hold = $('#getcurrentid').val();
+        if(hold !=''){
+        $.post(setting.server+"index.php?url=deleterow"+"&id="+hold+"&table=mat_req",function(){
+            $('.remove').trigger('click');
+            $('.storevalue').val('');
+            $('.successdone').css('display','inline-block');
+            setTimeout(function(){$('.successdone').css('display','none');},3000);
+            
+            EVENTS["table.list"]();
+            $('#getcurrentid').val('');
+            oldvalue1 = 0; oldvalue2 = 0;
+        });
+        }
+        else{
+            alert('Records does not saved !');
+        }
+    });
+    //delete row end
+
+
+    $('#record_save').on('click',function(e){
+        let counter = 0,value = [];
+       $('.searchquery_result').hide();
+        $('.storevalue').each(function(){
+            if($(this).val() == '' || $(this).val() == 0 ){
+                $(this).css('border','1px solid red');
+                counter++;
+            }
+            else{
+                value[$(this).attr('data-store')] = $(this).val();
+            }
+        });
+
+        if(counter ==0){
+           if(oldvalue1 == $('.customer_id').find(':selected').text() || oldvalue2 == value['part']){
+            $.post(setting.server+"index.php?url=material_update"+
+                    "&id="+holdid+
+                    "&dimension="+value['Dimension']+
+                    "&center="+value['center']+
+                    "&cust_id="+ $('.customer_id ').find(':selected').text()+
+                    "&gage="+value['gage']+
+                    "&holes="+value['holes']+
+                    "&part="+value['part']+
+                    "&patter="+value['patter']+
+                    "&quantity="+value['quantity']+
+                    "&strip="+value['strip']+
+                    "&total="+value['total']+
+                    "&lengtht="+value['lengtht']+
+                    "&od="+$('input[type="checkbox"]').is(':checked')+
+                    "&material="+$('.material').val()+
+                    "&po="+$('input[data-store="PO"]').val()+
+                    "&scrap_rate="+$('input[data-store="scrap_rate"]').val()+
+                    "&density="+$('input[data-store="density"]').val()+
+                    "&Weight_bs="+$('input[data-store="Weight-b-f"]').val(),
+                    function(data){
+                    $('.remove').trigger('click');
+                    $('.storevalue').val('');
+                    $('.successdone').css('display','inline-block');
+                    setTimeout(function(){$('.successdone').css('display','none');},3000);
+                   
+                    //EVENTS["table.list"]();
+                    oldvalue1 = 0; oldvalue2 = 0;
+                    });
+                    dataTables_filter_data();
+                   
+            }
+            else{//update
+                $.post(setting.server+"index.php?url=material_save"+
+                "&dimension="+value['Dimension']+
+                "&center="+value['center']+
+                "&cust_id="+ $('.customer_id ').find(':selected').text()+
+                "&gage="+value['gage']+
+                "&holes="+value['holes']+
+                "&part="+value['part']+
+                "&patter="+value['patter']+
+                "&quantity="+value['quantity']+
+                "&strip="+value['strip']+
+                "&total="+value['total']+
+                "&lengtht="+value['lengtht']+
+                "&od="+$('input[type="checkbox"]').is(':checked')+
+                "&material="+$('.material').val()+
+                "&po="+$('input[data-store="PO"]').val()+
+                "&scrap_rate="+$('input[data-store="scrap_rate"]').val()+
+                "&density="+$('input[data-store="density"]').val()+
+                "&Weight_bs="+$('input[data-store="Weight-b-f"]').val(),
+                function(data){
+                    $('.remove').trigger('click');
+                $('.storevalue').val('');
+                $('.successdone').css('display','inline-block');
+                setTimeout(function(){$('.successdone').css('display','none');},3000);
+                EVENTS["table.list"]();
+                });
+                dataTables_filter_data();
+               
+            }
+        }
+        else{
+            alert("Please Fill details!");
+        }
+        e.preventDefault();
+    });
+
+    function dataTables_filter_data(){
+        table.destroy();
+        $('#filter_material table').empty();
+        $('.dataTables_filter.col-sm-2').remove();
+        updat_table();
+    }
+
+    //Top Filter Selection
+    $(document).on('click','.filterselect tbody tr,.new_search tbody tr',function(){
+        RowDataSelect($(this));
+        $('#filter_material').slideUp();
+
+    });////Top Filter end here
+    $(document).on('click','.new_search tbody tr',function(){
+      $('#search_close').trigger('click'); 
+    });////Top Filter end here
+   
+
+    function RowDataSelect(currentths){
+
+        var $this = currentths;
+        let output =[];
+        let current = 0;
+        let current2= 0;
+        
+            $('select[data-store="cust_id"] option').each(function(){
+                if($(this).text() == $this.find('td:eq(1)').text() ){
+                    current = $(this).attr('value');
+                }
+            });
+
+            let selectionpar = $this.find('td:eq(2)').text();
+            
+            oldvalue1 = current;
+            oldvalue2 = selectionpar;
+
+            holdid = $this.find('td:eq(0)').text()
+            $('#getcurrentid').val(holdid);
+            // update tooltip
+
+            if ($this.parents('.new_search').length > 0){
+             $('html, body').animate({scrollTop:0},400);
+            }
+         
+         
+            $('input[data-store="PO"]').val($this.find('td:eq(12)').text());
+
+            $('[data-store="Type-material"]').val($this.find('td:eq(13)').text());
+            
+            $('input[data-store="Weight-b-f"]').val($this.find('td:eq(15)').text());
+            $('input[data-store="quantity"]').val($this.find('td:eq(3)').text());
+            $('input[data-store="Dimension"]').val($this.find('td:eq(4)').text());
+            
+            if ($this.find('td:eq(11)').text() ==1){
+                $('input[var="is_od"]').prop('selected',true);
+            }
+            else{
+                $('input[var="is_od"]').prop('selected',false);
+            }
+            $('input[data-store="lengtht"]').val($this.find('td:eq(5)').text());
+            $('[data-store="gage"]').val($this.find('td:eq(9)').text());
+            $('[data-store="patter"]').val($this.find('td:eq(6)').text());
+            $('[data-store="holes"]').val($this.find('td:eq(7)').text());
+            $('[data-store="center"]').val($this.find('td:eq(8)').text());
+            $('input[data-store="strip"]').val($this.find('td:eq(10)').text());
+            $('input[data-store="density"]').val($this.find('td:eq(14)').text());
+            $('input[data-store="scrap_rate"]').val($this.find('td:eq(16)').text());
+          
+
+            $.post(setting.server+"index.php?url=part_mat"+"&userid="+current,
+                function(res){
+                    var output =[];
+                    output.push('<option value="">Select Part</option>');
+                    $.each(res.list, function(key, value){
+                        if(value['part'] == selectionpar){
+                            output.push('<option selected value="'+ value['part'] +'">'+ value['part'] +'</option>');
+                        }
+                        else{
+                            output.push('<option value="'+ value['part'] +'">'+ value['part'] +'</option>');
+                        }
+                    });
+                        $('.part_id').html(output.join(''));
+                });     
+
+            $('select[data-store="cust_id"]').val(current);
+    
+            $('[form="table.form"] [var]:not([data-store="part"],[data-store="cust_id"])').trigger('change');
+    }
+
+    $('.storevalue').on('change',function(){
+        $(this).css('border',''); 
+    });
+
+    $('.storevalue').on('change',function(){
+        $('.Customer_Name').hide();
+            $('.part_name').hide();
+    });
+
+    $('.customer_id').on('change',function(){
+        $.post(setting.server+"index.php?url=part_mat"+"&userid="+$(this).val(),
+            function(res){
+                var output =[];
+                output.push('<option value="">Select Part</option>');
+                $.each(res.list, function(key, value)
+                    {
+                    output.push('<option value="'+ value['part'] +'">'+ value['part'] +'</option>');
+                });
+                    $('.part_id').html(output.join(''));
+                    getgagetype();
+        });
+        
+    });
+
+    $('.part_id').on('change',function(){
+        getgagetype();
+    });
+
+    function getgagetype(){
+        
+        if ($('.customer_id').val() != '' && $('.part_id').val() != ''){
+            $.post(setting.server+"index.php?url=typeGage"+"&userid="+$('.customer_id').val()+"&part_no="+$('.part_id').val(),
+            function(res){
+                if(res['list'].length > 0){
+                   $('.material').val(res['list'][0]['type']);
+                   $('.gage-value').val(res['list'][0]['gage']);
+                }
+                else{
+                    $('.material').val($('.material option:first').val());
+                    $('.gage-value').val($('.gage-value option:first').val());
+                }
+
+            }); 
+        }
+
+       
+         
+    }
+
+//search filter add 
+
+    function updat_table(){
+        $.ajax({
+        type:'POST',
+        url:setting.server+'/table/mat_req/fetch',
+        success:function(s){
+            if (s!=0){
+                $('#filter_material table').append('<thead><tr></tr></thead><tbody></tbody>');
+                $.each(s.list[0],function(i,j){
+                    $('#filter_material table thead tr').append(`<th id="${i}">${i}</th>`);
+                });
+                $.each(s.list,function(k,l){
+                    $('#filter_material table tbody').append('<tr></tr>');
+                    $.each(l,function(p,r){
+                        $('#filter_material table tbody tr:last').append('<td>'+r+'</td>');
+                    });
+                });
+                table = $('#filter_material table').DataTable({
+						pageLength : 5,
+						lengthMenu : [ 5, 10, 25, 50, 75, 100 ]
+                });
+                $('.dataTables_filter').addClass('col-sm-2').appendTo('.directrow');
+                $('.directrow input').on('keyup change',function(e){
+                    table.column($($(this).attr('data-control'))).search(this.value).draw();
+                });
+            }
+        },
+        fail:function(e){
+            alert('Some thing wrong!');
+        }
+    });
+    }
+    updat_table();
+
+    
+    $('[ ev="table.filter"]').on('click',function(){
+        $('#filter_material').stop().slideToggle();
+    });
+
+
+
+
+//end search filter end here
+
+
+//new form section 
+$('body').append('<div id="overlay" style="display:none"><div class="loadersmall"></div><div id="text">Process your request...</div></div>');
+
+    function first_client(){
+        $.ajax({
+            type:'POST',
+            url: setting.server+'/table/cust_tbl/fetch',
+            success:function(r){
+                if (r.length !=0){
+                    var output =[];
+                        output.push('<option value="">Select Client</option>');
+                        $.each(r.list, function(key, value){
+                            output.push('<option value="'+ value['cust_id'] +'">'+ value['customer'] +'</option>');
+                        });$('.newcustomer_id').html(output.join(''));
+                        
+                        $('.newcustomer_id').selectize({
+                            create: false,
+						    sortField: {field: 'text'}
+                        });
+                }
+            }
+    });
+    }first_client();
+
+//custom code to get all client
+function select_client(){
+        $.ajax({
+            type:'POST',
+            url: setting.server+'/table/cust_tbl/fetch',
+            success:function(r){
+                if (r.length !=0){
+                    var output =[];
+                        output.push('<option value="">Select Client</option>');
+                        $.each(r.list, function(key, value){
+                            output.push('<option value="'+ value['cust_id'] +'">'+ value['customer'] +'</option>');
+                        });$('.customer_id').html(output.join(''));
+                        
+                        // $('.customer_id').selectize({
+                        //     create: false,
+                        //     sortField: {field: 'text'}
+                        // });
+                }
+            }
+    });
+    }select_client();
+    function select_material(){
+        $.ajax({
+            type:'POST',
+            url: setting.server+'/table/mat_tbl/fetch',
+            success:function(r){
+                if (r.length !=0){
+                    var output =[];
+                        output.push('<option value="">Select material</option>');
+                        $.each(r.list, function(key, value){
+                            output.push('<option value="'+ value['material'] +'">'+ value['material'] +'</option>');
+                        });$('.material').html(output.join(''));
+                        
+                        // $('.customer_id').selectize({
+                        //     create: false,
+                        //     sortField: {field: 'text'}
+                        // });
+                }
+            }
+    });
+    }select_material();
+    function select_gage(){
+        $.ajax({
+            type:'POST',
+            url: setting.server+'/table/gage_tbl/fetch',
+            success:function(r){
+                if (r.length !=0){
+                    var output =[];
+                        output.push('<option value="">Select gage</option>');
+                        $.each(r.list, function(key, value){
+                            output.push('<option value="'+ value['gage'] +'">'+ value['gage'] +'</option>');
+                        });$('.gage-value').html(output.join(''));
+                        
+                        // $('.customer_id').selectize({
+                        //     create: false,
+                        //     sortField: {field: 'text'}
+                        // });
+                }
+            }
+    });
+    }select_gage();
+    function select_pattern(){
+        $.ajax({
+            type:'POST',
+            url: setting.server+'/table/pat_tbl/fetch',
+            success:function(r){
+                if (r.length !=0){
+                    var output =[];
+                        output.push('<option value="">Select pattern</option>');
+                        $.each(r.list, function(key, value){
+                            output.push('<option value="'+ value['pattern'] +'">'+ value['pattern'] +'</option>');
+                        });$('.pattern').html(output.join(''));
+                        
+                        // $('.customer_id').selectize({
+                        //     create: false,
+                        //     sortField: {field: 'text'}
+                        // });
+                }
+            }
+    });
+    }select_pattern();
+    function select_holes(){
+        $.ajax({
+            type:'POST',
+            url: setting.server+'/table/frac_tbl/fetch',
+            success:function(r){
+                if (r.length !=0){
+                    var output =[];
+                        output.push('<option value="">Select holes</option>');
+                        $.each(r.list, function(key, value){
+                            output.push('<option value="'+ value['decimal'] +'">'+ value['holes'] +'</option>');
+                        });$('.holes').html(output.join(''));
+                        
+                        // $('.customer_id').selectize({
+                        //     create: false,
+                        //     sortField: {field: 'text'}
+                        // });
+                }
+            }
+    });
+    }select_holes();
+    function select_center(){
+        $.ajax({
+            type:'POST',
+            url: setting.server+'/table/frac_tbl/fetch',
+            success:function(r){
+                if (r.length !=0){
+                    var output =[];
+                        output.push('<option value="">Select center</option>');
+                        $.each(r.list, function(key, value){
+                            output.push('<option value="'+ value['decimal'] +'">'+ value['centers'] +'</option>');
+                        });$('.center').html(output.join(''));
+                        
+                        // $('.customer_id').selectize({
+                        //     create: false,
+                        //     sortField: {field: 'text'}
+                        // });
+                }
+            }
+    });
+    }select_center();
+
+//close here custom code
+
+
+    function partload($client){
+        $.ajax({
+            type:'POST',
+            url: setting.server+'index.php?url=part_mat&userid='+$client,
+            success:function(r){
+                if (r.length !=0){  
+                    var output =[];
+                        output.push('<option value="">Select Part</option>');
+                        $.each(r.list, function(key, value){
+                            output.push('<option value="'+ value['part'] +'">'+ value['part'] +'</option>');
+                        });$('.Part_on_search').html(output.join(''));
+                }
+            }
+        });
+    }
+
+    $('.newcustomer_id').on('change',function(){
+        partload($(this).val());
+    });
+    // $('.is_odnew').on('change',function(){
+    //     if ($(this).is(':checked')){
+    //         $('.selectod').prop('disabled',false)
+            
+    //     }
+    //     else {
+    //         $('.selectod').find('option:first').attr('selected','selected');
+    //         $('.selectod').prop('disabled',true);
+    //     }
+        
+    // });
+    $('.search_query').on('click',function(e){
+        $('#overlay').css('display','block');
+        let clientn = $('.newcustomer_id option:selected').text(),
+            partn = $('.Part_on_search').val(),
+            od = $('.selectod').val() ,length=$('.length.neformselect').val();
+
+            if (clientn.search('Select') != -1){
+                clientn = '';            
+            }
+            if (od.search('Select') != -1){
+                od = '';            
+            }
+            if (partn.search('Select') != -1){
+                partn = '';            
+            }
+            if (length.search('Select') != -1){
+                length = '';            
+            }
+            let odcheck = $('.is_odnew').is(':checked') ? 1 : 0;
+        $.post(setting.server+'index.php?url=matsearch&userid='+clientn+'&partn='+partn+'&od='+od+'&length='+length+'&odcheck='+odcheck,
+            function(r){
+                let height = $(document).height();
+                let data = $('.searchquery_result').show();
+                if (r.length !=0){
+                    data.find('table tbody').html(r.list);
+                }else{
+                    data.find('table tbody').html('<tr><td colspan="5">No record found.</td></tr>');
+                }
+                $('#overlay').hide();
+                $("html, body").animate({ scrollTop: height+100 }, 1000);
+
+            }
+        );
+        
+        
+        e.preventDefault();
+
+    });
+
+    $.post(setting.server+'index.php?url=odlength&from=mat_req',
+        function(r){
+            if (r.length !=0){
+                    var output =[];
+                        output.push('<option value="">Select Length</option>');
+                        $.each(r.list, function(key, value){
+                            output.push('<option value="'+ value['length'] +'">'+ value['length'] +'</option>');
+                        });$('.length.neformselect').html(output.join(''));
+                        var output2 =[];
+                        output2.push('<option value="">Select Dim</option>');
+                        $.each(r.list, function(key, value){
+                            output2.push('<option value="'+ value['dim'] +'">'+ value['dim'] +'</option>');
+                        });$('.neformselect.selectod').html(output2.join(''));
+               
+                }else{
+            }
+
+        }
+    );
+
+    $('#getreport').on('click',function(e){
+        let clientn = $('.newcustomer_id option:selected').text(),
+            partn = $('.Part_on_search').val(),
+            od = $('.selectod').val() ,length=$('.length.neformselect').val();
+
+            if (clientn.search('Select') != -1){
+                clientn = '';            
+            }
+            if (od.search('Select') != -1){
+                od = '';            
+            }
+            if (partn.search('Select') != -1){
+                partn = '';            
+            }
+            if (length.search('Select') != -1){
+                length = '';            
+            }
+         let wind = window.open('../app/report_searchmat.php?userid='+clientn+'&partn='+partn+'&od='+od+'&length='+length);
+         wind.focus();
+         e.preventDefault();
+    });
+
+setTimeout(function(){ 
+            $('.customer_id').html($('.customer_id').children('option').sort(function (x, y) {
+                return $(x).text().toUpperCase() < $(y).text().toUpperCase() ? -1 : 1;
+                
+            }));
+            console.log('hellooo');
+            $('.customer_id').get(0).selectedIndex = 0;
+
+
+            $('[var="holes"]').html($('[var="holes"]').children('option').sort(function (x, y) {
+                return $(x).val().toUpperCase() < $(y).val().toUpperCase() ? -1 : 1;
+                
+            }));
+            //console.log('hellooo');
+            $('[var="holes"]').get(0).selectedIndex = 0;
+            
+            $('[var="holes"] option').each(function() {
+                if ( $(this).text() == '' ) {
+                    $(this).remove();
+                }
+            });
+            
+            $('[var="centers"]').html($('[var="centers"]').children('option').sort(function (x, y) {
+                return $(x).val().toUpperCase() < $(y).val().toUpperCase() ? -1 : 1;
+                
+            }));
+            //console.log('hellooo');
+            $('[var="centers"]').get(0).selectedIndex = 0;
+            $('[var="centers"] option').each(function() {
+                if ( $(this).text() == '' ) {
+                    $(this).remove();
+                }
+            });
+            //$('[var="centers"]').children('option').text().empty().remove();
+
+            }, 3000);
+
+});
+   
+</script>
+ <script type="text/javascript">         
+jQuery('input.id_not_od').click(function(){
+    if (jQuery(this).is(':checked')) {
+        jQuery('input[type="checkbox"].od_not_id').prop('checked', false);
+    }else{
+        jQuery('input[type="checkbox"].od_not_id').prop('checked', true);
+    }
+});
+jQuery( ".content-wrapper input,.content-wrapper select" ).on('keyup change', function(){
+
+        var v1 = jQuery( "input[var='Weight_bs']" ).val();
+        var v2 = jQuery( "input[var='scrap_rate']" ).val() / 100;
+        var v3 = jQuery( "input[var='Weight_bs']" ).val() * (1 + v2);
+        jQuery( "input[val='linear_ft_material_ws']" ).val(v3.toFixed(3));
+
+        
+        jQuery( "span.text.scrap_r" ).text('(includes '+jQuery( "input[var='scrap_rate']" ).val()+'% scrap)');
+
+        var v4 = jQuery( "input[var='density']" ).val();
+        var v5 = jQuery( "input[var='strip']" ).val();
+        var v6 = jQuery( "input[val='thickness']" ).val();
+        var v7 = v5 * v6 *  12 * v1 * v4;
+        var v8 = v7 * (1 + v2);
+        console.log(v1+'  '+v2+'  '+v3+'  '+v4+'  '+v5+'  '+ v6+ ' ' +v7+'  ' +v8 );
+        jQuery( "input[val='weight_ws']" ).val(v8.toFixed(3));   
+});
+</script>
+<script src="../vendor/selectize/selectize.js"></script>
+<script src="assets/js/page.material-requirments.js"></script>

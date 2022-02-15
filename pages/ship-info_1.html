@@ -1,0 +1,172 @@
+<div class="content-wrapper" style="min-height: 500px;">
+    <h3>Ship Info
+        <div style="float: right;">
+            <i onclick="openReport()" title="View" class="fa fa-eye" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Print" class="fa fa-print" style="font-size: 18px;padding: 0 15px;" onclick="window.print();"></i>
+            <i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div>
+    </h3>
+
+    <!-- <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div> -->
+    <div id="filter" class="row clicktoid" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+    <script>
+        function addClose() {
+            setTimeout(function() {
+                $('#job-table').prepend($('<button style="float: right; margin-top: -31px;" onclick="$(\'#job-table\').slideUp()" class="danger fa fa-times-circle"></button>'));
+            }, 1000);
+        }
+		
+		function openReport()
+		{
+			var ship_no = $("#ship_no").val();
+			if(ship_no == "")
+			{
+				return false;
+			}
+			
+			if(document.getElementById('packing_list').checked)
+			{
+				var packing_list = 1;
+			}
+			else
+			{
+				var packing_list = 0;
+			}
+			
+			if(document.getElementById('certification').checked)
+			{
+				var certification = 1;
+			}
+			else
+			{
+				var certification = 0;
+			}
+			
+			if(document.getElementById('mil_certs').checked)
+			{
+				var mil_certs = 1;
+			}
+			else
+			{
+				var mil_certs = 0;
+			}
+			
+			if(document.getElementById('partial').checked)
+			{
+				var partial = 1;
+			}
+			else
+			{
+				var partial = 0;
+			}
+			
+			if(packing_list ==1)
+			{
+				if(partial == 1)
+				{
+					var url = "/packing.php?ship_no="+ship_no+"&partial=1";
+					var win = window.open(url, '_blank');
+					
+				}
+				else
+				{
+					var url = "/packing.php?ship_no="+ship_no;
+					var win = window.open(url, '_blank');
+				}
+			}
+			
+			if(certification == 1)
+			{
+				if(mil_certs == 1)
+				{
+					var url = "/certificate.php?ship_no="+ship_no+"&millcerts=1";
+					var win = window.open(url, '_blank');
+				}
+				else
+				{
+					var url = "/certificate.php?ship_no="+ship_no;
+					var win = window.open(url, '_blank');
+				}
+			}
+		}
+    </script>
+
+    <div form="table.form" table-name="ship_info" fields='{"rings": {"type": "bool"}, "certs": {"type": "bool"}, "p_cert": {"type": "bool"}, "p_ship": {"type": "bool"}, "p_pack": {"type": "bool"}}' style="margin: 20px 0;">
+        <div>
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">TPM Ship No</span><input id="ship_no" var="ship_no" class="align-right" type="text" field="Ship No seems invalid." mask="number" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Job</span><input onfocus="$('#job-table').slideDown();" var="job" class="align-right" type="text" field="Job seems invalid." mask="number" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Customer</span><input var="customer" class="align-right" type="text" field="Customer seems invalid." mask="text" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Shipping Address</span><textarea var="ship_to" class="align-right"></textarea>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Purchase Order</span><input var="po" class="align-right" type="text" field="Purchase Order seems invalid." mask="text" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Quantity</span><input var="quantity" class="align-right" type="text" field="Quantity seems invalid." mask="number" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Part #</span><input var="part" class="align-right" type="text" field="Part seems invalid." mask="text" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Ship Via</span><select table="via" column="ship_via"></select>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Date</span><input var="sh_date" type="datepicker" class="align-right">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Part Desc</span><textarea var="desc" class="align-right"></textarea>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Billing Address</span><textarea var="sold_to" class="align-right"></textarea>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Item</span><input var="item" class="align-right" type="text" mask="number" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Heat #</span><input var="heat" class="align-right" type="text" mask="text" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Rings</span><input type="checkbox" var="rings">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Rings Heat#</span><select table="rings" column="heat"></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Packing List</span><textarea var="list" class="align-right"></textarea>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Packing List</span><input id="packing_list" type="checkbox" var="p_pack">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Certification</span><input id="certification" type="checkbox" var="p_cert">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Mil Certs?</span><input id="mil_certs" type="checkbox" var="certs">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Partial?</span><input id="partial" type="checkbox" var="p_ship">
+                </div>
+            </div>
+            <!-- <div class="col-xs-12"> -->
+                <div class="column">
+                    <div style="background: #fff; padding: 42px 18px; display: none;" id="job-table" callback="addClose" fetch-url="ship-info-table"></div>
+                </div>
+            <!-- </div> -->
+        </div>
+    </div>
+
+</div>

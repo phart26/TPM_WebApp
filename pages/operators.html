@@ -1,0 +1,26 @@
+<div class="content-wrapper" style="min-height: 500px;">
+    <h3>Operators
+        <div style="float: right;">
+            <i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Save Record" ev="table.replace" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i>
+            <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div>
+    </h3>
+
+    <div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+
+    <div form="table.form" table-name="operators" style="margin: 20px 0;">
+        <div>
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Operator ID</span><input var="id" class="align-right" type="text" field="Operator ID seems invalid." mask="text" required>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Operator</span><input var="operator" class="align-right" type="text" field="Operator seems invalid." mask="text" required>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,264 @@
+<div class="content-wrapper">
+    <h3>Orders<div style="float: right;"><i class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i><i class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i><i class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i></div></h3>
+    <div class="row">
+        <div class="col-lg-12">
+
+        <div>
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Job No.</span><input type="text" class="align-right">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Customer</span><select></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">PO Number</span><input type="text" class="align-right">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Part No.</span><select></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Quantity</span><input type="text" class="align-right">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Date Ordered</span><input type="datepicker" class="align-right">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Date Due</span><input type="datepicker" class="align-right">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Shipping Date</span><input type="datepicker" class="align-right">
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">LF mat</span><input  type="number" placeholder="0.000" step="0.001" class="align-right">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Weight (pre)</span><input  type="number" placeholder="0.000" step="0.001" class="align-right">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Weight (post)</span><input  type="number" placeholder="0.000" step="0.001" class="align-right">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Total tube (ft)</span><input  type="number" placeholder="0.000" step="0.001" class="align-right">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Price</span><input  type="number" placeholder="0.00" step="0.01" class="align-right">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Revenue total</span><input  type="number" placeholder="0.00" step="0.01" class="align-right">
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Mill Operator</span><select></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Cut Off Operator</span><select></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Repair Welder</span><select></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Inspector</span><select></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Container Type</span><select></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Shipping Method</span><select></select>
+                </div>
+            </div>
+
+            
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Mill Weld Spec</span><select></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Repair Weld Spec</span><select></select>
+                </div>
+            </div>
+        </div>
+
+        <div class="inline">
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Line item</span><input type="text" class="align-right">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Date Began</span><input type="datepicker" class="align-right">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Date Finished</span><input type="datepicker" class="align-right">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Date Shipped</span><input type="datepicker" class="align-right">
+                </div>
+
+                <div class="button">Advance Job</div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Started ?</span><input type="checkbox">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Finished ?</span><input type="checkbox">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Shipped ?</span><input type="checkbox">
+                </div>
+            </div>
+
+            <br>
+            
+            <div class="inline">
+                <div class="inline overflow" style="font-size: 80%; border: 1px solid #ccc; height: 150px; background: #fff; width: 390px;">
+                    <table class="table row-border stripe display compact">
+                        <thead>
+                            <tr>
+                                <th>Coil</th>
+                                <th>Weight</th>
+                                <th>Width</th>
+                                <th>Worker#</th>
+                                <th>Heat#</th>
+                                <th>Job</th>
+                                <th>Allocated</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+                <br>
+
+                <div class="column">
+                    <div class="button">Allocate</div>
+                    <div class="button">Deallocate</div>
+                    <div class="button">Enter as Used</div>
+                </div>
+            </div>
+
+            <br>
+
+            <div class="section">
+                <div class="section-title">Order Status</div>
+            
+                <div class="column">
+                    <div class="input">
+                        <span class="left-placeholder">Instruction</span><select></select>
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Balance</span><input type="text">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Status</span><select></select>
+                    </div>
+
+                    <div class="input">
+                        <span class="left-placeholder">Call</span><input type="text">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">TPM Status</span><select></select>
+                    </div>
+
+                    <div class="button">Preview Report</div>
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="inline tab" style="margin-left: 23px; width: 500px; font-size: 80%;">
+            <div class="tab-list">
+                <div class="tab-list-item active">Layer 1 Mesh</div>
+                <div class="tab-list-item">Layer 2 Mesh</div>
+                <div class="tab-list-item">Drainage 1 Mesh</div>
+                <div class="tab-list-item">Drainage 2 Mesh</div>
+            </div>
+            <div class="tab-content active" style="padding: 0px;">
+                <div class="overflow" style="height: 300px;">
+                    <table class="table row-border stripe display compact">
+                        <thead>
+                            <tr>
+                                <th>Mesh Type</th>
+                                <th>Type</th>
+                                <th>Recieved</th>
+                                <th>Width</th>
+                                <th>Length</th>
+                                <th>Allocated</th>
+                                <th>TPM JOB</th>
+                                <th>Heat#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                            <tr><td>80 Mesh</td><td>316L</td><td>4/6/2010</td><td>4</td><td>66</td><td>Yes</td><td>60</td><td>3465</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="button">Allocate</div>
+                <div class="button">Deallocate</div>
+            </div>
+            <div class="tab-content">
+                Content of tab 2
+            </div>
+            <div class="tab-content">
+                Content of tab 3
+            </div>
+        </div>
+
+
+        </div>
+    </div>
+</div>

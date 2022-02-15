@@ -1,0 +1,919 @@
+<?php require_once __DIR__ . '/../init.php'; ?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <meta name="description" content="Bootstrap Admin App + jQuery">
+   <meta name="keywords" content="app, responsive, jquery, bootstrap, dashboard, admin">
+   <title>TPM v3.0</title>
+   <!-- =============== VENDOR STYLES ===============-->
+
+   <!-- FONT AWESOME-->
+   <link rel="stylesheet" href="../vendor/fontawesome/css/font-awesome.min.css">
+   <!-- SIMPLE LINE ICONS-->
+   <link rel="stylesheet" href="../vendor/simple-line-icons/css/simple-line-icons.css">
+   <!-- ANIMATE.CSS-->
+   <link rel="stylesheet" href="../vendor/animate.css/animate.min.css">
+   <!-- WHIRL (spinners)-->
+   <link rel="stylesheet" href="../vendor/whirl/dist/whirl.css">
+   <link rel="stylesheet" href="../vendor/inputpicker/src/jquery.inputpicker.css">
+   <!-- =============== PAGE VENDOR STYLES ===============-->
+   <!-- =============== BOOTSTRAP STYLES ===============-->
+   <link rel="stylesheet" href="css/bootstrap.css" id="bscss">
+   <!-- =============== APP STYLES ===============-->
+   <link rel="stylesheet" href="css/app.css" id="maincss">
+
+
+   <!-- =============== APP STYLES ===============-->
+   <link rel="stylesheet" href="assets/css/main.css">
+
+   <!-- JQUERY-->
+   <script src="../vendor/jquery/dist/jquery.js"></script>
+</head>
+
+<body>
+   <div class="wrapper">
+      <!-- top navbar-->
+      <header class="topnavbar-wrapper">
+         <!-- START Top Navbar-->
+         <nav role="navigation" class="navbar topnavbar">
+            <!-- START navbar header-->
+            <div class="navbar-header">
+               <!--
+               <a href="#/" class="navbar-brand">
+                  <div class="brand-logo">
+                     <img src="img/logo.png" alt="App Logo" class="img-responsive">
+                  </div>
+                  <div class="brand-logo-collapsed">
+                     <img src="img/logo-single.png" alt="App Logo" class="img-responsive">
+                  </div>
+               </a>-->
+               <a href="#/" class="navbar-brand" style="
+                    color: #fff;
+                    font-size: 24px;
+                    line-height: 55px;
+                ">TPM</a>
+            </div>
+            <!-- END navbar header-->
+            <!-- START Nav wrapper-->
+            <div class="nav-wrapper">
+               <!-- START Left navbar-->
+               <ul class="nav navbar-nav">
+                  <li>
+                     <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
+                     <a href="#" data-trigger-resize="" data-toggle-state="aside-collapsed" class="hidden-xs">
+                        <em class="fa fa-navicon"></em>
+                     </a>
+                     <!-- Button to show/hide the sidebar on mobile. Visible on mobile only.-->
+                     <a href="#" data-toggle-state="aside-toggled" data-no-persist="true" class="visible-xs sidebar-toggle">
+                        <em class="fa fa-navicon"></em>
+                     </a>
+                  </li>
+                  <!-- START User avatar toggle-->
+                  <li>
+                     <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
+                     <a id="user-block-toggle" href="#user-block" data-toggle="collapse">
+                        <em class="icon-user"></em>
+                     </a>
+                  </li>
+                  <!-- END User avatar toggle-->
+                  <!-- START lock screen-->
+                  <li>
+                     <a href="lock.html" title="Lock screen">
+                        <em class="icon-lock"></em>
+                     </a>
+                  </li>
+                  
+                  <li role="presentation">
+                      <a href="<?= HTTP_ROOT ?>logout.php">
+                        <em class="icon-logout fa-lg"></em>
+                     </a>
+                  </li>
+                  <!-- END lock screen-->
+               </ul>
+               <!-- END Left navbar-->
+               <!-- START Right Nav
+                  <!- END Offsidebar menu-->
+               </ul>
+               <!-- END Right Navbar-->
+            </div>
+            <!-- END Nav wrapper-->
+            <!-- START Search form-->
+            <form role="search" action="search.html" class="navbar-form">
+               <div class="form-group has-feedback">
+                  <input type="text" placeholder="Type and hit enter ..." class="form-control">
+                  <div data-search-dismiss="" class="fa fa-times form-control-feedback"></div>
+               </div>
+               <button type="submit" class="hidden btn btn-default">Submit</button>
+            </form>
+            <!-- END Search form-->
+         </nav>
+         <!-- END Top Navbar-->
+      </header>
+      <!-- sidebar-->
+      <aside class="aside">
+         <!-- START Sidebar (left)-->
+         <div class="aside-inner">
+            <nav data-sidebar-anyclick-close="" class="sidebar">
+               <!-- START sidebar nav-->
+               <ul class="nav">
+                  <!-- START user info-->
+                  <li class="has-user-block">
+                     <div id="user-block" class="collapse">
+                        <div class="item user-block">
+                           <!-- User picture-->
+                           <div class="user-block-picture">
+                              <div class="user-block-status">
+                                 <img src="img/user/02.jpg" alt="Avatar" width="60" height="60" class="img-thumbnail img-circle">
+                                 <div class="circle circle-success circle-lg"></div>
+                              </div>
+                           </div>
+                           <!-- Name and Job-->
+                           <div class="user-block-info">
+                              <span class="user-block-name"><?= isset($_SESSION['username']) ? 'Hello, ' . $_SESSION['username'] : 'Not logged in' ?></span>
+                              <span class="user-block-role">User</span>
+                           </div>
+                        </div>
+                     </div>
+                  </li>
+                  <!-- END user info-->
+                  <!-- Iterates over all sidebar items-->
+                  <li class="nav-heading ">
+                     <span data-localize="sidebar.heading.HEADER">Main Navigation</span>
+                  </li>
+                  <?php if(current_has_permission('customers_html', 'view')) { ?>
+                  <li class="left-navigation">
+                     <a href="customers.html" title="Customers">
+                        <em class="icon-grid"></em>
+                        <span>Customers</span>
+                     </a>
+                  </li>
+                  <?php } ?>
+                  
+                  <?php if(current_has_permission('orders_html', 'view')) { ?>
+                  <li class="left-navigation">
+                     <a href="#orders" title="Orders" data-toggle="collapse">
+                        <em class="icon-grid"></em>
+                        <span>Orders</span>
+                     </a>
+                     <ul id="orders" class="nav sidebar-subnav collapse" >
+                        <li class="sidebar-subnav-header">Orders</li>
+                        <li class="left-sub-navigation">
+                           <a href="orders.html" title="All Orders">
+                              <span>All</span>
+                           </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                           <a href="orders-yet-to-start.html" title="Yet to Start">
+                              <span>Yet to start</span>
+                           </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                           <a href="orders-started.html" title="Started">
+                              <span>Started</span>
+                           </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                           <a href="orders-finished.html" title="Finished">
+                              <span>Finished</span>
+                           </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                           <a href="orders-shipped.html" title="Shipped">
+                              <span>Shipped</span>
+                           </a>
+                        </li>
+                     </ul>
+                  </li>
+                  <?php } ?>
+                  
+
+                  <?php 
+                  
+                  
+                  if(current_has_permission('work_steel_no_php', 'view') || current_has_permission('inventory-1_html', 'view') || current_has_permission('inventory-2_html', 'view') || current_has_permission('mexh-receiving_html', 'view')) { ?>
+                  <li class="">
+                     <a href="#inventory" title="Inventory" data-toggle="collapse" class="" >
+                        <em class="icon-grid"></em>
+                        <span data-localize="sidebar.nav.INVENTORY">Inventory</span>
+                     </a>
+                     <ul id="inventory" class="nav sidebar-subnav collapse" >
+                        <li class="sidebar-subnav-header">Inventory</li>
+                        
+                        <?php if(current_has_permission('work_steel_no_php', 'view')) { ?>
+                        <li class="left-sub-navigation">
+							<!-- <a href="inventory-1.html" title="Steel Work Number"> -->
+							<a href="work_steel_no.php" title="Steel Work Number">
+                              <!-- <span>New Materials</span> -->
+                              <span>Steel Work Number</span>
+                           </a>
+                        </li>
+                        <?php } ?>
+                        
+                        <?php if(current_has_permission('inventory-2_html', 'view')) { ?>
+                        <li class="left-sub-navigation">
+							<!-- <a href="inventory-2.html" title="Receive Coil"> -->
+							<!-- <span>Receive Steel</span> -->
+							<a href="receive_coil.php" title="Receive Coil">
+							<span>Receive Coil</span>
+                           </a>
+                        </li>
+						
+						<li class="left-sub-navigation">
+							<!-- <a href="inventory-2.html" title="Receive Coil"> -->
+							<!-- <span>Receive Steel</span> -->
+							<a href="receive_coil_copy.php" title="Receive Coil">
+							<span>Coils - Temp Storage</span>
+                           </a>
+                        </li>
+						
+						<li class="left-sub-navigation">
+                           <a href="MasterSteel.php" title="Steel Work Number">
+                              <!-- <span>New Materials</span> -->
+                              <span>Master Steel</span>
+                           </a>
+                        </li>
+						
+						<li class="left-sub-navigation">
+                           <a href="ReceiveCoilNo.php" title="Pdf Form">
+                              <!-- <span>Receive Steel</span> -->
+                              <span>Pdf Form</span>
+                           </a>
+                        </li>
+                        <?php } ?>
+                        
+                        <?php if(current_has_permission('mesh-receiving_html', 'view')) { ?>
+                        <li class="left-sub-navigation">
+                            <a href="mesh-receiving.html" title="Mesh Receiving">
+                                <span>Mesh Receiving</span>
+                            </a>
+                        </li>
+                        <?php } ?>
+						
+
+                        
+                     </ul>
+                  </li>
+                  <?php } ?>
+                  
+                  <?php if(current_has_permission('reports_html', 'view')) { ?>
+                  <li class="">
+                     <a href="#reports" title="Reports" data-toggle="collapse" class="" >
+                        <em class="icon-grid"></em>
+                        <span data-localize="sidebar.nav.REPORTS">Reports</span>
+                     </a>
+                      <ul id="reports" class="nav sidebar-subnav collapse" >
+                        <li class="sidebar-subnav-header">Reports</li>
+                        
+						<li class="left-sub-navigation">
+                           <a href="reports.html" title="Job Status Report">
+                              <span>Job Status Report</span>
+                           </a>
+                        </li>
+                        
+                        <li class="left-sub-navigation">
+                           <a href="<?= HTTP_ROOT ?>standard_prices.php" title="Standard Prices Report" target="_Blank">
+                              <span>Standard Prices Report</span>
+                           </a>
+                        </li>
+                        
+                        <li class="left-sub-navigation">
+                           <a href="training-report.html" title="Training Report - Inspectors">
+                              <span>Training Report</span>
+                           </a>
+                        </li>
+                        
+                        <li class="left-sub-navigation">
+                           <a href="steel-receive.html" title="Steel Receive">
+                              <span>Steel Receive Report</span>
+                           </a>
+                        </li>
+                        
+                        <li class="left-sub-navigation">
+                           <a href="<?= HTTP_ROOT ?>invent.php" title="Audit Report" target="_Blank">
+                              <span>Audit Report</span>
+                           </a>
+                        </li>
+						
+                        <li class="left-sub-navigation">
+                            <a href="<?= HTTP_ROOT ?>order_status.php" title="Order Status" target="_Blank">
+                                <span>Order Status</span>
+                            </a>
+                        </li>
+                     </ul>
+                  </li>
+                  <?php } ?>
+
+                  <?php if(current_has_permission('reports_html', 'view')) { ?>
+                  <li class="">
+                     <a href="#excess" title="Excess Stock" data-toggle="collapse" class="" >
+                        <em class="icon-grid"></em>
+                        <span data-localize="sidebar.nav.EXCESS">Excess Stock</span>
+                     </a>
+                      <ul id="excess" class="nav sidebar-subnav collapse" >
+                        <li class="sidebar-subnav-header">Excess Stock</li>
+                        
+                        <li class="left-sub-navigation">
+                           <a href="excess_part.html" title="Excess Part Stock">
+                              <span>Excess Part Stock</span>
+                           </a>
+                        </li>
+                        
+                        <li class="left-sub-navigation">
+                           <a href="excess_ring.html" title="Excess Ring Stock">
+                              <span>Excess Ring Stock</span>
+                           </a>
+                        </li>
+                        
+                     </ul>
+                  </li>
+                  <?php } ?>
+                  
+                  <?php if(current_has_permission('quotes_html', 'view')) { ?>
+                  <li class="left-navigation">
+                     <a href="quotes.html" title="Quotes">
+                        <em class="icon-grid"></em>
+                        <span>Quotes</span>
+                     </a>
+                  </li>
+                  <?php } ?>
+                  
+                  <?php if(current_has_permission('material-requirments_html', 'view')) { ?>
+                  <li class="left-navigation">
+                     <a href="material-requirments.html" title="Material Requirments">
+                        <em class="icon-grid"></em>
+                        <span>Material Requirments</span>
+                     </a>
+                  </li>
+                  <?php } ?>
+                  
+                  <?php if(current_has_permission('uniscreen_html', 'view')) { ?>
+                  <li class="left-navigation">
+                     <a href="uniscreen.html" title="UniScreen">
+                        <em class="icon-grid"></em>
+                        <span>UniScreen</span>
+                     </a>
+                  </li>
+                  <?php } ?>
+
+                  <?php if(current_has_permission('uni_quotes1_html', 'view')) { ?>
+                  <li class="left-navigation">
+                     <a href="uni_quotes1.html" title="Uni_Quotes">
+                        <em class="icon-grid"></em>
+                        <span>Uni_Quotes</span>
+                     </a>
+                  </li>
+                  <?php } ?>
+                  
+                  <?php if(current_has_permission('part-information_html', 'view')) { ?>
+                  <li class="left-navigation">
+                     <a href="part-information.html" title="Part Information">
+                        <em class="icon-grid"></em>
+                        <span>Part Information</span>
+                     </a>
+                  </li>
+                  <?php } ?>
+                  
+                  <?php if(current_has_permission('ring-detail_html', 'view')) { ?>
+                  <li class="left-navigation">
+                      <a href="ring-detail.html" title="Ring Adjustment">
+                        <em class="icon-grid"></em>
+                        <span>Ring Adjustment</span>
+                      </a>
+                  </li>
+                  <?php } ?>
+                  
+                  <?php if(current_has_permission('ship-info_html', 'view')) { ?>
+                  <li class="left-navigation">
+                      <a href="ship-info.html" title="Ship Info">
+                        <em class="icon-grid"></em>
+                        <span>Ship Info</span>
+                      </a>
+                  </li>
+                  <?php } ?>
+                  
+                  <?php if(current_has_permission('settings_html', 'view')) { ?>
+                  <li class="">
+                     <a href="#SettingPages" title="Setting Pages" data-toggle="collapse" class="" >
+                        <em class="icon-grid"></em>
+                        <span data-localize="sidebar.nav.PAGES">Setting Pages</span>
+                     </a>
+                     <ul id="SettingPages" class="nav sidebar-subnav collapse in" >
+                        <li class="sidebar-subnav-header">Setting Pages</li>
+                        
+                        <?php if(is_admin($_SESSION['user_id'])) { ?>
+                        <li class="left-sub-navigation">
+                            <a href="<?= HTTP_ROOT ?>users.php">
+                              <span>Users</span>
+                           </a>
+                        </li>
+                        <?php } ?>
+                        
+                        <li class="left-sub-navigation">
+                           <a href="instruction-type.html">
+                              <span>Instruction Type</span>
+                           </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                           <a href="status-type.html">
+                              <span>Status Type</span>
+                           </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="tpm-type.html">
+                                <span>TPM Type</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="unit-table.html">
+                                <span>Unit Table</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="container-table.html">
+                                <span>Container</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="ship-method.html">
+                                <span>Ship Method</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="die-table.html">
+                                <span>Die Table</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="drifts.html">
+                                <span>Drifts</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="employee.html">
+                                <span>Employee</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="excluder-rings.html">
+                                <span>Excluder Rings</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="fraction-table.html">
+                                <span>Fraction Table</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="gage-table.html">
+                                <span>Gage Table</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="material-table.html">
+                                <span>Material Table</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="mesh.html">
+                                <span>Mesh Types</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="micron.html">
+                                <span>Micron</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="operators.html">
+                                <span>Operator List</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="pattern-table.html">
+                                <span>Pattern Table</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="weld-spec-mil.html">
+                                <span>Weld Spec Mil</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="weld-spec-repair.html">
+                                <span>Weld Spec Repair</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="ship-via.html">
+                                <span>Ship Via List</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="rings.html">
+                                <span>Rings</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="pricing.html">
+                                <span>Pricing</span>
+                            </a>
+                        </li>
+                        <li class="left-sub-navigation">
+                            <a href="pdf_footer.html">
+                                <span>Footer setting</span>
+                            </a>
+                        </li>
+                     </ul>
+                  </li>
+                  <?php } ?>
+               </ul>
+               <!-- END sidebar nav-->
+            </nav>
+         </div>
+         <!-- END Sidebar (left)-->
+      </aside>
+      <!-- offsidebar-->
+      <aside class="offsidebar hide">
+         <!-- START Off Sidebar (right)-->
+         <nav>
+            <div role="tabpanel">
+               <!-- Nav tabs-->
+               <ul role="tablist" class="nav nav-tabs nav-justified">
+                  <li role="presentation" class="active">
+                     <a href="#app-settings" aria-controls="app-settings" role="tab" data-toggle="tab">
+                        <em class="icon-equalizer fa-lg"></em>
+                     </a>
+                  </li>
+                  <li role="presentation">
+                     <a href="#app-chat" aria-controls="app-chat" role="tab" data-toggle="tab">
+                        <em class="icon-user fa-lg"></em>
+                     </a>
+                  </li>
+               </ul>
+               <!-- Tab panes-->
+               <div class="tab-content">
+                  <div id="app-settings" role="tabpanel" class="tab-pane fade in active">
+                     <h3 class="text-center text-thin">Settings</h3>
+                     <div class="p">
+                        <h4 class="text-muted text-thin">Themes</h4>
+                        <div class="table-grid mb">
+                           <div class="col mb">
+                              <div class="setting-color">
+                                 <label data-load-css="css/theme-a.css">
+                                    <input type="radio" name="setting-theme" checked="checked">
+                                    <span class="icon-check"></span>
+                                    <span class="split">
+                                       <span class="color bg-info"></span>
+                                       <span class="color bg-info-light"></span>
+                                    </span>
+                                    <span class="color bg-white"></span>
+                                 </label>
+                              </div>
+                           </div>
+                           <div class="col mb">
+                              <div class="setting-color">
+                                 <label data-load-css="css/theme-b.css">
+                                    <input type="radio" name="setting-theme">
+                                    <span class="icon-check"></span>
+                                    <span class="split">
+                                       <span class="color bg-green"></span>
+                                       <span class="color bg-green-light"></span>
+                                    </span>
+                                    <span class="color bg-white"></span>
+                                 </label>
+                              </div>
+                           </div>
+                           <div class="col mb">
+                              <div class="setting-color">
+                                 <label data-load-css="css/theme-c.css">
+                                    <input type="radio" name="setting-theme">
+                                    <span class="icon-check"></span>
+                                    <span class="split">
+                                       <span class="color bg-purple"></span>
+                                       <span class="color bg-purple-light"></span>
+                                    </span>
+                                    <span class="color bg-white"></span>
+                                 </label>
+                              </div>
+                           </div>
+                           <div class="col mb">
+                              <div class="setting-color">
+                                 <label data-load-css="css/theme-d.css">
+                                    <input type="radio" name="setting-theme">
+                                    <span class="icon-check"></span>
+                                    <span class="split">
+                                       <span class="color bg-danger"></span>
+                                       <span class="color bg-danger-light"></span>
+                                    </span>
+                                    <span class="color bg-white"></span>
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="table-grid mb">
+                           <div class="col mb">
+                              <div class="setting-color">
+                                 <label data-load-css="css/theme-e.css">
+                                    <input type="radio" name="setting-theme">
+                                    <span class="icon-check"></span>
+                                    <span class="split">
+                                       <span class="color bg-info-dark"></span>
+                                       <span class="color bg-info"></span>
+                                    </span>
+                                    <span class="color bg-gray-dark"></span>
+                                 </label>
+                              </div>
+                           </div>
+                           <div class="col mb">
+                              <div class="setting-color">
+                                 <label data-load-css="css/theme-f.css">
+                                    <input type="radio" name="setting-theme">
+                                    <span class="icon-check"></span>
+                                    <span class="split">
+                                       <span class="color bg-green-dark"></span>
+                                       <span class="color bg-green"></span>
+                                    </span>
+                                    <span class="color bg-gray-dark"></span>
+                                 </label>
+                              </div>
+                           </div>
+                           <div class="col mb">
+                              <div class="setting-color">
+                                 <label data-load-css="css/theme-g.css">
+                                    <input type="radio" name="setting-theme">
+                                    <span class="icon-check"></span>
+                                    <span class="split">
+                                       <span class="color bg-purple-dark"></span>
+                                       <span class="color bg-purple"></span>
+                                    </span>
+                                    <span class="color bg-gray-dark"></span>
+                                 </label>
+                              </div>
+                           </div>
+                           <div class="col mb">
+                              <div class="setting-color">
+                                 <label data-load-css="css/theme-h.css">
+                                    <input type="radio" name="setting-theme">
+                                    <span class="icon-check"></span>
+                                    <span class="split">
+                                       <span class="color bg-danger-dark"></span>
+                                       <span class="color bg-danger"></span>
+                                    </span>
+                                    <span class="color bg-gray-dark"></span>
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="p">
+                        <h4 class="text-muted text-thin">Layout</h4>
+                        <div class="clearfix">
+                           <p class="pull-left">Fixed</p>
+                           <div class="pull-right">
+                              <label class="switch">
+                                 <input id="chk-fixed" type="checkbox" data-toggle-state="layout-fixed">
+                                 <span></span>
+                              </label>
+                           </div>
+                        </div>
+                        <div class="clearfix">
+                           <p class="pull-left">Boxed</p>
+                           <div class="pull-right">
+                              <label class="switch">
+                                 <input id="chk-boxed" type="checkbox" data-toggle-state="layout-boxed">
+                                 <span></span>
+                              </label>
+                           </div>
+                        </div>
+                        <div class="clearfix">
+                           <p class="pull-left">RTL</p>
+                           <div class="pull-right">
+                              <label class="switch">
+                                 <input id="chk-rtl" type="checkbox">
+                                 <span></span>
+                              </label>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="p">
+                        <h4 class="text-muted text-thin">Aside</h4>
+                        <div class="clearfix">
+                           <p class="pull-left">Collapsed</p>
+                           <div class="pull-right">
+                              <label class="switch">
+                                 <input id="chk-collapsed" type="checkbox" data-toggle-state="aside-collapsed">
+                                 <span></span>
+                              </label>
+                           </div>
+                        </div>
+                        <div class="clearfix">
+                           <p class="pull-left">Collapsed Text</p>
+                           <div class="pull-right">
+                              <label class="switch">
+                                 <input id="chk-collapsed-text" type="checkbox" data-toggle-state="aside-collapsed-text">
+                                 <span></span>
+                              </label>
+                           </div>
+                        </div>
+                        <div class="clearfix">
+                           <p class="pull-left">Float</p>
+                           <div class="pull-right">
+                              <label class="switch">
+                                 <input id="chk-float" type="checkbox" data-toggle-state="aside-float">
+                                 <span></span>
+                              </label>
+                           </div>
+                        </div>
+                        <div class="clearfix">
+                           <p class="pull-left">Hover</p>
+                           <div class="pull-right">
+                              <label class="switch">
+                                 <input id="chk-hover" type="checkbox" data-toggle-state="aside-hover">
+                                 <span></span>
+                              </label>
+                           </div>
+                        </div>
+                        <div class="clearfix">
+                           <p class="pull-left">Show Scrollbar</p>
+                           <div class="pull-right">
+                              <label class="switch">
+                                 <input id="chk-hover" type="checkbox" data-toggle-state="show-scrollbar" data-target=".sidebar">
+                                 <span></span>
+                              </label>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div id="app-chat" role="tabpanel" class="tab-pane fade">
+                     <h3 class="text-center text-thin">Connections</h3>
+                     <ul class="nav">
+                        <!-- START list title-->
+                        <li class="p">
+                           <small class="text-muted">ONLINE</small>
+                        </li>
+                        <!-- END list title-->
+                        <li>
+                           <!-- START User status-->
+                           <a href="#" class="media-box p mt0">
+                              <span class="pull-right">
+                                 <span class="circle circle-success circle-lg"></span>
+                              </span>
+                              <span class="pull-left">
+                                 <!-- Contact avatar-->
+                                 <img src="img/user/05.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                              </span>
+                              <!-- Contact info-->
+                              <span class="media-box-body">
+                                 <span class="media-box-heading">
+                                    <strong>Juan Sims</strong>
+                                    <br>
+                                    <small class="text-muted">Designeer</small>
+                                 </span>
+                              </span>
+                           </a>
+                           <!-- END User status-->
+                           <!-- START User status-->
+                           <a href="#" class="media-box p mt0">
+                              <span class="pull-right">
+                                 <span class="circle circle-success circle-lg"></span>
+                              </span>
+                              <span class="pull-left">
+                                 <!-- Contact avatar-->
+                                 <img src="img/user/06.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                              </span>
+                              <!-- Contact info-->
+                              <span class="media-box-body">
+                                 <span class="media-box-heading">
+                                    <strong>Maureen Jenkins</strong>
+                                    <br>
+                                    <small class="text-muted">Designeer</small>
+                                 </span>
+                              </span>
+                           </a>
+                           <!-- END User status-->
+                           <!-- START User status-->
+                           <a href="#" class="media-box p mt0">
+                              <span class="pull-right">
+                                 <span class="circle circle-danger circle-lg"></span>
+                              </span>
+                              <span class="pull-left">
+                                 <!-- Contact avatar-->
+                                 <img src="img/user/07.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                              </span>
+                              <!-- Contact info-->
+                              <span class="media-box-body">
+                                 <span class="media-box-heading">
+                                    <strong>Billie Dunn</strong>
+                                    <br>
+                                    <small class="text-muted">Designeer</small>
+                                 </span>
+                              </span>
+                           </a>
+                           <!-- END User status-->
+                           <!-- START User status-->
+                           <a href="#" class="media-box p mt0">
+                              <span class="pull-right">
+                                 <span class="circle circle-warning circle-lg"></span>
+                              </span>
+                              <span class="pull-left">
+                                 <!-- Contact avatar-->
+                                 <img src="img/user/08.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                              </span>
+                              <!-- Contact info-->
+                              <span class="media-box-body">
+                                 <span class="media-box-heading">
+                                    <strong>Tomothy Roberts</strong>
+                                    <br>
+                                    <small class="text-muted">User</small>
+                                 </span>
+                              </span>
+                           </a>
+                           <!-- END User status-->
+                        </li>
+                        <!-- START list title-->
+                        <li class="p">
+                           <small class="text-muted">OFFLINE</small>
+                        </li>
+                        <!-- END list title-->
+                        <li>
+                           <!-- START User status-->
+                           <a href="#" class="media-box p mt0">
+                              <span class="pull-right">
+                                 <span class="circle circle-lg"></span>
+                              </span>
+                              <span class="pull-left">
+                                 <!-- Contact avatar-->
+                                 <img src="img/user/09.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                              </span>
+                              <!-- Contact info-->
+                              <span class="media-box-body">
+                                 <span class="media-box-heading">
+                                    <strong>Lawrence Robinson</strong>
+                                    <br>
+                                    <small class="text-muted">Developer</small>
+                                 </span>
+                              </span>
+                           </a>
+                           <!-- END User status-->
+                           <!-- START User status-->
+                           <a href="#" class="media-box p mt0">
+                              <span class="pull-right">
+                                 <span class="circle circle-lg"></span>
+                              </span>
+                              <span class="pull-left">
+                                 <!-- Contact avatar-->
+                                 <img src="img/user/10.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                              </span>
+                              <!-- Contact info-->
+                              <span class="media-box-body">
+                                 <span class="media-box-heading">
+                                    <strong>Tyrone Owens</strong>
+                                    <br>
+                                    <small class="text-muted">User</small>
+                                 </span>
+                              </span>
+                           </a>
+                           <!-- END User status-->
+                        </li>
+                        <li>
+                           <div class="p-lg text-center">
+                              <!-- Optional link to list more users-->
+                              <a href="#" title="See more contacts" class="btn btn-purple btn-sm">
+                                 <strong>Load more..</strong>
+                              </a>
+                           </div>
+                        </li>
+                     </ul>
+                     <!-- Extra items-->
+                     <div class="p">
+                        <p>
+                           <small class="text-muted">Tasks completion</small>
+                        </p>
+                        <div class="progress progress-xs m0">
+                           <div role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-success progress-80">
+                              <span class="sr-only">80% Complete</span>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="p">
+                        <p>
+                           <small class="text-muted">Upload quota</small>
+                        </p>
+                        <div class="progress progress-xs m0">
+                           <div role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-warning progress-40">
+                              <span class="sr-only">40% Complete</span>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </nav>
+         <!-- END Off Sidebar (right)-->
+      </aside>
+      <!-- Main section-->
+      <section>
+         <!-- Page content-->

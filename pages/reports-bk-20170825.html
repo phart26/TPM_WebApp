@@ -1,0 +1,234 @@
+<div class="content-wrapper">
+    <h3>Reports<div style="float: right;"><i class="fa fa-print" style="font-size: 18px;padding: 0 15px;" onclick="window.print();"></i><i class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i><i class="fa fa-remove" style="font-size: 18px;padding: 0 15px;"></i><i class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i></div></h3>
+    
+    <div class="row">
+        <a href="<?= HTTP_ROOT ?>standard_prices.php" class="btn btn-primary">Standard Prices Report</a>
+        <a href="<?= HTTP_ROOT ?>training_inspectors.php" class="btn btn-primary">Training Report - Inspectors</a>
+        <a href="<?= HTTP_ROOT ?>order_status.php" class="btn btn-primary">Order Status</a>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-12">
+
+        <div class="section">
+            <div class="section-title">Part Specification</div>
+    
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Job No.</span><select></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Quantity</span><input type="text">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Material</span><select></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Gage</span><select></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Pattern</span><select></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Hole Size</span><select></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Hole centers</span><select></select>
+                </div>
+
+                <div class="inline input"><div class="input">
+                                    <span class="left-placeholder">OD</span><input type="text" style="
+                    width: 128px;
+                    border-width: 0 0 0 1px;
+                ">
+                                </div></div>
+                
+                <div class="inline input" style="margin-bottom: 10px;">
+                                    
+                                <div class="input">
+                                    <span class="left-placeholder">+</span><input type="text" style="
+                    border-width: 0 0 0 1px;
+                    width: 60px;
+                ">
+                                </div><div class="input">
+                                    <span class="left-placeholder">-</span><input type="text" style="
+                    border-width: 0 0 0 1px;
+                    width: 60px
+                ">
+                                </div></div>
+
+                <div class="input">
+                    <span class="left-placeholder">Drawing</span><input type="text">
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Customer</span><input type="text">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">PO Number</span><input type="text">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Line item</span><input type="text">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Part No.</span><input type="text">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Part Desc.</span><textarea></textarea>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Date ordered</span><input type="text">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Date Due</span><input type="text">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Ship Date</span><input type="text">
+                </div>
+                <div class="inline input"><div class="input">
+                                    <span class="left-placeholder">Finished lenght</span><input type="text" style="
+                    width: 70px;
+                    border-width: 0 0 0 1px;
+                ">
+                                </div></div>
+                
+                <div class="inline input">
+                                    
+                                <div class="input">
+                                    <span class="left-placeholder">+</span><input type="text" style="
+                    border-width: 0 0 0 1px;
+                    width: 60px;
+                ">
+                                </div><div class="input">
+                                    <span class="left-placeholder">-</span><input type="text" style="
+                    border-width: 0 0 0 1px;
+                    width: 60px;
+                ">
+                                </div></div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Mill Spec</span><select></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Repair Spec</span><select></select>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="section">
+            <div class="section-title">Mfg. Specification</div>
+    
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Strip width</span><input type="text">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Angle</span><input type="text">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Cutoff lenght</span><input type="text">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Die</span><select></select>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Mill</span><select></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Ring Min</span><input type="text">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Ring Max</span><input type="text">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">ID drift</span><input type="text">
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Mill amps</span><select></select>
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Mill volts</span><input type="text">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Mill speed</span><input type="text">
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input">
+                    <span class="left-placeholder">Repair amps</span><input type="text">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Repair volts</span><input type="text">
+                </div>
+                <div class="input">
+                    <span class="left-placeholder">Repair speed</span><input type="text">
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Report Options</div>
+    
+            <div class="column">
+                <div class="input no-border">
+                    <input type="checkbox"><span class="left-placeholder">Mill Log</span>
+                </div>
+                <div class="input no-border">
+                    <input type="checkbox"><span class="left-placeholder">Mill Setup</span>
+                </div>
+                <div class="input no-border">
+                    <input type="checkbox"><span class="left-placeholder">Welding Sheets</span>
+                </div>
+                <div class="input no-border">
+                    <input type="checkbox"><span class="left-placeholder">Worksheet</span>
+                </div>
+                <div class="input no-border">
+                    <input type="checkbox"><span class="left-placeholder">Direct Pack</span>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="input no-border">
+                    <input type="checkbox"><span class="left-placeholder">Cutoff Sheets</span>
+                </div>
+                <div class="input no-border">
+                    <input type="checkbox"><span class="left-placeholder">Inspection Sheets</span>
+                </div>
+                <div class="input no-border">
+                    <input type="checkbox"><span class="left-placeholder">Allocation</span>
+                </div>
+                <div class="input no-border">
+                    <input type="checkbox"><span class="left-placeholder">Ring Inspection</span>
+                </div>
+                <div class="input no-border">
+                    <input type="checkbox"><span class="left-placeholder">Drawing</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Print Options</div>
+                <div class="input no-border">
+                    <input type="checkbox"><span class="left-placeholder">Print</span>
+                </div>
+                <div class="input no-border">
+                    <input type="checkbox"><span class="left-placeholder">Preview</span>
+                </div>
+            </div>
+        </div>
+
+
+        </div>
+    </div>
+</div>

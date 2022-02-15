@@ -1,0 +1,1066 @@
+<div class="content-wrapper">
+    <h3>Part Information
+        <div style="float: right;">
+        <i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+        <i title="Save Record" id="saave" onclick="saveMaster()" class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i>
+        <i title="Delete Record" ev="table.delete"  class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i>
+        <i title="Reset Form" ev="form.reset" form-name="table.form" class="fa fa-undo" style="font-size: 18px;padding: 0 15px;"></i>
+        </div>
+    </h3>
+<!--
+SELECT cust_tbl.customer, part_tbl.part, part_tbl.description, part_tbl.type, part_tbl.gage, part_tbl.holes, part_tbl.centers, part_tbl.pattern, IIf([holes]=0,0,[holes]^2/[centers]^2*[oa_factor]) AS oa, part_tbl.dim, part_tbl.is_od, IIf([is_od],[dim],[dim]+2*[thickness]) AS od, part_tbl.finished_length, part_tbl.strip, part_tbl.drawing, 0.29*[thickness]*4*Atn(1)*[od]*[finished_length]*(100-[oa])/100 AS [tube weight], [tube weight]/[finished_length]*12 AS [weight per foot], [finished_length]/12 AS feet, IIf([holes]=0,0,[oa]/(78.54*[holes]^2)) AS hpsi, ((4*Atn(1)*[od])^2-[strip]^2)^(1/2) AS side, 90-(Atn([side]/[strip])*180/(4*Atn(1))) AS angle, part_tbl.dim_plus, part_tbl.dim_minus, part_tbl.cutoff_length, part_tbl.length_plus, part_tbl.length_minus, part_tbl.drift, part_tbl.mill, part_tbl.die, 4*Atn(1)*[od]/[strip] AS lf_ft, [feet]*[lf_ft] AS lf_tube, part_tbl.cust_id, part_tbl.notes, part_tbl.ring_min, part_tbl.ring_max, part_tbl.drawing, part_tbl.insp_notes, part_tbl.layer_1_mesh, part_tbl.layer_1_width, part_tbl.layer_2_mesh, part_tbl.layer_2_width, part_tbl.drainage_1_mesh, part_tbl.drainage_1_width, part_tbl.drainage_2_mesh, part_tbl.drainage_2_width
+FROM cust_tbl INNER JOIN (
+(part_tbl INNER JOIN pat_tbl ON part_tbl.pattern = pat_tbl.pattern) INNER JOIN gage_tbl ON part_tbl.gage = gage_tbl.gage) ON cust_tbl.cust_id = part_tbl.cust_id
+ORDER BY cust_tbl.customer, part_tbl.part;
+-->
+    <div id="filter" class="row clicktoid" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+
+    <div class="row" form="table.form" fields='{"is_od": {"type": "bool"}}' table-name="part_tbl" style="margin: 20px 0;">
+        <div class="column">
+            <div class="input">
+                <span class="left-placeholder">Part#</span><input type="text" var="part" />
+            </div>
+            <div class="input">
+                <input var="cust_id" type='text' style="display: none;"/>
+                <span class="left-placeholder">Customer</span><select id="customer" table="cust_tbl" column="customer" class="customer_id"></select>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Part Description</span><textarea var="description"></textarea>
+            </div>
+
+            <div>
+                <div class="inline input">
+                    <span class="top-placeholder">Dimension</span><input var="dim" type="text" mask="double">
+                </div>
+                <div class="inline input">
+                <span class="top-placeholder">ID ?</span><input class="id_not_od" type="checkbox">
+                </div>
+                <div class="input" style="display: none;">
+                    <span class="top-placeholder">OD ?</span><input class="od_not_id" var="is_od" type="checkbox" checked="checked">
+                </div>
+                <div class="inline input">
+                    <span class="top-placeholder">Dim +</span><input var="dim_plus" type="text" mask="double">
+                </div>
+                <div class="inline input">
+                    <span class="top-placeholder">Dim -</span><input var="dim_minus" type="text" mask="double">
+                </div>
+            </div>
+
+
+            <div>
+                <div class="inline input">
+                    <span class="top-placeholder">Material</span><select var="type" table="mat_tbl" column="material" style="width: 152px;"></select>
+                </div>
+                <div class="inline input">
+                    <span class="top-placeholder">Gage</span><select var="gage" table="gage_tbl" column="gage" style="width: 152px;"></select>
+                </div>
+                <div class="inline input">
+                    <span class="top-placeholder">Actual Mill Angle</span><input var="act_mill_angle" type="text" mask="double">
+                </div>
+            </div>
+
+            <div>
+                <div class="inline input">
+                    <span class="top-placeholder">Pattern</span><select var="pattern" table="pat_tbl" column="pattern"></select>
+                </div>
+                <div class="inline input">
+                    <span class="top-placeholder">Hole Size</span><select var="holes" table="frac_tbl" column="holes" value-field="decimal"></select>
+                </div>
+                <div class="inline input">
+                    <span class="top-placeholder">Hole Center</span><select var="centers" table="frac_tbl" column="centers" value-field="decimal"></select>
+                </div>
+            </div>
+
+            <div>
+                <div class="inline input">
+                    <span class="top-placeholder">Table height</span><input name="table_height" var="table_height" type="text" mask="number" maxlength="6" pattern="\d{6}">
+                </div>
+                <div class="inline input">
+                    <span class="top-placeholder">Die position</span><input name="die_position" var="die_position" type="text" mask="number" maxlength="6" pattern="\d{6}">
+                </div>
+                <div class="inline input">
+                    <span class="top-placeholder">Die</span>
+                    <select class="align-right die" var="die" table="die_tbl" value-field="die" column="die_id"></select>
+                    <!-- <input var="die" type="text" mask="double"> -->
+                </div>
+            </div>
+
+            <div>
+                <div class="inline input">
+                    <span class="top-placeholder">Cutoff length</span><input var="cutoff_length" type="text" mask="double">
+                </div>
+                <div class="inline input">
+                    <span class="top-placeholder">Cutoff length +</span><input var="cutoff_length_plus" type="text" mask="double">
+                </div>
+                <div class="inline input">
+                    <span class="top-placeholder">Cutoff length -</span><input var="cutoff_length_minus" type="text" mask="double">
+                </div>
+            </div>
+            <!-- section added by vishal-->
+            <div>
+                <div class="inline input">
+                    <span class="top-placeholder">Welded ring Shrouded Cutoff length?</span><input class="welded_ring" type="checkbox">
+                </div>
+                <div class="inline input welded_depth" style="display: none">
+                    <span class="top-placeholder">Welded ring Shrouded Cutoff length</span><input type="text" mask="double" name='shrouded_cutoff_length' var='shrouded_cutoff_length'>
+                </div>
+                <div class="inline input welded_depth" style="display: none">
+                    <span class="top-placeholder">Length +</span><input type="text" mask="double" name='shrouded_cutoff_length_plus' var='shrouded_cutoff_length_plus'>
+                </div>
+                <div class="inline input welded_depth" style="display: none">
+                    <span class="top-placeholder">Length -</span><input type="text" mask="double" name='shrouded_cutoff_length_minus' var='shrouded_cutoff_length_minus'>
+                </div>
+            </div>
+            <!-- section end-->
+            <div>
+                <div class="inline input">
+                    <span class="top-placeholder">Strip width</span><input var="strip" type="text" mask="double">
+                </div>
+                <div class="inline input">
+                    <span class="top-placeholder">ID Drift</span>
+                    <input table="drifts" type="text" fields='["drift_od", "dift"]' field-text="drift_od" field-value="drift_od" class="form-control drift" var="drift" />
+                </div>
+                <div class="inline input">
+                    <span class="top-placeholder">Mill</span><select var="mill" style="width: 50px;"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+                </div>
+            </div>
+            <div style="display: none;">
+                <div class="inline input">
+                <span class="top-placeholder">Blank ring?</span><input class="blank_ring" type="checkbox">
+                </div>
+                <div class="inline input show_blank" style="display: none">
+                    <span class="top-placeholder">Blank Ring Length +</span><input type="text" var='blank_length_plus' mask="double">
+                </div>
+                <div class="inline input show_blank" style="display: none">
+                    <span class="top-placeholder">Blank Ring Length -</span><input type="text" mask="double" var='blank_length_minus'>
+                </div>
+            </div>
+
+             <div>
+                <div class="inline input">
+                <span class="top-placeholder">Dimple depth?</span><input class="depth_of_dimple" type="checkbox">
+                </div>
+                <div class="inline input show_depth" style="display: none">
+                    <span class="top-placeholder">Depth of dimple</span><input type="text" mask="double" name='depth_of_dimple' var='depth_of_dimple'>
+                </div>
+                <div class="inline input show_depth" style="display: none">
+                    <span class="top-placeholder">Plus +</span><input type="text" mask="double" name='depth_of_dimple_plus' var='depth_of_dimple_plus'>
+                </div>
+                <div class="inline input show_depth" style="display: none">
+                    <span class="top-placeholder">Minus -</span><input type="text" mask="double" name='depth_of_dimple_minus' var='depth_of_dimple_minus'>
+                </div>
+            </div>
+
+             <div>
+                <div class="inline input">
+                <span class="top-placeholder">Blank end ring?</span><input class="blank_end" type="checkbox">
+                </div>
+                <div class="inline input show_end" style="display: none">
+                    <span class="top-placeholder">Width of ring</span><input type="text" mask="double" var='blank_end'>
+                </div>
+                <div class="inline input show_end" style="display: none">
+                    <span class="top-placeholder">Plus +</span><input type="text" mask="double" var='blank_end_plus'>
+                </div>
+                <div class="inline input show_end" style="display: none">
+                    <span class="top-placeholder">Minus -</span><input type="text" mask="double" var='blank_end_minus'>
+                </div>
+            </div>
+
+            <!-- sectione added by vishal -->
+            <div><h2><b>Stamping</b></h2></div>
+            <div>
+                <div class="inline input">
+                    <span class="top-placeholder">Stamping Die</span><select class="align-right die_stamp" name="die_stamp" var="die_stamp" table="die_stamp_tbl" value-field="die_id" column="die_id" onchange="onDieStampChange(this.value)"></select>
+                </div>
+                <div class="inline input">
+                    <span class="top-placeholder">Progression</span><input id="progression" name="progression" var="progression" type="text" mask="double">
+                </div>
+                
+            </div>
+<!-- sectione end-->
+<!-- section added by vishal-->
+<div>
+    <div class="inline input">
+        <span class="top-placeholder">hit count?</span><input class="hit_count" type="checkbox">
+    </div>
+    <div class="inline input hit_depth" style="display: none">
+        <span class="top-placeholder">Rouselle</span><input type="text" mask="double" name='rouselle' var='rouselle'>
+    </div>
+    <div class="inline input hit_depth" style="display: none">
+        <span class="top-placeholder">Niagara</span><input type="text" mask="double" name="niagara" var='niagara'>
+    </div>
+    
+</div>
+<!-- section end-->
+<!-- section added by vishal-->
+<div>
+    <div class="inline input">
+        <span class="top-placeholder">blank area?</span><input class="blank_area" type="checkbox">
+    </div>
+    <div class="inline input blank_depth" style="display: none">
+       <input type="text" mask="double" name='blank_area_input' var='blank_area_input'>
+    </div>
+    
+    
+</div>
+<!-- section end-->
+<!-- section added by vishal-->
+<div>
+    <div class="inline input">
+        <span class="top-placeholder">cycles?</span><input class="cycles" type="checkbox">
+    </div>
+    <div class="inline input cycle_depth" style="display: none">
+       <input type="text" mask="double" name='cycles_input' var='cycles_input'>
+    </div>
+    
+    
+</div>
+<!-- section end-->
+<!-- section added by vishal-->
+<div>
+    <div class="inline input">
+        <span class="top-placeholder">linear feet?</span><input class="linear_feet" type="checkbox">
+    </div>
+    <div class="inline input linear_depth" style="display: none">
+       <input type="text" mask="double" name='linear_feet_input' var='linear_feet_input'>
+    </div>
+    
+    
+</div>
+<div>
+    <div class="inline input">
+        <span class="top-placeholder">louver?</span><input class="louver" name='is_louver' var='is_louver' type="checkbox">
+    </div>
+</div>
+<!-- section end-->
+
+            <div>
+                <div class="inline input">
+                    <span class="top-placeholder">Finished</span><input var="finished_length" type="text" mask="double">
+                </div>
+                <div class="inline input">
+                    <span class="top-placeholder">Length +</span><input var="length_plus" type="text" mask="double">
+                </div>
+                <div class="inline input">
+                    <span class="top-placeholder">Length -</span><input var="length_minus" type="text" mask="double">
+                </div>
+                <div class="inline input finished_length_rings">
+                     <span class="top-placeholder"></span>
+                    <p></p>
+                </div>
+                
+            </div>
+<!-- sectione added by preston -->
+            <div>
+                <div><h2><b>Excluder Ring</b></h2></div>
+                <div class="inline input">
+                    <span class="top-placeholder">Ring On 1 End?</span><input class="ring1" type="checkbox">
+                </div>
+                <div class="inline input ring_input1" style="display: none">
+                    <span>Min Ring </span><input type="text" mask="double" name='ring1_min_input' var='ring1_min_input'>
+                </div>
+                <div class="inline input ring_input1" style="display: none">
+                    <span>Max Ring </span><input type="text" mask="double" name='ring1_max_input' var='ring1_max_input'>
+                 </div>
+                <div class="inline input">
+                    <span class="top-placeholder">Ring On Both Ends?</span><input class="ring2" type="checkbox">
+                </div>
+                <div class="inline input ring_input2" style="display: none">
+                    <span>Min Ring </span><input type="text" mask="double" name='ring2_min_input' var='ring2_min_input'>
+                </div>
+                <div class="inline input ring_input2" style="display: none">
+                    <span>Max Ring </span><input type="text" mask="double" name='ring2_max_input' var='ring2_max_input'>
+                </div>
+            </div>
+<!-- sectione added by preston -->
+<div>
+    <div><h2><b>GeoForm</b></h2></div>
+    <div class="inline input">
+        <span class="top-placeholder">GeoForm Job</span><input class="geo_job" name="geo_job" var="geo_job" type="checkbox">
+    </div>
+    <div class="inline input geo_len_input" style="display: none">
+        <span>Final Length with rings </span><input type="text" mask="double" name='final_length_geo' var='final_length_geo'>
+    </div>
+</div>
+<!-- sectione added by vishal -->
+            
+<!-- sectione end-->
+        </div>
+
+
+        <div class="column">
+<style type="text/css">
+    
+    .msgs {
+    
+    padding: 15px;
+    background: #4e8292;
+    color: #fff;
+}
+</style>
+            
+                <div class="msgs" style="display: block;"><i class="fa fa-envelope msgpad"></i>
+
+
+            <span>Calculations will be done after part is saved</span></div>
+            
+            <div class="input">
+                <span class="left-placeholder">OA</span><input class="oa" precision="3" val="oa" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Tube Weight</span><input class="tube_weight" precision="3" val="tube_weight" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Tube length in feet</span><input class="feet" precision="3" val="feet" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">weight/foot</span><input class="weight_per_foot" precision="3" val="weight_per_foot" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">hspi</span><input class="hspi" precision="3" val="hspi" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Angle</span><input class="angle" precision="3" val="angle" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">lf per foot</span><input class="lf_ft" precision="3" val="lf_ft" class="align-right" type="number" disabled>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">lf per tube</span><input class="lf_tube" precision="3" val="lf_tube" class="align-right" type="number" disabled>
+            </div>
+            <div class="input clear">
+                <span class="left-placeholder">Drawing</span>
+                <div class="uploadbtn" >
+                        <input style="display:inline-block" type="file" id="uploadfile" value="upload file" accept="application/pdf">
+                </div>
+                    <div class="downloadbtn" style="display:none">
+                        <a href="download.pdf" id="download_file" target="_blank">Download File</a><span class="deletefile">X Delete File</span>
+                    </div>
+            </div>
+
+            <div class="input">
+                <span class="left-placeholder">Drawing Number</span><input id="draw_num"  var="drawing_number" class="align-right" type="number"><span style="display:none; color:red" id="msgg">field is required (if file is uploaded)</span>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="column">
+            <div class="input">
+                <span class="left-placeholder">Layer 1 Mesh</span><select table="mesh" column="mesh" var="layer_1_mesh"></select>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Layer 1 Width</span><input var="layer_1_width" type="text" >
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Drainage 1 Mesh</span><select table="mesh" column="mesh" var="drainage_1_mesh"></select>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Drainage 1 Width</span><input var="drainage_1_width" type="text" >
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="input">
+                <span class="left-placeholder">Layer 2 Mesh</span><select table="mesh" column="mesh" var="layer_2_mesh"></select>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Layer 2 Width</span><input var="layer_2_width" type="text" >
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Drainage 2 Mesh</span><select table="mesh" column="mesh" var="drainage_2_mesh"></select>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">Drainage 2 Width</span><input var="drainage_2_width" type="text" >
+            </div>
+        </div>
+
+        <br>
+
+        <div class="column">
+            <div class="input">
+                <span class="left-placeholder">MFG Notes</span><textarea var="notes" style="width: 554px;"></textarea>
+            </div>
+            <div class="input">
+                <span class="left-placeholder">INSP. Notes</span><textarea var="insp_notes" style="width: 554px;"></textarea>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<style>
+.inline.input p {
+    margin-top: 18px;
+}
+    span.deletefile {
+    display: inline-block;
+    margin-left: 10px;
+    cursor: pointer;
+}
+span.deletefile:hover {
+    color:red
+}
+.downloadbtn {
+    width: 180px;
+    float: right;
+    background: #fff;
+    box-sizing: border-box;
+    height: 28px;
+    border-left: 1px solid #cccccc;
+}
+.downloadbtn:after,.clear{
+    content:'';
+    clear: both;
+    display:table
+}
+.uploadbtn {    width: 180px;
+    float: right;
+    background: #fff;
+    box-sizing: border-box;
+    height: 28px;
+}
+.clear>span{
+    width: 84px;
+}
+#overlay {
+    position: fixed; 
+    display: none;
+    width: 100%; 
+    height: 100%; 
+    top: 0; 
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5); 
+    z-index: 9999; 
+    cursor: pointer;
+}
+.loadersmall {
+    border: 5px solid #19a2cc;
+    -webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+    border-top: 5px solid #fff8f8;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    left: calc(50% - 25px);
+    top: calc(50% - 25px);
+    }
+@-webkit-keyframes spin {
+  0% { 
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% { 
+    -webkit-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+div#text {
+    color: #fff;
+    position: absolute;
+    left: 47%;
+    top: 62%;
+}
+    </style>
+    <script>
+    let flafile = true;
+    $(document).ready(function(){
+       
+
+    
+        $('body').append('<div id="overlay" style="display:none"><div class="loadersmall"></div><div id="text">Uploading your file...</div></div>');
+        let updateld =[];
+        
+        $(document).on('click','.clicktoid tr:not(.head)',function(){
+            buttonToggle($('input[var="part"]').val(),$('select#customer').val());
+
+            //jQuery('input.id_not_od').click(function(){
+
+            //console.log('cliked1');
+            
+            //});
+if( jQuery( "input[var='blank_length_plus']" ).val() !='0' && jQuery( "input[var='blank_length_plus']" ).val() !='' || jQuery( "input[var='blank_length_minus']" ).val() !='0'  && jQuery( "input[var='blank_length_minus']" ).val() !=''){
+     jQuery('.finished_length_rings p').text('Finished length includes rings');
+     jQuery('input[type="checkbox"].blank_ring').prop('checked', true);
+    }
+     else{
+    jQuery('.finished_length_rings p').text('');
+    jQuery('input[type="checkbox"].blank_ring').prop('checked', false);
+   }
+if ( jQuery('input.blank_ring').prop('checked') ) {
+    jQuery( ".inline.input.show_blank" ).show();
+}
+
+if( jQuery( "input[var='depth_of_dimple']" ).val() !='0' && jQuery( "input[var='depth_of_dimple']" ).val() !='' || jQuery( "input[var='depth_of_dimple_plus']" ).val() !='0'  && jQuery( "input[var='depth_of_dimple_plus']" ).val() !='' || jQuery( "input[var='depth_of_dimple_minus']" ).val() !='0'  && jQuery( "input[var='depth_of_dimple_minus']" ).val() !=''){
+     //jQuery('.finished_length_rings p').text('Finished length includes rings');
+     jQuery('input[type="checkbox"].depth_of_dimple').prop('checked', true);
+    }
+     else{
+    //jQuery('.finished_length_rings p').text('');
+    jQuery('input[type="checkbox"].depth_of_dimple').prop('checked', false);
+   }
+if ( jQuery('input.depth_of_dimple').prop('checked') ) {
+    jQuery( ".inline.input.show_depth" ).show();
+}
+
+if( jQuery( "input[var='blank_end']" ).val() !='0' && jQuery( "input[var='blank_end']" ).val() !='' || jQuery( "input[var='blank_end_plus']" ).val() !='0'  && jQuery( "input[var='blank_end_plus']" ).val() !='' || jQuery( "input[var='blank_end_minus']" ).val() !='0'  && jQuery( "input[var='blank_end_minus']" ).val() !=''){
+     //jQuery('.finished_length_rings p').text('Finished length includes rings');
+     jQuery('input[type="checkbox"].blank_end').prop('checked', true);
+    }
+     else{
+    //jQuery('.finished_length_rings p').text('');
+    jQuery('input[type="checkbox"].blank_end').prop('checked', false);
+   }
+if ( jQuery('input.blank_end').prop('checked') ) {
+    jQuery( ".inline.input.show_end" ).show();
+}
+if( $( "input[var='shrouded_cutoff_length']" ).val() !='0' && $( "input[var='shrouded_cutoff_length']" ).val() !='' || $( "input[var='shrouded_cutoff_length_plus']" ).val() !='0'  && $( "input[var='shrouded_cutoff_length_plus']" ).val() !='' || $( "input[var='shrouded_cutoff_length_minus']" ).val() !='0'  && $( "input[var='shrouded_cutoff_length_minus']" ).val() !=''){
+            console.log("inside if");
+            $('.welded_ring').prop('checked', true).trigger('change');
+        }
+        else{
+            console.log("inside else");
+            $('welded_ring').prop('checked', false).trigger('change');
+        }
+
+        if( $( "input[var='rouselle']" ).val() !='0' && $( "input[var='rouselle']" ).val() !='' || $( "input[var='niagara']" ).val() !='0'  && $( "input[var='niagara']" ).val() !=''){
+           
+           $('.hit_count').prop('checked', true).trigger('change');
+       }
+       else{
+           $('.hit_count').prop('checked', false).trigger('change');
+       }
+       if( $( "input[var='blank_area_input']" ).val() !='0' && $( "input[var='blank_area_input']" ).val() !=''){
+           
+           $('.blank_area').prop('checked', true).trigger('change');
+       }
+       else{
+           $('.blank_area').prop('checked', false).trigger('change');
+       }
+       if( $( "input[var='cycles_input']" ).val() !='0' && $( "input[var='cycles_input']" ).val() !=''){
+           
+           $('.cycles').prop('checked', true).trigger('change');
+       }
+       else{
+           $('.cycles').prop('checked', false).trigger('change');
+       }
+        if( $( "input[var='linear_feet_input']" ).val() !='0' && $( "input[var='linear_feet_input']" ).val() !=''){
+           
+           $('.linear_feet').prop('checked', true).trigger('change');
+       }
+       else{
+           $('.linear_feet').prop('checked', false).trigger('change');
+       }
+       if( $( "input[var='ring1_min_input']" ).val() !='0' && $( "input[var='ring1_min_input']" ).val() !=''){
+           
+           $('.ring1').prop('checked', true).trigger('change');
+       }
+       else{
+           $('.ring1').prop('checked', false).trigger('change');
+       }
+       if( $( "input[var='ring2_min_input']" ).val() !='0' && $( "input[var='ring2_min_input']" ).val() !=''){
+           
+           $('.ring2').prop('checked', true).trigger('change');
+       }
+       else{
+           $('.ring2').prop('checked', false).trigger('change');
+       }
+       if( $( "input[var='final_length_geo']" ).val() !='0' && $( "input[var='final_length_geo']" ).val() !=''){
+           
+           $('.geo_job').prop('checked', true).trigger('change');
+       }
+       else{
+           $('.geo_job').prop('checked', false).trigger('change');
+       }
+});
+
+
+        $(document).on('click','.clicktoid .compact tr:not(.head)',function(){
+
+            if (jQuery('input.od_not_id').is(':checked')) {
+                console.log('cliked1');
+                jQuery('input[type="checkbox"].id_not_od').prop('checked', false);
+            }else{
+                console.log('cliked11');
+                jQuery('input[type="checkbox"].id_not_od').prop('checked', true);
+            }
+            if (jQuery('input.geo_job').is(':checked')) {
+                jQuery('input[type="checkbox"].geo_job').prop('checked', true);
+            }else{
+                jQuery('input[type="checkbox"].geo_job').prop('checked', false);
+            }
+        });
+        $(document).on('click','#saave',function(){
+            if(flafile == false){
+                filedata($('input[var="part"]').val(),$('select#customer').val());
+            }else if(flafile == true){
+                filedata($('input[var="part"]').val(),$('select#customer').val());
+            }
+        });
+
+        function filedata(part,client){
+            $('#overlay').css('display','block');
+            var uploadfile = new FormData();            
+            if($('#uploadfile')[0].files.length!=0){
+                
+                if((part != '' && part != 0) && (client != '' && client != 0)){
+                    
+                    uploadfile.append('part',part);
+                    uploadfile.append('client_name',client);
+                    uploadfile.append('uploaddrawing',$('#uploadfile')[0].files[0]);
+                    // console.log(uploadfile);
+                    $.ajax({
+                     url:setting.server+"index.php?url=upload_file",
+                     type:"POST",
+                     data:uploadfile,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                     success:function(r){
+                        flafile = true;
+                        buttonToggle($('input[var="part"]').val(),$('select#customer').val());
+                        $('#overlay').css('display','none');
+                        }
+                     });
+                }
+            }else{
+                $('#overlay').css('display','none');
+            }
+        }
+
+        $('.deletefile,[ev="table.delete"]').on('click',function(){
+
+            //$(this).siblings('#download_file').attr('data-files')
+            $.post(setting.server+"index.php?url=file_delete&deletfile="+$(".deletefile").siblings('#download_file').attr('data-files'), function(del){
+                $('.uploadbtn').show();
+                $('.downloadbtn').hide();
+                $('#uploadfile').val('');
+                $("#draw_num").val('');
+                flafile = false;
+            });
+        });
+
+        $('[ev="form.reset"]').on('click',function(){
+            $('.uploadbtn').show();
+            $('.downloadbtn').hide();
+            $('#uploadfile').val('');
+            flafile = false;
+        });
+        
+        function buttonToggle(part,cust_id){
+
+            if(part !='' && cust_id != ''){
+                $('#overlay').css('display','block');
+                $.post(setting.server+"index.php?url=file_exist&part="+part+"&cust_id="+cust_id, function(data){
+                if(data.done !=''){
+                    $('.uploadbtn').hide();
+                    $('#uploadfile').val('');
+                    $('.downloadbtn').show();
+                        $('#download_file').attr('href',data.done[0]['download_reference']).attr('data-files',data.done[0]['id']);
+                    }
+                else{
+                    $('.uploadbtn').show();
+                    $('.downloadbtn').hide();
+                    flafile = false;
+                    
+                    }
+                    $('#overlay').css('display','none');
+                });//aj
+            }
+            else{
+                $('#overlay').css('display','none');
+                $('.uploadbtn').show();
+                    $('.downloadbtn').hide();
+                    flafile = false;
+            }
+        }
+
+        $('[var="layer_1_mesh"],[var="layer_2_mesh"],[var="drainage_1_mesh"],[var="drainage_2_mesh"]').each(function(){
+
+            $(this).prepend('<option value="" selected>None selected</option>');
+
+        });
+
+setTimeout(function(){ 
+            $('.customer_id').html($('.customer_id').children('option').sort(function (x, y) {
+                return $(x).text().toUpperCase() < $(y).text().toUpperCase() ? -1 : 1;
+                
+            }));
+            console.log('hellooo');
+            $('.customer_id').get(0).selectedIndex = 0;
+
+            $('.die').html($('.die').children('option').sort(function (x, y) {
+                return +$(x).text().toUpperCase() > +$(y).text().toUpperCase() ? -1 : 1;
+                
+            }));
+            console.log('die');
+            $('.die').get(0).selectedIndex = 0;
+
+            $('.die_stamp').html($('.die_stamp').children('option').sort(function (x, y) {
+                return +$(x).text().toUpperCase() > +$(y).text().toUpperCase() ? -1 : 1;
+                
+            }));
+            console.log('die_stamp');
+            $('.die_stamp').get(0).selectedIndex = 0;
+
+            $('.drift').html($('.drift').children('option').sort(function (x, y) {
+                return $(x).text().toUpperCase() > $(y).text().toUpperCase() ? -1 : 1;
+                
+            }));
+            console.log('drift');
+            $('.drift').get(0).selectedIndex = 0;
+
+            var $tbody = $('.small tbody');
+            $tbody.find('tr').sort(function (a, b) {
+                var tda = $(a).find('td:eq(0)').text();
+                var tdb = $(b).find('td:eq(0)').text();
+
+                return +$(a).find('td:eq(0)').text() > +$(b).find('td:eq(0)').text() ? -1 : 1;
+
+                // // if a < b return 1
+                // return tda > tdb ? 1
+                //        // else if a > b return -1
+                //        : tda < tdb ? -1
+                //        // else they are equal - return 0    
+                //        : 0;
+            }).appendTo($tbody);
+console.log('drrrr');
+            $('[var="holes"]').html($('[var="holes"]').children('option').sort(function (x, y) {
+                return $(x).val().toUpperCase() < $(y).val().toUpperCase() ? -1 : 1;
+                
+            }));
+            //console.log('hellooo');
+            $('[var="holes"]').get(0).selectedIndex = 0;
+            
+            $('[var="holes"] option').each(function() {
+                if ( $(this).text() == '' ) {
+                    $(this).remove();
+                }
+            });
+            
+            $('[var="centers"]').html($('[var="centers"]').children('option').sort(function (x, y) {
+                return $(x).val().toUpperCase() < $(y).val().toUpperCase() ? -1 : 1;
+                
+            }));
+            //console.log('hellooo');
+            $('[var="centers"]').get(0).selectedIndex = 0;
+            $('[var="centers"] option').each(function() {
+                if ( $(this).text() == '' ) {
+                    $(this).remove();
+                }
+            });
+            //$('[var="centers"]').children('option').text().empty().remove();
+
+            }, 3000);
+
+    });
+</script>
+<script type="text/javascript">
+                
+jQuery('input.id_not_od').click(function(){
+
+console.log('cliked');
+if (jQuery(this).is(':checked')) {
+    jQuery('input[type="checkbox"].od_not_id').prop('checked', false);
+}else{
+    jQuery('input[type="checkbox"].od_not_id').prop('checked', true);
+}
+});
+
+jQuery('input.geo_job').click(function(){
+
+if (jQuery(this).is(':checked')) {
+    jQuery('input[type="checkbox"].geo_job').prop('checked', true);
+}else{
+    jQuery('input[type="checkbox"].geo_job').prop('checked', false);
+}
+});
+
+if ( jQuery('input.blank_ring').prop('checked') ) {
+	jQuery( ".inline.input.show_blank" ).show();
+}
+
+jQuery('input.blank_ring').click(function(){
+	if ( jQuery('input.blank_ring').prop('checked') ) {
+		//alert('test');
+		jQuery( ".inline.input.show_blank" ).show();
+	}else{
+		jQuery( ".inline.input.show_blank" ).hide();
+		jQuery('.finished_length_rings p').text('');
+		jQuery( "input[var='blank_length_plus']" ).val('') ;
+		jQuery( "input[var='blank_length_minus']" ).val('');
+        //alert('test');
+	}
+});
+
+jQuery( "input[var='blank_length_plus'] , input[var='blank_length_minus']" ).keyup(function() {
+	if( jQuery( "input[var='blank_length_plus']" ).val() !='' || jQuery( "input[var='blank_length_minus']" ).val() !=''  ){
+     jQuery('.finished_length_rings p').text('Finished length includes rings');
+	}
+     else{
+    jQuery('.finished_length_rings p').text('');
+   }
+});
+
+
+// depth of dimple
+
+if ( jQuery('input.depth_of_dimple').prop('checked') ) {
+    jQuery( ".inline.input.show_depth" ).show();
+}
+
+jQuery('input.depth_of_dimple').click(function(){
+    if ( jQuery('input.depth_of_dimple').prop('checked') ) {
+        //alert('test');
+        jQuery( ".inline.input.show_depth" ).show();
+    }else{
+        jQuery( ".inline.input.show_depth" ).hide();
+        
+        jQuery( "input[var='depth_of_dimple_plus']" ).val('') ;
+        jQuery( "input[var='depth_of_dimple_minus']" ).val('');
+        jQuery( "input[var='depth_of_dimple']" ).val('');
+        //alert('test');
+    }
+});
+
+// blank end ring of dimple
+
+if ( jQuery('input.blank_end').prop('checked') ) {
+    jQuery( ".inline.input.show_end" ).show();
+}
+
+jQuery('input.blank_end').click(function(){
+    if ( jQuery('input.blank_end').prop('checked') ) {
+        //alert('test');
+        jQuery( ".inline.input.show_end" ).show();
+    }else{
+        jQuery( ".inline.input.show_end" ).hide();
+        
+        jQuery( "input[var='blank_end_plus']" ).val('') ;
+        jQuery( "input[var='blank_end_minus']" ).val('');
+        jQuery( "input[var='blank_end']" ).val('');
+        //alert('test');
+    }
+});
+//  jQuery('.show_blank').hide();
+// jQuery('input.blank_ring').click(function(){
+//     if (jQuery(this).is(':checked')) {
+//         jQuery('.show_blank').show();
+//     }else{
+//         jQuery('.show_blank').hide();
+//     }
+// });
+function listMaster() {
+
+            var select = $('#filter'),
+                fields = $('[form="table.form"]').attr('fields');
+
+            if(fields)
+                fields = JSON.parse(fields);
+
+            select.html('Loading...');
+
+            request('table/part_tbl/fetch', {})
+            .done(function(res) {
+
+                if(!res.list) {
+                    select.html('<tbody>No data Found !</tbody>');
+                    return;
+                }
+
+                select.html(
+                    json2table(res.list, {
+                        'click': function() {
+                            var data = $(this).data();
+
+                            $(this).closest('tbody').children('tr.active').removeClass('active')
+                            $(this).closest('tr').addClass('active')
+
+                            fillForm('table.form', data, 'var');
+                            fillForm('table.form', data, 'val');
+                            $('#filter').slideUp();
+                        }
+                    }, fields)
+                )
+                .find('table').DataTable({
+                    pageLength : 5,
+                    lengthMenu : [ 5, 10, 25, 50, 75, 100 ]
+                });
+
+
+            })
+        }
+
+function onDieStampChange(die_id) {
+    if(die_id != ''){
+    request('die-stamp?die_id='+die_id.toString(), {})
+        .done(function(response){
+            $('#progression').val(parseFloat(response['done'][0]['progression']));
+        });
+    }
+}
+
+function saveMaster() {
+
+
+var part_no = $('input[var="part"]').val();
+      request('part-specs?part_name='+part_no, {})
+            .done(function(response){
+                if (response.length !=0){
+                    calculation = response.done;
+                    $.each(response.done,function(i,j){
+                        
+                                $('.'+i).val(parseFloat(j).toFixed(3));
+                       console.log(i + ' :- '+ j); 
+                    })
+                }
+                          
+            });
+
+if($("#uploadfile").val() !== ''){
+         // your validation error action
+        if($("#draw_num").val() == ''){
+        	console.log("required");
+        	$("#msgg").show();
+        	$("#draw_num").focus();
+        	return false;
+        };
+     }else{
+     	$("#msgg").hide();
+     }
+            // validate input
+            var invalid = $('[form="table.form"] [mask].invalid').filter(':first')
+
+            if ( invalid.length )
+                return message(invalid.attr('field'), 2000)
+
+            var data = parseForm('table.form'),
+                msg  = message('Saving...'),
+                tbl  = $('[form="table.form"]').attr('table-name'),
+                tbl1 = 'part_order_job'
+//alert(JSON.stringify(data));
+//alert('table/'+ tbl +'/save');
+
+            request('table/'+ tbl +'/save', data)
+                .always(function(){
+                    msg.remove()
+                })
+                .done(function(res){
+                //alert(JSON.stringify(res));
+                    
+                    console.log(res);
+                    message('Saved', 2000)
+
+                    EVENTS['table.list']();
+
+                       
+                })
+        }
+
+        $('.welded_ring').change(function(event) {
+            if ($(this).is(":checked")) {
+                $(".welded_depth").show();
+            } else {
+                $(".welded_depth").hide();
+                $( "input[var='shrouded_cutoff_length']" ).val('') ;
+                $( "input[var='shrouded_cutoff_length_plus']" ).val('');
+                $( "input[var='shrouded_cutoff_length_minus']" ).val('');
+            }
+        });
+        
+        $('.hit_count').change(function(event) {
+            if ($(this).is(":checked")) {
+                $(".hit_depth").show();
+            } else {
+                $(".hit_depth").hide();
+                $( "input[var='rouselle']" ).val('') ;
+                $( "input[var='niagara']" ).val('');
+               
+            }
+        });
+        
+        $('.blank_area').change(function(event) {
+            if ($(this).is(":checked")) {
+                $(".blank_depth").show();
+            } else {
+                $(".blank_depth").hide();
+                $( "input[var='blank_area_input']" ).val('') ;
+            }
+        });
+        
+        $('.cycles').change(function(event) {
+            if ($(this).is(":checked")) {
+                $(".cycle_depth").show();
+            } else {
+                $(".cycle_depth").hide();
+                $( "input[var='cycles_input']" ).val('') ;
+            }
+        });
+       
+
+        $('.linear_feet').change(function(event) {
+            if ($(this).is(":checked")) {
+                $(".linear_depth").show();
+            } else {
+                $(".linear_depth").hide(); 
+                $( "input[var='linear_feet_input']" ).val('') ;
+            }
+        });
+
+        $('.ring1').change(function(event) {
+            if ($(this).is(":checked")) {
+                $(".ring_input1").show();
+            } else {
+                $(".ring_input1").hide(); 
+                $( "input[var='ring1_min_input']" ).val('') ;
+                $( "input[var='ring1_max_input']" ).val('') ;
+            }
+        });
+
+        $('.ring2').change(function(event) {
+            if ($(this).is(":checked")) {
+                $(".ring_input2").show();
+            } else {
+                $(".ring_input2").hide(); 
+                $( "input[var='ring2_min_input']" ).val('') ;
+                $( "input[var='ring2_max_input']" ).val('') ;
+            }
+        });
+        $('.geo_job').change(function(event) {
+            if ($(this).is(":checked")) {
+                $(".geo_len_input").show();
+            } else {
+                $(".geo_len_input").hide(); 
+                $( "input[var='final_length_geo']" ).val('') ;
+            }
+        });
+
+        $(window).load(function() {
+            $(".small").DataTable()
+        });
+
+
+            </script>
+            <script src="assets/js/page.part-information.js"></script>

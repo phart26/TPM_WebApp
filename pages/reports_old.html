@@ -1,0 +1,433 @@
+<div class="content-wrapper">
+    <h3>Reports
+		<div style="float: right;">
+			<i title="Filter" ev="table.filter" class="fa fa-filter" style="font-size: 18px;padding: 0 15px;"></i>
+			<i class="fa fa-print" style="font-size: 18px;padding: 0 15px;" onclick="window.print();"></i>
+			<i class="fa fa-save" style="font-size: 18px;padding: 0 15px;"></i>
+			<i class="fa fa-remove" style="font-size: 18px;padding: 0 15px;"></i>
+			<i class="fa fa-trash" style="font-size: 18px;padding: 0 15px;"></i>
+		</div>
+	</h3>
+    
+   
+    
+	<div id="filter" class="row" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;"></div>
+	
+    <div form="table.form" table-name="order_specs" style="margin: 20px 0;">
+        <div class="col-lg-12">
+            <div class="section">
+                <div class="section-title">Part Specification</div>
+
+                <div class="column">
+                    <div class="input">
+                        <span class="left-placeholder">Job No.</span>
+                        <input var="job" onChange="changeData(this.value);" type="text" name="job">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Quantity</span>
+                        <input type="text" name="quantity">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Material</span>
+                        <input type="text" name="material" />
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Gage</span>
+                        <input type="text" name="gage" />
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Pattern</span>
+                        <input type="text" name="pattern" />
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Hole Size</span>
+                        <input type="text" name="hole_size" />
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Hole centers</span>
+                        <input type="text" name="hole_centers" />
+                    </div>
+
+                    <div class="inline input">
+                        <div class="input">
+                            <span class="left-placeholder">OD</span>
+                            <input type="text" name="od" style="width: 128px; border-width: 0 0 0 1px;">
+                        </div>
+                    </div>
+
+                    <div class="inline input" style="margin-bottom: 10px;">
+                        <div class="input">
+                            <span class="left-placeholder">+</span>
+                            <input type="text" name="od_postive" style="border-width: 0 0 0 1px; width: 60px;">
+                        </div>
+                        <div class="input">
+                            <span class="left-placeholder">-</span>
+                            <input type="text" name="od_negtive" style="border-width: 0 0 0 1px; width: 60px">
+                        </div>
+                    </div>
+
+                    <div class="input">
+                        <span class="left-placeholder">Drawing</span>
+                        <input type="text" name="drawing">
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="input">
+                        <span class="left-placeholder">Customer</span>
+                        <input type="text" name="customer">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">PO Number</span>
+                        <input type="text" name="po_number">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Line item</span>
+                        <input type="text" name="line_item">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Part No.</span>
+                        <input type="text" name="part_no">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Part Desc.</span>
+                        <textarea name="part_desc"></textarea>
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Date ordered</span>
+                        <input type="text" name="date_ordered">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Date Due</span>
+                        <input type="text" name="date_due">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Ship Date</span>
+                        <input type="text" name="ship_date">
+                    </div>
+                    <div class="inline input">
+                        <div class="input">
+                            <span class="left-placeholder">Finished length</span>
+                            <input type="text" name="finished_length" style="width: 70px; border-width: 0 0 0 1px;">
+                        </div>
+                    </div>
+
+                    <div class="inline input">
+                        <div class="input">
+                            <span class="left-placeholder">+</span>
+                            <input type="text" name="finished_length_postive" style="border-width: 0 0 0 1px; width: 60px;">
+                        </div>
+                        <div class="input">
+                            <span class="left-placeholder">-</span>
+                            <input type="text" name="finished_length_negtive" style="border-width: 0 0 0 1px; width: 60px;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="input">
+                        <span class="left-placeholder">Mill Spec</span>
+                        <input type="text" name="mill_spec" />
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Repair Spec</span>
+                        <input type="text" name="repair_spec" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Mfg. Specification</div>
+
+                <div class="column">
+                    <div class="input">
+                        <span class="left-placeholder">Strip width</span>
+                        <input type="text" name="strip_width">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Angle</span>
+                        <input type="text" name="angle">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Cutoff length</span>
+                        <input type="text" name="cutoff_length">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Die</span>
+                        <input type="text" name="die" />
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="input">
+                        <span class="left-placeholder">Mill</span>
+                        <input type="text" name="mill_spec" />
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Ring Min</span>
+                        <input type="text" name="ring_min">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Ring Max</span>
+                        <input type="text" name="ring_max">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">ID drift</span>
+                        <input type="text" name="id_drift">
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="input">
+                        <span class="left-placeholder">Mill amps</span>
+                        <input type="text" name="mill_amps" />
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Mill volts</span>
+                        <input type="text" name="mill_volts" />
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Mill speed</span>
+                        <input type="text" name="mill_speed">
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="input">
+                        <span class="left-placeholder">Repair amps</span>
+                        <input type="text" name="repair_amps" />
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Repair volts</span>
+                        <input type="text" name="repair_volts">
+                    </div>
+                    <div class="input">
+                        <span class="left-placeholder">Repair speed</span>
+                        <input type="text" name="repair_speed" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="section">
+                <div class="section-title">Report Options</div>
+
+                <div class="column">
+                    <div class="input no-border">
+                        <a href="#" data-view="tube_mill_log" class="report-pdf">Mill Log</a>
+                    </div>
+                    <div class="input no-border">
+                        <a href="#" data-view="tube_mill_setup" class="report-pdf">Mill Setup</a>
+                    </div>
+                    <div class="input no-border">
+                        <a href="#" data-view="welding_station_check_list" class="report-pdf">Welding Sheets</a>
+                    </div>
+                    <div class="input no-border">
+                        <a href="#" data-view="worksheet" class="report-pdf">Worksheet</a>
+                    </div>
+                    <div class="input no-border">
+                        <a href="#" data-view="dp_inspection" class="report-pdf">Direct Pack</a>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="input no-border">
+                        <a href="#" data-view="cutoff_station_check_sheet" class="report-pdf">Cutoff Sheets</a>
+                    </div>
+                    <div class="input no-border">
+                        <a href="#" data-view="inspection_rpt" class="report-pdf">Inspection Sheets</a>
+                    </div>
+                    <div class="input no-border">
+                        <a href="#" data-view="alloc" class="report-pdf">Allocation</a>
+                    </div>
+                    <div class="input no-border">
+                        <a href="#" data-view="alloc_mesh" class="report-pdf">Allocation Mesh</a>
+                    </div>
+                    <div class="input no-border">
+                        <a href="#" data-view="ring_station_check_list" class="report-pdf">Ring Inspection</a>
+                    </div>
+                    <div class="input no-border">
+                        <a href="#" data-view="geo_form_ring_inspection" class="report-pdf">GeoForm Ring Inspection</a>
+                    </div>
+                    <div class="input no-border">
+                        <a href="#" data-view="geo_form_ring_concentric_inspection" class="report-pdf">GeoForm Ring Concentric Inspection</a>
+                    </div>
+                    <div class="input no-border">
+                        <a href="#" class="report-pdf">Drawing</a>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Print Options</div>
+                    <div class="input no-border">
+                        <input type="checkbox"><span class="left-placeholder">Print</span>
+                    </div>
+                    <div class="input no-border">
+                        <input type="checkbox"><span class="left-placeholder">Preview</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+	
+	function changeData(id)
+	{
+		$("input[name='job']").keypress(function (e)
+        {
+            if (e.which == 13)
+            {
+                $(this).trigger("change");
+            }
+        });
+
+        $("a.report-pdf").click(function ()
+        {
+            var view = $(this).data("view");
+
+            if (typeof view == "undefined" || view == "")
+            {
+                return false;
+            }
+
+            var job = $("input[name='job']").val();
+
+            var url = '/api/test.php?view=' + view + "&job=" + job;
+
+            var win = window.open(url, '_blank');
+            win.focus();
+
+            return false;
+        });
+
+        $("input[name='job']").change(function ()
+        {
+            var v = $(this).val();
+
+            var url = '/api/test.php?view=ajax_job_detail&job=' + v;
+
+            $.get(url, function (data, status)
+            {
+                if (status == "success")
+                {
+                    var jsonResult;
+                    try
+                    {
+                        jsonResult = JSON.parse(data);
+                        console.log(jsonResult);
+
+                        var len = $.map(jsonResult, function (n, i) {
+                            return i;
+                        }).length;
+
+                        if (len > 0)
+                        {
+                            for (var i in jsonResult)
+                            {
+                                $("input[name='" + i + "']").val(jsonResult[i]);
+                                $("textarea[name='" + i + "']").val(jsonResult[i]);
+                            }
+                        }
+                        else
+                        {
+                            alert("No Data found");
+
+                            $("input").not("[name='job']").val("");
+                        }
+                    } 
+                    catch (e)
+                    {
+                        console.log("error: " + e);
+                        alert(data);
+                    }
+                } 
+                else
+                {
+                    alert("failed to get details");
+                }
+            });
+        });
+	}
+
+    $(document).ready(function ()
+    {
+        $("input[name='job']").keypress(function (e)
+        {
+            if (e.which == 13)
+            {
+                $(this).trigger("change");
+            }
+        });
+
+        $("a.report-pdf").click(function ()
+        {
+            var view = $(this).data("view");
+
+            if (typeof view == "undefined" || view == "")
+            {
+                return false;
+            }
+
+            var job = $("input[name='job']").val();
+
+            var url = '/api/test.php?view=' + view + "&job=" + job;
+
+            var win = window.open(url, '_blank');
+            win.focus();
+
+            return false;
+        });
+
+        $("input[name='job']").change(function ()
+        {
+            var v = $(this).val();
+
+            var url = '/api/test.php?view=ajax_job_detail&job=' + v;
+
+            $.get(url, function (data, status)
+            {
+                if (status == "success")
+                {
+                    var jsonResult;
+                    try
+                    {
+                        jsonResult = JSON.parse(data);
+                        console.log(jsonResult);
+
+                        var len = $.map(jsonResult, function (n, i) {
+                            return i;
+                        }).length;
+
+                        if (len > 0)
+                        {
+                            for (var i in jsonResult)
+                            {
+                                $("input[name='" + i + "']").val(jsonResult[i]);
+                                $("textarea[name='" + i + "']").val(jsonResult[i]);
+                            }
+                        }
+                        else
+                        {
+                            alert("No Data found");
+
+                            $("input").not("[name='job']").val("");
+                        }
+                    } 
+                    catch (e)
+                    {
+                        console.log("error: " + e);
+                        alert(data);
+                    }
+                } 
+                else
+                {
+                    alert("failed to get details");
+                }
+            });
+        });
+    });
+</script>
