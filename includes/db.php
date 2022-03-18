@@ -13,5 +13,5 @@ $db_password = 'Reset123!';*/
 $hostname = 'localhost';
 $db_name = 'demo_tpm';
 $db_username = 'root';
-$db_password = 'anuj';
+$db_password = '123456';
 $db = new mysqli($hostname, $db_username, $db_password, $db_name);

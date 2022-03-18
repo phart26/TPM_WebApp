@@ -72,17 +72,30 @@ ORDER BY cust_tbl.customer, part_tbl.part;
             </div>
 
             <div>
-                <div class="inline input">
+                <!-- <div class="inline input">
                     <span class="top-placeholder">Table height</span><input name="table_height" var="table_height" type="text" mask="number" maxlength="6" pattern="\d{6}">
-                </div>
+                </div> -->
                 <div class="inline input">
-                    <span class="top-placeholder">Die position</span><input name="die_position" var="die_position" type="text" mask="number" maxlength="6" pattern="\d{6}">
+                    <span class="top-placeholder">Die position</span>
+                    <input name="die_position" var="die_position" type="text" mask="number" maxlength="6" pattern="\d{6}">
                 </div>
                 <div class="inline input">
                     <span class="top-placeholder">Die</span>
                     <select class="align-right die" var="die" table="die_tbl" value-field="die" column="die_id"></select>
                     <!-- <input var="die" type="text" mask="double"> -->
                 </div>
+            </div>
+            
+            <div>
+                <div class="inline input">
+                    <span class="top-placeholder">Table height</span><input name="table_height" var="table_height" type="text" mask="number" maxlength="6" pattern="\d{6}">
+                </div>
+                <div class="inline input">
+                    <span class="top-placeholder">Table position</span><input name="table_position" var="table_position" type="text" mask="number" maxlength="6" pattern="\d{6}">
+                </div>
+                <!-- <div class="inline input">
+                    <span class="top-placeholder">Actual Angle</span><input name="actual_angle" var="actual_angle" type="text" mask="number" maxlength="6" pattern="\d{6}">         
+                </div> -->
             </div>
 
             <div>

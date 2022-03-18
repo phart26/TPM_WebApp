@@ -1297,11 +1297,11 @@ $('.checkedbox').click(function () {
 
                 <div class="column">
                         <div class="input">
-                                <span class="left-placeholder">Mill</span>
-                                <select id="mac_add_tbl" var="device" table="mac_add_tbl" value-field="device" column="device">
-                                    <option value="" selected>Select Mill</option>
+                            <span class="left-placeholder">Mill</span>
+                            <select id="mac_add_tbl" var="device" table="mac_add_tbl" value-field="device" column="device">
+                                <option value="" selected>Select Mill</option>
                             </select>
-                            </div>
+                        </div>
                     <div class="input">
                         <span class="left-placeholder">Mill Operator</span>
                         <select var="mill_operator" table="employee"   value-field="ID" column="name" filter_column="mill_operator" filter_value="1">

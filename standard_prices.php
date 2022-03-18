@@ -10,7 +10,7 @@ require_once __DIR__ . '/classes/StandardPrices.php';
 $hostname = 'localhost';
 $db_name = 'final';
 $db_username = 'root';
-$db_password = 'anuj';
+$db_password = '123456';
 $db = new mysqli($hostname, $db_username, $db_password, $db_name);
 //
 //'host'     => '31.220.110.218',

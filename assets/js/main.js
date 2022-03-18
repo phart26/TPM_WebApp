@@ -255,7 +255,7 @@ function request(api, data)
 			'withCredentials'	: true
 		}
 	}).done(function(response, textStatus, xhr){
-	//	console.log( response + ' ' + textStatus );
+		// console.log( response + ' ' + textStatus );
 		if (!response) return;
 
 		if (response.error) message(response.error, 5000);
@@ -480,7 +480,6 @@ function get_paused_jobs() {
 	});
 }
 EVENTS['table.list'] = function() {
-	
     var data = {},
 		tbl  = $('[form="table.form"]').attr('table-name'),
 		fields = $('[form="table.form"]').attr('fields');
@@ -514,7 +513,13 @@ EVENTS['table.list'] = function() {
 						"bPaginate": false
 					});
 				})
-		}else{
+		}
+	// 	else if($('#filter').attr('fetch-url') == 'coil_stamping'){
+	// 		$('#stamp_coil_list').DataTable({
+	// 			"bPaginate": false,
+	// });
+	// 	}
+		else{
 			if( !($('#filter')[0].hasAttribute('fetch-url'))){
 			
 				fetchtabledatapagi(select=null,tbl,fields,limit=null,page=null);
@@ -1133,7 +1138,7 @@ $(function(){
 			source = select.attr('table');
 
         request('table/'+ source +'/fetch', {})
-            .done(function(res){
+            .done(function(res){console.log("final:",res);
                 if (!res.list) return;
 
                 select.inputpicker({
@@ -1142,9 +1147,9 @@ $(function(){
 				    fieldText: fieldText,
 				    fieldValue: fieldValue,
 				    headShow: true,
-				    autoOpen: true
+					autoOpen: true,
+					filterOpen: true,
 				})
-
 			});
 	})
 

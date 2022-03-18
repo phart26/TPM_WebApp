@@ -1,27 +1,4 @@
-<?php
-if(isset($_POST['save']))
-{   
 
-	include '../includes/db.php';
-    
-    // run through each ship_date item and add to db
-    for($i = 0; $i < count($_POST['ship_dates']); $i++){
-        
-        $job = $_POST['job'];
-        $cust = $_POST['cust_id'];
-        $ship_date = $_POST['ship_dates'][$i];
-        $quan = $_POST['quantity'][$i];
-        
-        $sql = "INSERT INTO partial_ship (job, quantity, cust_id, ship_date) VALUES('$job', '$quan', '$cust', '$ship_date')";
-            
-        $result = mysqli_query($db , $sql);
-        echo mysqli_error($db);
-
-        
-
-
-    }
-?>
 <script>
     function request1(type) {
         //alert(setting.server+ api);
@@ -1337,13 +1314,10 @@ $('.checkedbox').click(function () {
                     <div>
                         <a href="javascript:void(0);" class="add_button" title="Add field"><button type="button">+</button></a>
                     </div>
+    
                     <br>
                 </div>
-            </div>
-            <div class="column">
-                <div>
-                    <span class="left-placeholder"></span><input type="submit" name="save" value="save">
-                </div>
+    
             </div>
             
 

@@ -1,7 +1,7 @@
 
 <?php
     function getCustomer($cust_id){
-        $conn = new mysqli("localhost", "root", "anuj", "demo_tpm");
+        $conn = new mysqli("localhost", "root", "123456", "demo_tpm");
         $sql = "SELECT * FROM cust_tbl WHERE cust_id = '".$cust_id."'";
 
         //make query & get result

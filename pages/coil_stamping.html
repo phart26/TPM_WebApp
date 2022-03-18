@@ -1,0 +1,288 @@
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+<div class="content-wrapper">
+    <h3>Coil Stamping
+
+        <div style="float:right;">
+            <input type="button" id="view_coil_entry" class="btn btn-primary" value="View Stamping Entry"/>
+            <input type="button" id="close_coil_entry" style="display:none;" value="Close"/>
+        </div>
+    </h3>
+  <!-- <div id="filter" fetch-url="coil_stamping" class="row clicktoid" style="display: none; padding: 20px; background: #fff; border: 1px solid #eee;">
+  </div> -->
+    <table id="stamping_coil_list" class="table row-border stripe display compact" style="display:none">
+        <thead>
+            <tr>
+                <th>Work#</th>
+                <th>Coil#</th>
+                <th>Job#</th>
+                <th>Stamping Status</th>
+            </tr>
+        </thead>
+        <tbody id="work_coil_list" >
+
+        </tbody>
+   </table>
+    
+ <!--  <div class="inline overflow" style="font-size: 80%; border: 1px solid #ccc; height: 250px; background: #fff; width: 390px;"> -->
+     <form id="coil_stamp" method="POST">
+            <div class="inline input">
+                    <span class="top-placeholder">Work number</span>
+                    <!-- <input name="work_number" id="work_number" type="text" mask="number" required> -->
+                    <select name="work_number" id="work_number" required>
+
+                    </select>
+            </div>
+            <div class="inline input">
+                    <span class="top-placeholder">Stamping Type</span>
+                <select id="stamp_type" style="width:100%;" required>
+                        <option default selected value="0">Not yet stamped</option>
+                        <option value="1">received for stamping</option>
+                        <option  value="2">stamping completed</option>
+                       
+                </select>
+            </div>
+            <div class="inline input">
+                <input type="submit" value="Filter" class="btn btn-primary" style="margin-top:20px;"/>
+            </div>
+     </form>
+<div id="stamp" style="display:none;float: right;">
+     <div class="inline input receive">
+            <span class="left-placeholder">received for stamping?</span>
+            <input type="checkbox" id="receive_stamp"> 
+     </div>
+     <div class="inline input complete">
+            <span class="left-placeholder">stamping completed?</span>
+            <input type="checkbox" id="complete_stamp"> 
+     </div>
+     <div class="inline input">
+            <input type="button" id="btn_save" value="Save" class="btn btn-primary" style="margin-top:5px;"/>
+        </div>
+</div>
+     <hr>
+    </br>
+   <table id="stamp_coil_list" class="table row-border stripe display compact" style="display: none;">
+        <thead>
+            <tr>
+                <th data-orderable="false" style="text-align: center; width: 87px;" class="sorting_asc" rowspan="1" colspan="1" aria-label=""><input type="checkbox" id="selectall"></th>
+                <th>Coil#</th>
+            </tr>
+        </thead>
+        <tbody id="coil_list" >
+
+        </tbody>
+   </table>
+</div>
+<!-- </div> -->
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.html5.min.js"></script>
+<script>
+    $( document ).ready(function() {
+        $(document).on('submit','#coil_stamp', function(e) {
+            e.preventDefault();
+
+            $("#stamp_coil_list").dataTable().fnDestroy();
+            var work_no = $('#work_number').val();
+            var type = $('#stamp_type').val();
+           
+            $.ajax({
+				method: "POST",
+				url: "../get_device_status.php",
+				data: { coil_stamping : 1, work_no : work_no, type : type },
+				success: function(res) {
+					console.log("Final Result:"+res);
+					var res = JSON.parse(res);
+					var html='';
+                //	console.log("Length_Count:" +res.length);
+                if(res.length > 0){
+
+                    if(type == 0){
+                        $('#stamp').show();
+                        $('.complete').hide();
+                        $('.receive').show();
+                        $('.complete').prop("checked", false);
+                    }
+                    if(type == 1){
+                        $('#stamp').show();
+                        $('.receive').hide();
+                        $('.complete').show();
+                        $('.receive').prop("checked", false);
+                    }
+                    if(type == 2){
+                        $('#stamp').hide();
+                        $('.receive').hide();
+                        $('.complete').hide();
+                        $('.receive').prop("checked", false);
+                        $('.complete').prop("checked", false);
+                    }
+
+                    for(var i=0; i<res.length ;i++){
+						html += "<tr>"+
+						"<td style='text-align: center; width: 87px;'><input class='chk_coil' type='checkbox' id='"+res[i].coil_no+"'></td>"+
+						"<td>"+res[i].coil_no+"</td>"+
+						"</tr>";
+                    }
+                    $('#stamp_coil_list').show();
+                    $('#coil_list').html(html);
+	
+				}else{
+                    $('#stamp_coil_list').show();
+                      $('#stamp').hide();
+                        $('.receive').hide();
+                        $('.complete').hide();
+                        $('.receive').prop("checked", false);
+                        $('.complete').prop("checked", false);
+                    $('#coil_list').html('<center><b>No Data Available!</b></center>');
+                }
+                $("#stamp_coil_list").DataTable({
+                    "pageLength": 500,
+                    "bPaginate": false,
+                    "bLengthChange": false,
+                    dom: 'Bfrtip',
+                    buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ]
+                });
+            }
+					
+            });
+            // $('#stamp_coil_list').DataTable({
+            //             "bPaginate": false,
+			// });
+        });
+
+        $(document).on('change', "#selectall", function(e) {
+            e.preventDefault();
+            
+            if ($(this).prop("checked") == true) {
+                $('.chk_coil').prop("checked", true);
+            
+            } else if ($(this).prop("checked") == false) {
+                $('.chk_coil').prop("checked", false);
+            
+            }
+     });
+
+     $(document).on('click', "#btn_save", function(e) {
+            e.preventDefault();
+            var work_no = $('#work_number').val();
+            var type = 0;
+            if ($("#receive_stamp").prop("checked") == true) {
+                type = 1;
+            }
+            if ($('#complete_stamp').prop('checked') == true) {
+                type = 2;
+            }
+
+            var cid='';
+               $(".chk_coil").each(function(index, elem) {
+                //alert($(elem).prop("checked"));
+               
+                if ($(elem).prop("checked") == true) 
+                {
+                    var id = $(this).attr("id");
+                    cid = cid + id + ',';   
+                }
+            });
+                console.log("coil stamoing data:", work_no, type, cid);
+            if (cid==''){
+                alert("Please Select Coil Checkbox!");
+            }else if(type == 0){
+                alert("Please Select Receive or Complete Stamping Checkbox!");
+            }else{
+                $.ajax({
+                method: "POST",
+                url: "../get_device_status.php",
+                data: { work_no : work_no, type : type, cid : cid},
+                success: function(res) {
+                    if(res == 1){
+                        alert("coil stamping received Succefully!");
+                        location.reload();
+                    }else if(res == 2){
+                        alert("coil stamping completed Succefully!");
+                        location.reload();
+                    }
+                    else{
+                        alert("Problem in Saved data!");
+                    }
+                }
+            });
+            }
+});
+get_all_workno();
+function get_all_workno(){
+    var html = "<option default selected value=''>Select Work No</option>";
+    $.ajax({
+                method: "POST",
+                url: "../get_device_status.php",
+                data: { 
+                    all_work_no : 1
+                },
+                success: function(res) {
+                    console.log("work no list:",res);
+                    var res = JSON.parse(res);
+                    for(var i=0; i<res.length ;i++){
+                        html += "<option value='"+res[i].work_no+"'>"+res[i].work_no+"</option>";
+                    }
+
+                    $('#work_number').html(html);
+                }
+            });
+}
+
+    $(document).on('click', "#view_coil_entry", function(e) {
+        e.preventDefault();
+
+        $('#work_coil_list').html('');
+        $('#work_number').html('');
+        var html = '';
+        $.ajax({
+                method: "POST",
+                url: "../get_device_status.php",
+                data: { 
+                    view_coil_entry : 1
+                },
+                success: function(res) {
+                    var res = JSON.parse(res);
+                    for(var i=0; i<res.length ;i++){
+                        html += "<tr>" +
+                        "<td>"+res[i].work_no+"</td>" +
+                        "<td>"+res[i].coil_no+"</td>" +
+                        "<td>"+res[i].job+"</td>" +
+                         "<td>"+res[i].status+"</td>" +
+                        "</tr>" ;
+                    }
+
+                    $('#work_coil_list').html(html);
+                    $('#stamping_coil_list').show();
+                    $('#view_coil_entry').hide();
+                    $('#close_coil_entry').show();
+                    $('#coil_stamp').hide();
+                    $("#stamping_coil_list").DataTable({
+                    "pageLength": 500
+                    });
+                }
+
+                
+            });
+    });
+    $(document).on('click', "#close_coil_entry", function(e) {
+        e.preventDefault();
+        $("#stamping_coil_list").dataTable().fnDestroy();
+                     $('#stamping_coil_list').hide();
+                    $('#view_coil_entry').show();
+                    $('#close_coil_entry').hide();
+                    $('#coil_stamp').show();
+                    get_all_workno();
+                    
+    });
+});
+</script>

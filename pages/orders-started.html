@@ -304,6 +304,7 @@
                                     <th>Heat#</th>
                                     <th>Job</th>
                                     <th>Allocated</th>
+                                    <th>stamped status</th>
                                 </tr>
 
                             </thead>
@@ -1248,13 +1249,13 @@
 <script>
 //unassign button event
 $('#unassign_job').on('click', function() {
-             var mill = $('#mac_add_tbl').val();
-             if(mill == ""){
-                alert("Selected Job Not Registered with Mill!");
-             }else{
-                var job = $('#job').val();
-                 //alert("MIll:"+job);
-                 $.ajax({
+    var mill = $('#mac_add_tbl').val();
+        if(mill == ""){
+            alert("Selected Job Not Registered with Mill!");
+        }else{
+            var job = $('#job').val();
+                //alert("MIll:"+job);
+                $.ajax({
                 method: "POST",
                 url: "../get_device_status.php",
                 data: { unassign_job_no : job },
@@ -1264,12 +1265,12 @@ $('#unassign_job').on('click', function() {
                     }
 
                     if(res == 1){
-                         alert("Selected Job unassigned successfully!");
-                         location.reload();
+                        alert("Selected Job unassigned successfully!");
+                        location.reload();
                     }
                 }
-             });
-             }
+            });
+        }
 });
 
     var calculation = [];
@@ -2504,6 +2505,7 @@ $('#unassign_job').on('click', function() {
 
         $(".report_pop input[name='job']").change(function() {
             var v = $(this).val();
+          
 
             // var url = '/TPM-master/api/test.php?view=ajax_job_detail&job=' + v;
             var url = '/TPM-master/api/test.php?view=ajax_job_detail&job=' + v;
@@ -2589,7 +2591,7 @@ $('#unassign_job').on('click', function() {
 
         $(".report_pop input[name='job']").change(function() {
             var v = $(this).val();
-
+            
             //  var url = '/TPM-master/api/test.php?view=ajax_job_detail&job=' + v;
             var url = '/TPM-master/api/test.php?view=ajax_job_detail&job=' + v;
 
@@ -2719,7 +2721,8 @@ $('#unassign_job').on('click', function() {
         $('#page-btn').hide();
 
         $('#job').on('change', function() {
-            $('#page-no').html($(this).val());
+            $('#page-no').html($(this).val());  
+            $(".report_pop input[name='job']").val($(this).val());
         });
         $('#page-no').html($('#job').val());
         $('#part_info').click(function() {
